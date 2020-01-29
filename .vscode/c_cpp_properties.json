@@ -1,0 +1,37 @@
+{
+    "configurations": [
+        {
+            "name": "Keil",
+            "compilerPath": "${workspaceFolder}/.vscode/Build.bat",
+            "cStandard": "c99",
+            "intelliSenseMode": "clang-x64",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/Config",
+                "${workspaceFolder}/FreeRTOS/Source/include",
+                "${workspaceFolder}/FreeRTOS/Source/portable/RVDS/ARM_CM0",
+                "${workspaceFolder}/Libraries/CMSIS/Include",
+                "${workspaceFolder}/Libraries/Device/Nuvoton/Nano103/Include",
+                "${workspaceFolder}/Libraries/StdDriver/inc",
+                "${workspaceFolder}/Libraries/User/inc",
+                "C:/Keil_v5/ARM/ARMCC/include",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "C:/Keil_v5/ARM/ARMCC/**",
+                    "${workspaceFolder}/**",
+                    ""
+                ]
+            },
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "__CC_ARM"
+            ]
+        }
+    ],
+    "version": 4
+}
