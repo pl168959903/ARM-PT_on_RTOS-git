@@ -1,6 +1,6 @@
-Load "D:\\PT_on_RTOS\\KEIL\\Objects\\PT_on_RTOS.axf" 
+Load "D:\\PT_on_RTOS-git\\KEIL\\Objects\\PT_on_RTOS.axf" 
 Erase Done.
 Programming Done.
 Verify OK.
 Application running...
-Flash Load finished at 06:14:45
+Flash Load finished at 09:03:08

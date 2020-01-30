@@ -2,10 +2,7 @@
 #include "USER_LIB.h"
 #include <stdio.h>
 
-uint32_t size;
-uint8_t  a;
-
-int main(void) {
+int main( void ) {
     SYS_UnlockReg();
     PIN_SETUP();
     CLK_SETUP();
@@ -17,8 +14,9 @@ int main(void) {
     NVIC_INIT();
     SYS_LockReg();
 
-     xTaskCreate((TaskFunction_t)taskBootCreate, (const char *)"boot", (uint16_t)128,
-                (void *)NULL, (UBaseType_t)1, (TaskHandle_t *)&taskBootCreate_handler);
+    printf("123test\n");
+
+    xTaskCreate( ( TaskFunction_t )taskBootCreate, ( const char* )"boot", ( uint16_t )128, ( void* )NULL, ( UBaseType_t )1, ( TaskHandle_t* )&taskBootCreate_handler );
 
     vTaskStartScheduler();
 }
