@@ -1,10 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Keil",
-            "compilerPath": "${workspaceFolder}/.vscode/Build.bat",
-            "cStandard": "c99",
-            "intelliSenseMode": "clang-x64",
+            "name": "ARM",
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/Config",
@@ -24,13 +21,7 @@
                     "${workspaceFolder}/**",
                     ""
                 ]
-            },
-            "defines": [
-                "_DEBUG",
-                "UNICODE",
-                "_UNICODE",
-                "__CC_ARM"
-            ]
+            }
         }
     ],
     "version": 4

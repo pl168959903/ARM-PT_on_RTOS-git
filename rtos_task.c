@@ -23,7 +23,6 @@ void taskLEDControl( void ) {
 #ifdef USER_CFG_DEBUG_MODE
     printf( "taskLEDControl start!\n" );
 #endif  // USER_CFG_DEBUG_MODE
-
     while ( 1 ) {
         USER_TRAN_LED();
         vTaskDelay( 500 );

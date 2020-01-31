@@ -13,9 +13,8 @@ int main( void ) {
     TIMER_SETUP();
     NVIC_INIT();
     SYS_LockReg();
-
-    printf("123test\n");
-
+    printf( "" );
+    printf( "123test\n" );
     xTaskCreate( ( TaskFunction_t )taskBootCreate, ( const char* )"boot", ( uint16_t )128, ( void* )NULL, ( UBaseType_t )1, ( TaskHandle_t* )&taskBootCreate_handler );
 
     vTaskStartScheduler();

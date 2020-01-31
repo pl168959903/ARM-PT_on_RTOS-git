@@ -5,32 +5,9 @@
 		}
 	],
 	"settings": {
-		"files.associations": {
-			"nano103.h": "c",
-			"spi.h": "c",
-			"user_lib.h": "c",
-			"fifo.h": "c",
-			"semphr.h": "c",
-			"task.h": "c",
-			"stdarg.h": "c",
-			"stdlib.h": "c",
-			"stdio.h": "c",
-			"freertos.h": "c",
-			"portable.h": "c",
-			"portmacro.h": "c",
-			"deprecated_definitions.h": "c"
-		},
 		"files.autoSave": "afterDelay",
-		"clang.cflags":[
-			"-std=c99",
-			"-I${workspaceRoot}/Config",
-			"-I${workspaceRoot}/FreeRTOS/Source/include",
-			"-I${workspaceRoot}/FreeRTOS/Source/portable/RVDS/ARM_CM0",
-			"-I${workspaceRoot}/Libraries/CMSIS/Include",
-			"-I${workspaceRoot}/Libraries/Device/Nuvoton/Nano103/Include",
-			"-I${workspaceRoot}/Libraries/StdDriver/inc",
-			"-I${workspaceRoot}/Libraries/User/inc",
-			"-IC:/Keil_v5/ARM/ARMCC/include"
-		]
+		"files.associations": {
+			"nano103.h": "c"
+		}
 	}
 }
