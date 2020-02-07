@@ -7,7 +7,9 @@
 	"settings": {
 		"files.autoSave": "afterDelay",
 		"files.associations": {
-			"nano103.h": "c"
+			"nano103.h": "c",
+			"user_lib.h": "c",
+			"stdio.h": "c"
 		}
 	}
 }

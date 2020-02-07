@@ -6,9 +6,6 @@
 
 uint32_t FIFO_cmd_countTime = 0;
 
-DATA_FIFO   FIFO_uart0_buf = {{0}, 0, 0, 0};
-DATA_FIFO   FIFO_uart1_buf = {{0}, 0, 0, 0};
-
 void FIFO_count_start(void) {
     /*-----------------------------------------------interface----------------------------------------------------------*/
     IRQ_timer0_flag_1 = 1;

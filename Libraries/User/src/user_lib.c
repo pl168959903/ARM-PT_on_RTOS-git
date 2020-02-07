@@ -136,25 +136,25 @@ void Array_assign( uint8_t arg[], uint32_t num, ... ) {
     va_list  marker;
     va_start( marker, num );
     for ( i = 0; i < num; i++ ) {
-        arg[ i ] = ( uint8_t )va_arg( marker, int );
+        arg[ i ] = ( uint8_t )va_arg( marker, (int)NULL);
     }
     va_end( marker );
 }
 
-void OV2640_OPEN( void ) {
+void OV528_OPEN( void ) {
     USER_ENABLE_CMAERA_POWER();
     printf( "Wait for Camera" );
-    while ( !OV2640_SNYC() )
+    while ( !OV528_SNYC() )
         printf( "." );
     delay_us( 1000000 );
-    OV2640_INIT( OV2640_INIT_JPEG, OV2640_PR_160_120, OV2640_JPEG_640_480 );
-    OV2640_SetBaudRate( 115200 );
-    OV2640_SetPacketSize( 32 + 6 );
+    OV528_INIT( OV528_INIT_JPEG, OV528_PR_160_120, OV528_JPEG_640_480 );
+    OV528_SetBaudRate( 115200 );
+    OV528_SetPacketSize( 32 + 6 );
     printf( "down\n" );
 }
 void Camera_shot( uint32_t addr ) {
-    OV2640_GetPictue( 0x01 );
-    OV2640_SetPacketSize( 256 );
+    OV528_GetPictue( 0x01 );
+    OV528_SetPacketSize( 256 );
 }
 
 void delay_us( uint32_t us ) {

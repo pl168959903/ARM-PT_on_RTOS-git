@@ -63,7 +63,7 @@ void Array_assign(uint8_t[], uint32_t, ...);
 #include "Flash.h"
 #include "IRQ.h"
 #include "NRF24L01.h"
-#include "OV2640.h"
+#include "CJ_OV528.h"
 #include "W25QXX.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
