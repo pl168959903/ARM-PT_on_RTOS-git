@@ -307,39 +307,32 @@ uint16_t OV528_GetPacket( OV528_T* OV528, uint16_t package_ID, uint8_t package[]
     FIFO_reset( OV528->buf );
     OV528->writeData( OV528->RS232_CMD, 6 );
 
-    // check ack
-    Array_assign( OV528->RS232_CMD, 3, 0xAA, ID[ 0 ], ID[ 1 ] );
-    cmdCheck = FIFO_cmdCheck( OV528->buf, OV528->RS232_CMD, 3, 250 );
-    if ( !cmdCheck ) goto ERR;
-
-    cmdCheck = FIFO_waitData( OV528->buf, 4, 250 );
-    if ( !cmdCheck ) goto ERR;
-    
-    if ( ( FIFO_read_byte( OV528->buf, 0 ) == ID[ 0 ] ) && ( FIFO_read_byte( OV528->buf, 1 ) == ID[ 1 ] ) ) {
-        size = ( uint16_t )OV528->buf->buf[ 2 ] | ( uint16_t )( OV528->buf->buf[ 3 ] << 8 );
-        if ( FIFO_waitData( OV528->buf, size + 6, 3000 ) ) {
-            for ( i = 0; i < size + 4; i++ )
-                checkSum += OV528->buf->buf[ i ];
-            if ( ( ( uint8_t )( checkSum & 0x00ff ) == OV528->buf->buf[ size + 4 ] ) && ( ( uint8_t )( checkSum >> 8 ) == OV528->buf->buf[ size + 5 ] ) ) {
-                for ( i = 0; i < size; i++ )
-                    package[ i ] = OV528->buf->buf[ i + 4 ];
-                goto Exit;
+    if ( FIFO_waitData( OV528->buf, 4, 250 ) ) //wait for packet head data
+        if ( ( FIFO_read_byte( OV528->buf, 0 ) == ID[ 0 ] ) && ( FIFO_read_byte( OV528->buf, 1 ) == ID[ 1 ] ) ) { //check ID
+            size = ( uint16_t )OV528->buf->buf[ 2 ] | ( uint16_t )( OV528->buf->buf[ 3 ] << 8 ); //get data size
+            if ( FIFO_waitData( OV528->buf, size + 6, 3000 ) ) { 
+                for ( i = 0; i < size + 4; i++ )
+                    checkSum += OV528->buf->buf[ i ];
+                if ( ( ( uint8_t )( checkSum & 0x00ff ) == OV528->buf->buf[ size + 4 ] ) && ( ( uint8_t )( checkSum >> 8 ) == OV528->buf->buf[ size + 5 ] ) ) {
+                    for ( i = 0; i < size; i++ )
+                        package[ i ] = OV528->buf->buf[ i + 4 ];
+                    goto Exit;
+                }
             }
-        }
-        goto ERR;
+            goto ERR;
 
-    ERR :
+        ERR :
 #if OV528_USE_ERR_HOOK
-    {
-        OV528_ErrHook( OV528_ERR_GETPACKET );
-    }
+        {
+            OV528_ErrHook( OV528_ERR_GETPACKET );
+        }
 #endif
-        FIFO_reset( OV528->buf );
-        OV528_DELAY_MS( 1 );
-        return 0;
+            FIFO_reset( OV528->buf );
+            OV528_DELAY_MS( 1 );
+            return 0;
 
-    Exit:
-        FIFO_reset( OV528->buf );
-        OV528_DELAY_MS( 1 );
-        return size;
-    }
+        Exit:
+            FIFO_reset( OV528->buf );
+            OV528_DELAY_MS( 1 );
+            return size;
+        }
