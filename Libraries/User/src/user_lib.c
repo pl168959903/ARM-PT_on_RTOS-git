@@ -134,6 +134,7 @@ void RTC_SETUP( void ) {
 void Array_assign( uint8_t arg[], uint32_t num, ... ) {
     uint32_t i;
     va_list  marker;
+    
     va_start( marker, num );
     for ( i = 0; i < num; i++ ) {
         arg[ i ] = ( uint8_t )va_arg( marker, (int)NULL);
