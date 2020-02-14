@@ -75,10 +75,9 @@ typedef struct {
     uint32_t baudRate;
 
     //BUFFER
-    uint8_t * buf;
-    uint8_t buf_lock;
-    uint8_t RS232_CMD[ 6 ];
-    uint8_t OV528_ERR_CODE; 
+    DATA_FIFO * buf;
+    uint8_t cmd[ 6 ];
+    uint8_t err; 
 
     //Portable function
     uint32_t (*writeData)(uint8_t * arg, uint32_t sum);

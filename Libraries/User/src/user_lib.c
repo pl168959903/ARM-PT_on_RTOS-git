@@ -5,6 +5,7 @@
 #include <time.h>
 
 S_RTC_TIME_DATA_T RTC_TIME = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
+OV528_T ov528_s0 = {0};
 /*---------------------------------------------global------------------------------------------------------*/
 uint8_t g_button_flag  = 0;
 uint8_t g_ext_int_flag = 0;
@@ -134,10 +135,10 @@ void RTC_SETUP( void ) {
 void Array_assign( uint8_t arg[], uint32_t num, ... ) {
     uint32_t i;
     va_list  marker;
-    
+
     va_start( marker, num );
     for ( i = 0; i < num; i++ ) {
-        arg[ i ] = ( uint8_t )va_arg( marker, (int)NULL);
+        arg[ i ] = ( uint8_t )va_arg( marker, int );
     }
     va_end( marker );
 }
@@ -145,17 +146,13 @@ void Array_assign( uint8_t arg[], uint32_t num, ... ) {
 void OV528_OPEN( void ) {
     USER_ENABLE_CMAERA_POWER();
     printf( "Wait for Camera" );
-    while ( !OV528_SNYC() )
+    while ( !OV528_SNYC(&ov528_s0) )
         printf( "." );
-    delay_us( 1000000 );
-    OV528_INIT( OV528_INIT_JPEG, OV528_PR_160_120, OV528_JPEG_640_480 );
-    OV528_SetBaudRate( 115200 );
-    OV528_SetPacketSize( 32 + 6 );
+    vTaskDelay( 1000 );
+    OV528_INIT(&ov528_s0,  OV528_INIT_JPEG, OV528_PR_160_120, OV528_JPEG_640_480 );
+    OV528_SetBaudRate(&ov528_s0, 115200 );
+    OV528_SetPacketSize(&ov528_s0, 32 + 6 ); // data : 32 byte  ; head+checkSum : 6 byte
     printf( "down\n" );
-}
-void Camera_shot( uint32_t addr ) {
-    OV528_GetPictue( 0x01 );
-    OV528_SetPacketSize( 256 );
 }
 
 void delay_us( uint32_t us ) {

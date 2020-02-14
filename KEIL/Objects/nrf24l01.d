@@ -43,6 +43,6 @@
 .\objects\nrf24l01.o: ..\Libraries\User\inc\Flash.h
 .\objects\nrf24l01.o: ..\Libraries\User\inc\IRQ.h
 .\objects\nrf24l01.o: ..\Libraries\User\inc\NRF24L01.h
-.\objects\nrf24l01.o: ..\Libraries\User\inc\OV2640.h
+.\objects\nrf24l01.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\nrf24l01.o: ..\Libraries\User\inc\W25QXX.h
 .\objects\nrf24l01.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

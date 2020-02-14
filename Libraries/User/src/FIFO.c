@@ -6,26 +6,8 @@
 
 uint32_t FIFO_cmd_countTime = 0;
 
-void FIFO_count_start(void) {
-    /*-----------------------------------------------interface----------------------------------------------------------*/
-    IRQ_timer0_flag_1 = 1;
-    if(!TIMER_IS_ACTIVE(TIMER0)) TIMER_Start(TIMER0);
-    /*------------------------------------------------------------------------------------------------------------------*/
-}
-void FIFO_count_stop(void) {
-    /*-----------------------------------------------interface----------------------------------------------------------*/
-    IRQ_timer0_flag_1 = 0;
-    /*------------------------------------------------------------------------------------------------------------------*/
-}
-
-void FIFO_countTime(void) {
-    FIFO_cmd_countTime++;
-}
-void FIFO_reset_countTime(void) {
-    FIFO_cmd_countTime = 0;
-}
-
-
+/*--------------------------------------------------------------------------------------------------------------------*/
+//Buffer work
 void FIFO_data_byte_in(DATA_FIFO *buf_st, uint8_t *data) {
     buf_st->buf[buf_st->head] = *data;
 		if(buf_st->size < FIFO_BUF_SIZE)
@@ -58,9 +40,37 @@ uint8_t FIFO_IsEmpty(DATA_FIFO *buf_st) {
     if(buf_st->size == 0) return 1;
     else return 0;
 }
+
 uint8_t FIFO_read_byte(DATA_FIFO *buf_st, int32_t cursor) {
     return buf_st->buf[(cursor + buf_st->tail) % FIFO_BUF_SIZE];
 }
+
+
+
+/*--------------------------------------------------------------------------------------------------------------------*/
+//Buffer policy
+
+void FIFO_count_start(void) {
+    /*-----------------------------------------------interface----------------------------------------------------------*/
+    IRQ_timer0_flag_1 = 1;
+    if(!TIMER_IS_ACTIVE(TIMER0)) TIMER_Start(TIMER0);
+    /*------------------------------------------------------------------------------------------------------------------*/
+}
+
+void FIFO_count_stop(void) {
+    /*-----------------------------------------------interface----------------------------------------------------------*/
+    IRQ_timer0_flag_1 = 0;
+    /*------------------------------------------------------------------------------------------------------------------*/
+}
+
+void FIFO_countTime(void) {
+    FIFO_cmd_countTime++;
+}
+
+void FIFO_reset_countTime(void) {
+    FIFO_cmd_countTime = 0;
+}
+
 
 uint8_t FIFO_waitData(DATA_FIFO *buf_st, uint32_t dataSize, uint32_t TimeOut) {
     FIFO_reset_countTime();

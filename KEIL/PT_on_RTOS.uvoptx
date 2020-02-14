@@ -550,8 +550,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Libraries\User\src\OV2640.c</PathWithFileName>
-      <FilenameWithoutPath>OV2640.c</FilenameWithoutPath>
+      <PathWithFileName>..\Libraries\User\src\user_lib.c</PathWithFileName>
+      <FilenameWithoutPath>user_lib.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -562,8 +562,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Libraries\User\src\user_lib.c</PathWithFileName>
-      <FilenameWithoutPath>user_lib.c</FilenameWithoutPath>
+      <PathWithFileName>..\Libraries\User\src\W25QXX.c</PathWithFileName>
+      <FilenameWithoutPath>W25QXX.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -574,8 +574,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Libraries\User\src\W25QXX.c</PathWithFileName>
-      <FilenameWithoutPath>W25QXX.c</FilenameWithoutPath>
+      <PathWithFileName>..\Libraries\User\src\CJ_OV528.c</PathWithFileName>
+      <FilenameWithoutPath>CJ_OV528.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

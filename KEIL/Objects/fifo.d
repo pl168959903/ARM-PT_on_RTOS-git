@@ -43,7 +43,7 @@
 .\objects\fifo.o: ..\Libraries\User\inc\Flash.h
 .\objects\fifo.o: ..\Libraries\User\inc\IRQ.h
 .\objects\fifo.o: ..\Libraries\User\inc\NRF24L01.h
-.\objects\fifo.o: ..\Libraries\User\inc\OV2640.h
+.\objects\fifo.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\fifo.o: ..\Libraries\User\inc\W25QXX.h
 .\objects\fifo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\fifo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
