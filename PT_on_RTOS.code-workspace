@@ -9,7 +9,8 @@
 		"files.associations": {
 			"nano103.h": "c",
 			"user_lib.h": "c",
-			"stdio.h": "c"
+			"stdio.h": "c",
+			"limits.h": "c"
 		}
 	}
 }
