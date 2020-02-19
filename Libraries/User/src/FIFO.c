@@ -62,17 +62,33 @@ uint8_t FIFO_waitData( DATA_FIFO* buf_st, uint32_t dataSize, uint32_t TimeOut ) 
 uint8_t FIFO_cmdCheck( DATA_FIFO* buf_st, uint8_t Command[], uint32_t sum, uint32_t TimeOut_ms ) {
     uint32_t timeStamp = FIFO_Time_100ms;
     uint32_t CntTime;
-    uint32_t fifo_cursor = 0;
-    uint32_t cmd_cursor  = 0;
-    uint32_t cmd_len     = strlen( ( const char* )Command );
+    uint32_t fifo_c  = 0;
+    uint32_t cmd_c   = 0;
+    uint32_t cmd_len = strlen( ( const char* )Command );
 
     while ( 1 ) {
         CntTime = timeStamp > FIFO_Time_100ms ? ( ( UINT32_MAX - timeStamp ) + FIFO_Time_100ms ) : FIFO_Time_100ms - timeStamp;
         if ( CntTime > TimeOut_ms ) return 0;
 
         if ( buf_st->size >= cmd_len ) {
-            uint32_t fifo_c = 0;
+            for ( cmd_c = 0; cmd_c < cmd_len; cmd_c++ ) {
+                if ( Command[ cmd_c ] != FIFO_read_byte( buf_st, fifo_c ) ) break;
+                if ( ( cmd_c + 1 ) == ( cmd_len > sum ? cmd_len : sum ) ) return 1;
+            }
         }
+
+        cmd_c = 0;
+        while ( ( buf_st->size - fifo_c ) >= ( cmd_len - cmd_c ) ) {
+            if ( Command[ cmd_c ] == FIFO_read_byte( buf_st, fifo_c ) ) {
+                cmd_c++;
+                if ( cmd_c == cmd_len ) return 1;
+            }
+            else {
+                break;
+            }
+        }
+
+        //----------------------------------------------------------------------------------------
         if ( buf_st->size > fifo_cursor ) {
             if ( Command[ cmd_cursor ] == FIFO_read_byte( buf_st, fifo_cursor ) ) {
                 cmd_cursor++;
