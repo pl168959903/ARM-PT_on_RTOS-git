@@ -10,7 +10,9 @@
 			"nano103.h": "c",
 			"user_lib.h": "c",
 			"stdio.h": "c",
-			"limits.h": "c"
+			"limits.h": "c",
+			"fifo.h": "c",
+			"stdint.h": "c"
 		}
 	}
 }
