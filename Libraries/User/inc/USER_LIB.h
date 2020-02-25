@@ -34,22 +34,6 @@ typedef void(FUNC_PTR)(void);
 #define USER_ENABLE_NRF_CE()            USER_PIN_NRF_CE = 1
 #define USER_DISABLE_NRF_CE()           USER_PIN_NRF_CE = 0
 
-/*------------------------------------------------Extern---------------------------------------------------*/
-extern S_RTC_TIME_DATA_T RTC_TIME;
-extern uint8_t g_button_flag;
-extern uint8_t g_ext_int_flag;
-extern uint8_t g_nrf_irq_flag;
-
-/*------------------------------------------------Extern---------------------------------------------------*/
-void PIN_SETUP(void);
-void CLK_SETUP(void);
-void GPIO_SETUP(void);
-void UART_SETUP(void);
-void SPI_SETUP(void);
-void TIMER_SETUP(void);
-void RTC_SETUP(void);
-void delay_us(uint32_t);
-void Array_assign(uint8_t[], uint32_t, ...);
 /*------------------------------------------------Include--------------------------------------------------*/
 // FreeRTOS include.
 #include "FreeRTOS.h"
@@ -57,6 +41,7 @@ void Array_assign(uint8_t[], uint32_t, ...);
 #include "task.h"
 #include "timers.h"
 
+/*---------------------------------------------------------------------------------------------------------*/
 // User.
 #include "rtos_task.h"
 #include "FIFO.h"
@@ -66,7 +51,27 @@ void Array_assign(uint8_t[], uint32_t, ...);
 #include "CJ_OV528.h"
 #include "W25QXX.h"
 
-/*---------------------------------------------------------------------------------------------------------*/
+
+/*------------------------------------------------Extern---------------------------------------------------*/
+extern S_RTC_TIME_DATA_T g_stRtcTime;
+extern OV528_T g_stOv528_s0;
+extern FIFO_T g_stUart1_buf;
+extern uint8_t g_u8ButtonInterruptFlag;
+extern uint8_t g_u8ExtInterruptFlag;
+extern uint8_t g_u8NrfInterruptFlag;
+
+/*------------------------------------------------Extern---------------------------------------------------*/
+
+void PinSetup( void );
+void ClkSetup(void);
+void GpioSetup(void);
+void UartSetup(void);
+void SpiSetup(void);
+void TimerSetup(void);
+void RtcSetup(void);
+void FifoSetup( void );
+void CameraSetup(void);
+void DelayUs(uint32_t);
 
 
 #endif  //__USER_LIB_H__

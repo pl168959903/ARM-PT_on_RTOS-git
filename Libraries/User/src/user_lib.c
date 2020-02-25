@@ -1,19 +1,35 @@
+/*
+    __             _____   __________
+   / /_  __  __   /__  /  / ____/ __ \
+  / __ \/ / / /     / /  / / __/ /_/ /
+ / /_/ / /_/ /     / /__/ /_/ / _, _/
+/_.___/\__, /     /____/\____/_/ |_|
+      /____/
+*/
+
 #include "USER_LIB.h"
 #include "Nano103.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
 
-S_RTC_TIME_DATA_T RTC_TIME = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
-OV528_T ov528_s0 = {0};
-/*---------------------------------------------global------------------------------------------------------*/
-uint8_t g_button_flag  = 0;
-uint8_t g_ext_int_flag = 0;
-uint8_t g_nrf_irq_flag = 0;
+// Stuct Value
+S_RTC_TIME_DATA_T g_stRtcTime   = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
+OV528_T           g_stOv528_s0  = { 0 };
+FIFO_T            g_stUart1_buf = { 0 };
+
+uint8_t g_u8ButtonInterruptFlag = 0;
+uint8_t g_u8ExtInterruptFlag    = 0;
+uint8_t g_u8NrfInterruptFlag    = 0;
 
 /*---------------------------------------------------------------------------------------------------------*/
 
-void PIN_SETUP( void ) {
+/**
+ * @brief  功能腳設定
+ * @note
+ * @retval None
+ */
+void PinSetup( void ) {
     // XTAL
     SYS->GPF_MFPL |= ( SYS_GPF_MFPL_PF7MFP_X32_IN | SYS_GPF_MFPL_PF6MFP_X32_OUT | SYS_GPF_MFPL_PF3MFP_XT1_IN | SYS_GPF_MFPL_PF2MFP_XT1_OUT );
 
@@ -31,17 +47,19 @@ void PIN_SETUP( void ) {
     SYS->GPB_MFPL |= ( SYS_GPB_MFPL_PB2MFP_GPIO | SYS_GPB_MFPL_PB3MFP_GPIO );    // PB2 : Camera_Power ; PB3 : nRF_IRQ
 }
 
-void CLK_SETUP( void ) {
+/**
+ * @brief  時脈設定
+ * @note
+ * @retval None
+ */
+void ClkSetup( void ) {
     // SYSTEM CLOCK
     CLK_EnableXtalRC( CLK_PWRCTL_LXTEN_Msk );
-    while ( !CLK_WaitClockReady( CLK_STATUS_LXTSTB_Msk ) ) {
-    };
+    while ( !CLK_WaitClockReady( CLK_STATUS_LXTSTB_Msk ) ) {};
     CLK_EnableXtalRC( CLK_PWRCTL_HXTEN_Msk );
-    while ( !CLK_WaitClockReady( CLK_STATUS_HXTSTB_Msk ) ) {
-    };
+    while ( !CLK_WaitClockReady( CLK_STATUS_HXTSTB_Msk ) ) {};
     CLK_EnableXtalRC( CLK_PWRCTL_LIRCEN_Msk );
-    while ( !CLK_WaitClockReady( CLK_STATUS_LIRCSTB_Msk ) ) {
-    };
+    while ( !CLK_WaitClockReady( CLK_STATUS_LIRCSTB_Msk ) ) {};
     CLK_SetHCLK( CLK_CLKSEL0_HCLKSEL_HXT, CLK_HCLK_CLK_DIVIDER( 1 ) );
 
     // UART
@@ -56,7 +74,12 @@ void CLK_SETUP( void ) {
     CLK_SetModuleClock( TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_LXT, CLK_TMR0_CLK_DIVIDER( 16 ) );
 }
 
-void GPIO_SETUP( void ) {
+/**
+ * @brief  GPIO設定
+ * @note
+ * @retval None
+ */
+void GpioSetup( void ) {
     // MODE.
     GPIO_SetMode( PA, BIT0, GPIO_PMD_OUTPUT );
     GPIO_SetMode( PA, BIT2, GPIO_PMD_INPUT );
@@ -85,7 +108,12 @@ void GPIO_SETUP( void ) {
     PB2  = 1;
 }
 
-void UART_SETUP( void ) {
+/**
+ * @brief  UART設定
+ * @note
+ * @retval None
+ */
+void UartSetup( void ) {
     CLK_EnableModuleClock( UART0_MODULE );
     CLK_EnableModuleClock( UART1_MODULE );
 
@@ -101,7 +129,7 @@ void UART_SETUP( void ) {
     // Interrupt
     UART_EnableInt( UART1, UART_INTEN_RXTOIEN_Msk | UART_INTEN_RDAIEN_Msk );
 
-#ifdef USER_CFG_DEBUG_MODE
+    #ifdef USER_CFG_DEBUG_MODE
     printf( "CPU Freq   : %dHz\n", CLK_GetCPUFreq() );
     printf( "HCLK Freq  : %dHz\n", CLK_GetHCLKFreq() );
     printf( "HXT Freq   : %dHz\n", CLK_GetHXTFreq() );
@@ -109,10 +137,15 @@ void UART_SETUP( void ) {
     printf( "PCLK0 Freq : %dHz\n", CLK_GetPCLK0Freq() );
     printf( "PCLK1 Freq : %dHz\n", CLK_GetPCLK1Freq() );
     printf( "PLL Freq   : %dHz\n", CLK_GetPLLClockFreq() );
-#endif  // USER_CFG_DEBUG_MODE
+    #endif  // USER_CFG_DEBUG_MODE
 }
 
-void SPI_SETUP( void ) {
+/**
+ * @brief  SPI 設定
+ * @note
+ * @retval None
+ */
+void SpiSetup( void ) {
     CLK_EnableModuleClock( SPI0_MODULE );
     CLK_EnableModuleClock( SPI3_MODULE );
 
@@ -120,42 +153,65 @@ void SPI_SETUP( void ) {
     SPI_Open( SPI3, SPI_MASTER, SPI_MODE_0, 8, 1000000 );
 }
 
-void TIMER_SETUP( void ) {
+/**
+ * @brief  計時器設定
+ * @note   
+ * @retval None
+ */
+void TimerSetup( void ) {
     CLK_EnableModuleClock( TMR0_MODULE );
     TIMER_Open( TIMER0, TIMER_PERIODIC_MODE, 8 );
     TIMER_EnableInt( TIMER0 );
 }
 
-void RTC_SETUP( void ) {
+/**
+ * @brief  RTC設定
+ * @note   
+ * @retval None
+ */
+void RtcSetup( void ) {
     CLK_EnableModuleClock( RTC_MODULE );
-    RTC_Open( &RTC_TIME );
+    RTC_Open( &g_stRtcTime );
     RTC_SetTickPeriod( RTC_TICK_1_SEC );
 }
 
-void Array_assign( uint8_t arg[], uint32_t num, ... ) {
-    uint32_t i;
-    va_list  marker;
-
-    va_start( marker, num );
-    for ( i = 0; i < num; i++ ) {
-        arg[ i ] = ( uint8_t )va_arg( marker, int );
-    }
-    va_end( marker );
+/**
+ * @brief  FIFO設定
+ * @note   
+ * @retval None
+ */
+void FifoSetup( void ) {
+    FIFO_Init(&g_stUart1_buf, 512);
 }
 
-void OV528_OPEN( void ) {
+/**
+ * @brief  相機設定
+ * @note   
+ * @retval None
+ */
+void CameraSetup( void ) {
+    //portable
+
+
+
+
     USER_ENABLE_CMAERA_POWER();
     printf( "Wait for Camera" );
-    while ( !OV528_SNYC(&ov528_s0) )
-        printf( "." );
+    while ( !OV528_SNYC( &g_stOv528_s0 ) ) printf( "." );
     vTaskDelay( 1000 );
-    OV528_INIT(&ov528_s0,  OV528_INIT_JPEG, OV528_PR_160_120, OV528_JPEG_640_480 );
-    OV528_SetBaudRate(&ov528_s0, 115200 );
-    OV528_SetPacketSize(&ov528_s0, 32 + 6 ); // data : 32 byte  ; head+checkSum : 6 byte
+    OV528_Init( &g_stOv528_s0, OV528_INIT_JPEG, OV528_INIT_PR_160_120, OV528_INIT_JPEG_640_480 );
+    OV528_SetBaudRate( &g_stOv528_s0, 115200 );
+    OV528_SetPacketSize( &g_stOv528_s0, 32 + 6 );  // data : 32 byte  ; head+checkSum : 6 byte
     printf( "down\n" );
 }
 
-void delay_us( uint32_t us ) {
+/**
+ * @brief 延時函數
+ * @note   
+ * @param  us: 延時時間(微秒)
+ * @retval None
+ */
+void DelayUs( uint32_t us ) {
     uint32_t delayMaxTime = 16777216 / ( CLK_GetCPUFreq() / 1000000 );
     do {
         if ( us > delayMaxTime ) {

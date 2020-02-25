@@ -12,7 +12,10 @@
 			"stdio.h": "c",
 			"limits.h": "c",
 			"fifo.h": "c",
-			"stdint.h": "c"
+			"stdint.h": "c",
+			"cj_ov528.h": "c",
+			"string.h": "c",
+			"string": "c"
 		}
 	}
 }

@@ -6,7 +6,7 @@ BasedOnStyle: LLVM
 AccessModifierOffset: -4
 
 # 開括號後的對齊: Align, DontAlign, AlwaysBreak（總是在開括號後換行）
-AlignAfterOpenBracket: Align
+AlignAfterOpenBracket: AlwaysBreak
 
 # 連續賦值時，對齊所有等號
 AlignConsecutiveAssignments: true
@@ -27,10 +27,10 @@ AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: true
 
 # 允許短的塊放在同一行
-AllowShortBlocksOnASingleLine:	false
+AllowShortBlocksOnASingleLine:	true
 
 # 允許短的 case 標簽放在同一行
-AllowShortCaseLabelsOnASingleLine:	false
+AllowShortCaseLabelsOnASingleLine:	true
 
 # 允許短的函數放在同一行: None, InlineOnly, Empty, Inline, All
 AllowShortFunctionsOnASingleLine: Empty
@@ -39,7 +39,7 @@ AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine:	true
 
 # 允許短的循環保持在同一行
-AllowShortLoopsOnASingleLine:	false
+AllowShortLoopsOnASingleLine:	true
 
 # 總是在定義返回類型後換行（deprecated）
 AlwaysBreakAfterDefinitionReturnType:	None
@@ -113,7 +113,7 @@ DerivePointerAlignment:	false
 # 關閉格式化
 DisableFormat:	false
 # 自動檢測函數的調用和定義是否被格式為每行一個參數(Experimental)
-ExperimentalAutoDetectBinPacking:	false
+ExperimentalAutoDetectBinPacking:	true
 # 需要被解讀為foreach循環而不是函數調用的宏
 ForEachMacros:	[ foreach, Q_FOREACH, BOOST_FOREACH ]
 # 對#include進行排序，匹配了某正則表達式的#include擁有對應的優先級，匹配不到的則默認優先級為INT_MAX(優先級越小排序越靠前)，

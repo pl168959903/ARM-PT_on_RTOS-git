@@ -50,7 +50,7 @@ void taskLEDControl( void ) {
 }
 
 void taskOV528Open(void){
-    OV528_OPEN();
+    CameraOpen();
     vTaskDelete(taskOV528Open_handler);
 }
 
