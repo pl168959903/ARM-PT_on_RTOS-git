@@ -84,7 +84,7 @@ typedef struct {
 
     //WriteData function
     // arr : Array ; size : writeSize
-    void (*WriteData)(uint8_t * arr, uint32_t size);
+    uint32_t (*WriteData)(uint8_t * arr, uint32_t size);
     void (*Delay)(uint32_t time);
 
     //Image

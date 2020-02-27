@@ -49,15 +49,15 @@ void taskLEDControl( void ) {
     }
 }
 
-void taskOV528Open(void){
+void taskOV528Open( void ) {
     CameraOpen();
-    vTaskDelete(taskOV528Open_handler);
+    vTaskDelete( taskOV528Open_handler );
 }
 
-void taskSoftTimerCounter(void){
-    while(1){
-        printf("count : %d\n", taskSoftCount);
-        vTaskDelay(500);
+void taskSoftTimerCounter( void ) {
+    while ( 1 ) {
+        printf( "count : %d\n", taskSoftCount );
+        vTaskDelay( 500 );
         taskSoftCount++;
     }
 }

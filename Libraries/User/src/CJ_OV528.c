@@ -39,7 +39,7 @@ void OV528_ErrHook( uint8_t errCode ) {
 
 /**
  * @brief  設定指令
- * @note   
+ * ! @note   私有函數
  * @param  OV528: OV528 結構體
  * @param  byte 1-5: 指令
  * @retval None
@@ -55,7 +55,7 @@ void OV528_SetCmd( OV528_T* OV528, uint8_t byte1, uint8_t byte2, uint8_t byte3, 
 
 /**
  * @brief  同步函數
- * ! @note   私有函數
+ * @note   
  * @param  OV528: OV528 結構體
  * @retval
  */

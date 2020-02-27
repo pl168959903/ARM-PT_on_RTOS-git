@@ -52,7 +52,7 @@ typedef void(FUNC_PTR)(void);
 #include "W25QXX.h"
 
 
-/*------------------------------------------------Extern---------------------------------------------------*/
+/*---------------------------------------------------------------------------------------------------------*/
 extern S_RTC_TIME_DATA_T g_stRtcTime;
 extern OV528_T g_stOv528_s0;
 extern FIFO_T g_stUart1_buf;
@@ -60,7 +60,7 @@ extern uint8_t g_u8ButtonInterruptFlag;
 extern uint8_t g_u8ExtInterruptFlag;
 extern uint8_t g_u8NrfInterruptFlag;
 
-/*------------------------------------------------Extern---------------------------------------------------*/
+/*---------------------------------------------------------------------------------------------------------*/
 
 void PinSetup( void );
 void ClkSetup(void);

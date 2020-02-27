@@ -1,6 +1,5 @@
 #include "Nano103.h"
 #include "USER_LIB.h"
-#include <stdio.h>
 
 int main( void ) {
     SYS_UnlockReg();
@@ -21,6 +20,5 @@ int main( void ) {
                     ( UBaseType_t )     1, 
                     ( TaskHandle_t* )   &taskBootCreate_handler 
                 );
-
     vTaskStartScheduler();
 }

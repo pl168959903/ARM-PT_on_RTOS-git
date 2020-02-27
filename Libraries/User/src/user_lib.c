@@ -7,16 +7,19 @@
       /____/
 */
 
-#include "USER_LIB.h"
-#include "Nano103.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
 
+#include "USER_LIB.h"
+#include "Nano103.h"
+
+
 // Stuct Value
 S_RTC_TIME_DATA_T g_stRtcTime   = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
-OV528_T           g_stOv528_s0  = { 0 };
 FIFO_T            g_stUart1_buf = { 0 };
+OV528_T           g_stOv528_s0  = { 0 };
+
 
 uint8_t g_u8ButtonInterruptFlag = 0;
 uint8_t g_u8ExtInterruptFlag    = 0;
@@ -191,7 +194,7 @@ void FifoSetup( void ) {
  */
 void CameraSetup( void ) {
     //portable
-
+    g_stOv528_s0.WriteData = UART_Write;
 
 
 
