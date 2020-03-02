@@ -82,15 +82,16 @@ typedef struct {
     uint8_t cmd[ 6 ];
     uint8_t err; 
 
-    //WriteData function
-    // arr : Array ; size : writeSize
-    uint32_t (*WriteData)(uint8_t * arr, uint32_t size);
-    void (*Delay)(uint32_t time);
-
     //Image
     uint8_t  imageType;
     uint32_t imageSize;
     uint32_t imagePacket;
+
+    //WriteData function
+    // arr : Array ; size : writeSize
+    uint32_t (*WriteData)(uint8_t * arr, uint32_t size);
+    void (*Delay)(uint32_t time);
+    
 } OV528_T;
 
 //------------------------------------

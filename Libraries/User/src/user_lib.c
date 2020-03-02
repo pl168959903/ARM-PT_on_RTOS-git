@@ -194,7 +194,8 @@ void FifoSetup( void ) {
  */
 void CameraSetup( void ) {
     //portable
-    g_stOv528_s0.WriteData = UART_Write;
+    g_stOv528_s0.WriteData = CameraUartWrite;
+    g_stOv528_s0.Delay = CameraDelay;
 
 
 
@@ -227,3 +228,4 @@ void DelayUs( uint32_t us ) {
         }
     } while ( us > 0 );
 }
+

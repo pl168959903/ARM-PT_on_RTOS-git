@@ -37,6 +37,8 @@ void OV528_ErrHook( uint8_t errCode ) {
 }
 #endif  // OV528_USE_ERR_HOOK
 
+void OV528_StructInit(OV528_T* OV528, uint8_t ID, FIFO_T * FIFO_st, )
+
 /**
  * @brief  設定指令
  * ! @note   私有函數

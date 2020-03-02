@@ -73,5 +73,11 @@ void FifoSetup( void );
 void CameraSetup(void);
 void DelayUs(uint32_t);
 
+/*---------------------------------------------------------------------------------------------------------*/
+//portable
+void CameraUartWrite(uint8_t * arr, uint32_t size);
+void CameraDelay(uint32_t time);
+
+
 
 #endif  //__USER_LIB_H__
