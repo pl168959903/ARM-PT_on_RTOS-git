@@ -7,12 +7,12 @@
       /____/
 */
 
-#include <stdlib.h>
+
 #include <String.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "FIFO.h"
-
-volatile uint32_t* FIFO_CntTime = 0;
+volatile uint32_t* FIFO_CntTime;
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 // Buffer work
@@ -40,14 +40,13 @@ void FIFO_Init( FIFO_T* buf_st, uint32_t bufSize ) {
  * @retval None
  */
 void FIFO_ByteIn( FIFO_T* buf_st, uint8_t* dataIn ) {
-    buf_st->buf[ buf_st->head ] = *dataIn;
     if ( buf_st->size < buf_st->effSize ) {
+        buf_st->buf[ buf_st->head ] = *dataIn;
         buf_st->size++;
         buf_st->head = ( buf_st->head < buf_st->effSize - 1 ) ? buf_st->head + 1 : 0;
     }
     else {
-        buf_st->head = ( buf_st->head < buf_st->effSize - 1 ) ? buf_st->head + 1 : 0;
-        buf_st->tail = ( buf_st->tail < buf_st->effSize - 1 ) ? buf_st->tail + 1 : 0;
+        // FIFO overflow
     }
 }
 
@@ -61,8 +60,11 @@ void FIFO_ByteIn( FIFO_T* buf_st, uint8_t* dataIn ) {
 void FIFO_ByteOut( FIFO_T* buf_st, uint8_t* dataOut ) {
     if ( buf_st->size > 0 ) {
         *dataOut = buf_st->buf[ buf_st->tail ];
-        buf_st->size -= ( buf_st->size < buf_st->effSize ) ? 1 : 0;
+        buf_st->size--;
         buf_st->tail = ( buf_st->tail < buf_st->effSize - 1 ) ? buf_st->tail + 1 : 0;
+    }
+    else {
+        // FIFO empty
     }
 }
 
