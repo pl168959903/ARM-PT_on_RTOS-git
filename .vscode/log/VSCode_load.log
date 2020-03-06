@@ -1,6 +1,5 @@
-Load "D:\\Project\\Keil\\PT_on_RTOS-git\\KEIL\\Objects\\PT_on_RTOS.axf" 
-Erase Done.
-Programming Done.
-Verify OK.
-Application running...
-Flash Load finished at 08:48:22
+Load "D:\\Project\\ARM\\Nano103\\project\\PT_on_RTOS-git\\KEIL\\Objects\\PT_on_RTOS.axf" 
+_____^
+*** error 56: cannot open file
+Error: Flash Download failed  -  Could not load file 'D:\Project\ARM\Nano103\project\PT_on_RTOS-git\KEIL\Objects\PT_on_RTOS.axf'
+Flash Load finished at 22:22:57

@@ -91,11 +91,12 @@ typedef struct {
     // arr : Array ; size : writeSize
     uint32_t (*WriteData)(uint8_t * arr, uint32_t size);
     void (*Delay)(uint32_t time);
-    
+
 } OV528_T;
 
 //------------------------------------
 // Function
+OV528_T* OV528_New(uint8_t ID, FIFO_T * FIFO_st, uint32_t (*WriteFunction)(uint8_t *, uint32_t), void (*DelayFunction)(uint32_t));
 uint8_t OV528_SNYC( OV528_T* OV528 );
 uint8_t OV528_Init( OV528_T* OV528, uint8_t color, uint8_t PR, uint8_t JPEGR );
 uint8_t OV528_GetPictue( OV528_T* OV528, uint8_t imageType );

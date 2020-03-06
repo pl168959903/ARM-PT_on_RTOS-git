@@ -1,4 +1,5 @@
 .\objects\irq.o: ..\Libraries\User\src\IRQ.c
+.\objects\irq.o: ..\Libraries\User\inc\USER_LIB.h
 .\objects\irq.o: ..\Libraries\Device\Nuvoton\Nano103\Include\Nano103.h
 .\objects\irq.o: ..\Libraries\CMSIS\Include\core_cm0.h
 .\objects\irq.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
@@ -24,7 +25,6 @@
 .\objects\irq.o: ..\Libraries\StdDriver\inc\uart.h
 .\objects\irq.o: ..\Libraries\StdDriver\inc\wdt.h
 .\objects\irq.o: ..\Libraries\StdDriver\inc\wwdt.h
-.\objects\irq.o: ..\Libraries\User\inc\USER_LIB.h
 .\objects\irq.o: ..\FreeRTOS\Source\include\FreeRTOS.h
 .\objects\irq.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\irq.o: ..\Config\FreeRTOSConfig.h
@@ -41,7 +41,6 @@
 .\objects\irq.o: ..\include\rtos_task.h
 .\objects\irq.o: ..\Libraries\User\inc\FIFO.h
 .\objects\irq.o: ..\Libraries\User\inc\Flash.h
-.\objects\irq.o: ..\Libraries\User\inc\IRQ.h
 .\objects\irq.o: ..\Libraries\User\inc\NRF24L01.h
 .\objects\irq.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\irq.o: ..\Libraries\User\inc\W25QXX.h

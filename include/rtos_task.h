@@ -8,12 +8,12 @@ extern "C" {
 extern TaskHandle_t taskBootCreate_handler;
 extern TaskHandle_t taskLEDControl_handler;
 extern TaskHandle_t taskOV528Open_handler;
-extern TaskHandle_t taskSoftTimerCounter_handler;
+extern TaskHandle_t taskFifoCntTrigger_handler;
 
 void taskBootCreate( void );
 void taskLEDControl( void );
 void taskOV528Open(void);
-void taskSoftTimerCounter(void);
+void taskFifoCntTrigger(void);
 
 #ifdef __cplusplus
 }

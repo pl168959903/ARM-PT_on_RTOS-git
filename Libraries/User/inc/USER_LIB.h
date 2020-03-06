@@ -46,19 +46,18 @@ typedef void(FUNC_PTR)(void);
 #include "rtos_task.h"
 #include "FIFO.h"
 #include "Flash.h"
-#include "IRQ.h"
 #include "NRF24L01.h"
 #include "CJ_OV528.h"
 #include "W25QXX.h"
 
 
 /*---------------------------------------------------------------------------------------------------------*/
-extern S_RTC_TIME_DATA_T g_stRtcTime;
-extern OV528_T g_stOv528_s0;
-extern FIFO_T g_stUart1_buf;
-extern uint8_t g_u8ButtonInterruptFlag;
-extern uint8_t g_u8ExtInterruptFlag;
-extern uint8_t g_u8NrfInterruptFlag;
+extern S_RTC_TIME_DATA_T 		g_stRtcTime;
+extern OV528_T 							*g_stOv528_s0;
+extern FIFO_T 							*g_stUart1_buf;
+extern uint8_t 							g_u8ButtonInterruptFlag;
+extern uint8_t 							g_u8ExtInterruptFlag;
+extern uint8_t 							g_u8NrfInterruptFlag;
 
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -74,8 +73,12 @@ void CameraSetup(void);
 void DelayUs(uint32_t);
 
 /*---------------------------------------------------------------------------------------------------------*/
+//IRQ.c
+void NVIC_Init(void);
+
+/*---------------------------------------------------------------------------------------------------------*/
 //portable
-void CameraUartWrite(uint8_t * arr, uint32_t size);
+uint32_t CameraUartWrite(uint8_t * arr, uint32_t size);
 void CameraDelay(uint32_t time);
 
 

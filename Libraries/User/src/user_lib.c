@@ -9,17 +9,17 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
-#include "USER_LIB.h"
 #include "Nano103.h"
-
+#include "USER_LIB.h"
 
 // Stuct Value
-S_RTC_TIME_DATA_T g_stRtcTime   = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
-FIFO_T            g_stUart1_buf = { 0 };
-OV528_T           g_stOv528_s0  = { 0 };
-
+S_RTC_TIME_DATA_T g_stRtcTime = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
+FIFO_T*           g_stUart1_buf;
+FIFO_T*           g_stUart0_buf;
+OV528_T*          g_stOv528_s0;
 
 uint8_t g_u8ButtonInterruptFlag = 0;
 uint8_t g_u8ExtInterruptFlag    = 0;
@@ -132,7 +132,7 @@ void UartSetup( void ) {
     // Interrupt
     UART_EnableInt( UART1, UART_INTEN_RXTOIEN_Msk | UART_INTEN_RDAIEN_Msk );
 
-    #ifdef USER_CFG_DEBUG_MODE
+#ifdef USER_CFG_DEBUG_MODE
     printf( "CPU Freq   : %dHz\n", CLK_GetCPUFreq() );
     printf( "HCLK Freq  : %dHz\n", CLK_GetHCLKFreq() );
     printf( "HXT Freq   : %dHz\n", CLK_GetHXTFreq() );
@@ -140,7 +140,7 @@ void UartSetup( void ) {
     printf( "PCLK0 Freq : %dHz\n", CLK_GetPCLK0Freq() );
     printf( "PCLK1 Freq : %dHz\n", CLK_GetPCLK1Freq() );
     printf( "PLL Freq   : %dHz\n", CLK_GetPLLClockFreq() );
-    #endif  // USER_CFG_DEBUG_MODE
+#endif  // USER_CFG_DEBUG_MODE
 }
 
 /**
@@ -158,7 +158,7 @@ void SpiSetup( void ) {
 
 /**
  * @brief  計時器設定
- * @note   
+ * @note
  * @retval None
  */
 void TimerSetup( void ) {
@@ -169,7 +169,7 @@ void TimerSetup( void ) {
 
 /**
  * @brief  RTC設定
- * @note   
+ * @note
  * @retval None
  */
 void RtcSetup( void ) {
@@ -180,38 +180,57 @@ void RtcSetup( void ) {
 
 /**
  * @brief  FIFO設定
- * @note   
+ * @note
  * @retval None
  */
 void FifoSetup( void ) {
-    FIFO_Init(&g_stUart1_buf, 512);
-}
-
+    uint8_t i;
+    /*
+        g_stUart0_buf = FIFO_New( 100 );
+        for(i=0;i<100;i++){
+            g_stUart0_buf->buf[i] = i;
+        }
+        for(i=0;i<100;i++){
+            printf("data : %d\n", g_stUart0_buf->buf[i]);
+        }
+        printf("size : %d\n", g_stUart0_buf->size);
+        printf("head : %d\n", g_stUart0_buf->head);
+        printf("tail : %d\n", g_stUart0_buf->tail);
+        printf("effSize : %d\n", g_stUart0_buf->effSize);
+    */
+    uint8_t* a = NULL;
+    uint8_t* b = NULL;
+    uint8_t* c = NULL;
+    uint8_t* d = NULL;
+    uint8_t* e = NULL;
+    a                   = ( uint8_t* )malloc( sizeof( uint8_t ) * 300 );
+    if ( a == NULL ) printf( "ERR A\n" );
+    for ( i = 0; i < 100; i++ ) a[ i ] = i;
+		for ( i = 0; i < 100; i++ ) b[ i ] = i;
+    for ( i = 0; i < 100; i++ ) printf( "data : %d\n", a[ i ] );
+	}
 /**
  * @brief  相機設定
- * @note   
+ * @note
  * @retval None
  */
 void CameraSetup( void ) {
-    //portable
-    g_stOv528_s0.WriteData = CameraUartWrite;
-    g_stOv528_s0.Delay = CameraDelay;
-
-
+    // portable
+    g_stOv528_s0 = OV528_New( 1, g_stUart1_buf, CameraUartWrite, CameraDelay );
 
     USER_ENABLE_CMAERA_POWER();
     printf( "Wait for Camera" );
-    while ( !OV528_SNYC( &g_stOv528_s0 ) ) printf( "." );
-    vTaskDelay( 1000 );
-    OV528_Init( &g_stOv528_s0, OV528_INIT_JPEG, OV528_INIT_PR_160_120, OV528_INIT_JPEG_640_480 );
-    OV528_SetBaudRate( &g_stOv528_s0, 115200 );
-    OV528_SetPacketSize( &g_stOv528_s0, 32 + 6 );  // data : 32 byte  ; head+checkSum : 6 byte
+    while ( !OV528_SNYC( g_stOv528_s0 ) ) printf( "." );
+    CameraDelay( 1000 );
+    OV528_Init( g_stOv528_s0, OV528_INIT_JPEG, OV528_INIT_PR_160_120, OV528_INIT_JPEG_640_480 );
+    OV528_SetBaudRate( g_stOv528_s0, 115200 );
+    OV528_SetPacketSize( g_stOv528_s0, 32 + 6 );  // data : 32 byte  ; head+checkSum : 6 byte
     printf( "down\n" );
 }
 
 /**
  * @brief 延時函數
- * @note   
+ * @note
  * @param  us: 延時時間(微秒)
  * @retval None
  */
@@ -228,4 +247,3 @@ void DelayUs( uint32_t us ) {
         }
     } while ( us > 0 );
 }
-

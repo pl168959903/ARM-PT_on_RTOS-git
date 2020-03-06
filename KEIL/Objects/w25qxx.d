@@ -41,7 +41,6 @@
 .\objects\w25qxx.o: ..\include\rtos_task.h
 .\objects\w25qxx.o: ..\Libraries\User\inc\FIFO.h
 .\objects\w25qxx.o: ..\Libraries\User\inc\Flash.h
-.\objects\w25qxx.o: ..\Libraries\User\inc\IRQ.h
 .\objects\w25qxx.o: ..\Libraries\User\inc\NRF24L01.h
 .\objects\w25qxx.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\w25qxx.o: ..\Libraries\User\inc\W25QXX.h

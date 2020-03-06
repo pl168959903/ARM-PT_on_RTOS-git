@@ -8,6 +8,7 @@
 */
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "CJ_OV528.h"
 
@@ -37,7 +38,23 @@ void OV528_ErrHook( uint8_t errCode ) {
 }
 #endif  // OV528_USE_ERR_HOOK
 
-void OV528_StructInit(OV528_T* OV528, uint8_t ID, FIFO_T * FIFO_st, )
+/**
+ * @brief  建立新的OV528物件
+ * @note
+ * @param  ID: 物件ID
+ * @param  FIFO_st: FIFO 暫存結構
+ * @param  WriteFunction UART寫入函式的函式指標
+ * @param  DelayFunction 延時函式的函式指標
+ * @retval 物件指標
+ */
+OV528_T* OV528_New( uint8_t ID, FIFO_T* FIFO_st, uint32_t ( *WriteFunction )( uint8_t*, uint32_t ), void ( *DelayFunction )( uint32_t ) ) {
+    OV528_T* OV528_class   = ( OV528_T* )malloc( sizeof( OV528_T ) );
+    OV528_class->ID        = ID;
+    OV528_class->buf       = FIFO_st;
+    OV528_class->WriteData = WriteFunction;
+    OV528_class->Delay     = DelayFunction;
+    return OV528_class;
+}
 
 /**
  * @brief  設定指令
@@ -57,7 +74,7 @@ void OV528_SetCmd( OV528_T* OV528, uint8_t byte1, uint8_t byte2, uint8_t byte3, 
 
 /**
  * @brief  同步函數
- * @note   
+ * @note
  * @param  OV528: OV528 結構體
  * @retval
  */
@@ -78,17 +95,17 @@ uint8_t OV528_SNYC( OV528_T* OV528 ) {
     else
         goto ERR;
 
-    ERR:
-    // Error Hook
-    #if OV528_USE_ERR_HOOK
+ERR:
+// Error Hook
+#if OV528_USE_ERR_HOOK
     OV528_ErrHook( OV528_ERR_SNYC );
-    #endif  // OV528_USE_ERR_HOOK
+#endif  // OV528_USE_ERR_HOOK
 
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );
     return 0;
 
-    Exit:
+Exit:
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );
     return 1;
@@ -102,7 +119,7 @@ uint8_t OV528_SNYC( OV528_T* OV528 ) {
  * @param  color: 顏色
  * 參數:
  * OV528_INIT_4_BIT_GRAY ; OV528_INIT_2_BIT_GRAY ; OV528_INIT_8_BIT_GRAY ; OV528_INIT_2_COLOR ; OV528_INIT_JPEG
- *
+ *`
  * @param  PR: 預覽圖大小
  * 參數:
  * OV528_INIT_PR_80_60 ; OV528_INIT_PR_160_120
@@ -113,6 +130,7 @@ uint8_t OV528_SNYC( OV528_T* OV528 ) {
  *
  * @retval 成功 : 1 ; 失敗 : 0
  */
+
 uint8_t OV528_Init( OV528_T* OV528, uint8_t color, uint8_t PR, uint8_t JPEGR ) {
     uint8_t cmdCheck;
 
@@ -129,17 +147,17 @@ uint8_t OV528_Init( OV528_T* OV528, uint8_t color, uint8_t PR, uint8_t JPEGR ) {
     else
         goto ERR;
 
-    ERR :
-    // Error Hook
-    #if OV528_USE_ERR_HOOK
+ERR:
+// Error Hook
+#if OV528_USE_ERR_HOOK
     OV528_ErrHook( OV528_ERR_INIT );
-    #endif
+#endif
 
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );
     return 0;
 
-    Exit:
+Exit:
     OV528->color             = color;
     OV528->previewResolution = PR;
     OV528->JPEGResolution    = JPEGR;
@@ -181,16 +199,16 @@ uint8_t OV528_GetPictue( OV528_T* OV528, uint8_t imageType ) {
     }
     goto ERR;
 
-    ERR :
-    #if OV528_USE_ERR_HOOK
+ERR:
+#if OV528_USE_ERR_HOOK
     OV528_ErrHook( OV528_ERR_GETPICTUE );  // Error Hook
-    #endif
+#endif
 
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );
     return 0;
 
-    Exit:
+Exit:
     OV528->imageType   = imageType;
     OV528->imageSize   = ( uint32_t )( FIFO_ReadData( OV528->buf, 9 ) << 0 ) | ( uint32_t )( FIFO_ReadData( OV528->buf, 10 ) << 8 ) | ( uint32_t )( FIFO_ReadData( OV528->buf, 11 ) << 16 );
     OV528->imagePacket = OV528->imageSize / ( OV528->packetSize - 6 );
@@ -229,17 +247,17 @@ uint8_t OV528_Snapshout( OV528_T* OV528, uint8_t Compressed, uint16_t SkipFrame 
     else
         goto ERR;
 
-    ERR :
-    // Error Hook
-    #if OV528_USE_ERR_HOOK
+ERR:
+// Error Hook
+#if OV528_USE_ERR_HOOK
     OV528_ErrHook( OV528_ERR_SNAPSHOUT );
-    #endif
+#endif
 
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );
     return 0;
 
-    Exit:
+Exit:
     OV528->IsCompressed = Compressed;
     OV528->skipFrame    = SkipFrame;
 
@@ -277,16 +295,16 @@ uint8_t OV528_SetBaudRate( OV528_T* OV528, uint32_t BAUD ) {
     else
         goto ERR;
 
-    ERR :
-    #if OV528_USE_ERR_HOOK
+ERR:
+#if OV528_USE_ERR_HOOK
     OV528_ErrHook( OV528_ERR_SETBAUDRATE );  // Error Hook
-    #endif
+#endif
 
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );
     return 0;
 
-    Exit:
+Exit:
     OV528->baudRate = 3686400 / div1 / div2;
 
     FIFO_Rst( OV528->buf );
@@ -316,16 +334,16 @@ uint8_t OV528_PowerDown( OV528_T* OV528 ) {
     else
         goto ERR;
 
-    ERR :
-    #if OV528_USE_ERR_HOOK
+ERR:
+#if OV528_USE_ERR_HOOK
     OV528_ErrHook( OV528_ERR_POWNDOWN );
-    #endif
+#endif
 
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );
     return 0;
 
-    Exit:
+Exit:
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );
     return 1;
@@ -354,16 +372,16 @@ uint8_t OV528_SetPacketSize( OV528_T* OV528, uint16_t size ) {
     else
         goto ERR;
 
-    ERR :
-    #if OV528_USE_ERR_HOOK
+ERR:
+#if OV528_USE_ERR_HOOK
     OV528_ErrHook( OV528_ERR_SETPACKETSZIE );
-    #endif
+#endif
 
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );
     return 0;
 
-    Exit:
+Exit:
     OV528->packetSize = size;
 
     FIFO_Rst( OV528->buf );
@@ -406,15 +424,15 @@ uint16_t OV528_GetPacket( OV528_T* OV528, uint16_t package_ID, uint8_t package[]
         }
     goto ERR;
 
-    ERR :
-    #if OV528_USE_ERR_HOOK
+ERR:
+#if OV528_USE_ERR_HOOK
     OV528_ErrHook( OV528_ERR_GETPACKET );
-    #endif
+#endif
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );
     return 0;
 
-    Exit:
+Exit:
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );
     return size;

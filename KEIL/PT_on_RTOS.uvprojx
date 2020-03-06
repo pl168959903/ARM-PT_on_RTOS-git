@@ -388,9 +388,9 @@
               <FilePath>..\main.c</FilePath>
             </File>
             <File>
-              <FileName>rtos_task.c</FileName>
+              <FileName>portable.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\rtos_task.c</FilePath>
+              <FilePath>..\portable.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -551,58 +551,9 @@
         </Group>
         <Group>
           <GroupName>FreeRTOS_code</GroupName>
-          <Files>
-            <File>
-              <FileName>croutine.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FreeRTOS\Source\croutine.c</FilePath>
-            </File>
-            <File>
-              <FileName>event_groups.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FreeRTOS\Source\event_groups.c</FilePath>
-            </File>
-            <File>
-              <FileName>list.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FreeRTOS\Source\list.c</FilePath>
-            </File>
-            <File>
-              <FileName>queue.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FreeRTOS\Source\queue.c</FilePath>
-            </File>
-            <File>
-              <FileName>stream_buffer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FreeRTOS\Source\stream_buffer.c</FilePath>
-            </File>
-            <File>
-              <FileName>tasks.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FreeRTOS\Source\tasks.c</FilePath>
-            </File>
-            <File>
-              <FileName>timers.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FreeRTOS\Source\timers.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>FreeRTOS_portable</GroupName>
-          <Files>
-            <File>
-              <FileName>port.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FreeRTOS\Source\portable\RVDS\ARM_CM0\port.c</FilePath>
-            </File>
-            <File>
-              <FileName>heap_4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\FreeRTOS\Source\portable\MemMang\heap_4.c</FilePath>
-            </File>
-          </Files>
         </Group>
       </Groups>
     </Target>
