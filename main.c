@@ -1,31 +1,33 @@
 #include "Nano103.h"
 #include "USER_LIB.h"
 #include "stdio.h"
+#include "vMemAlloc.h"
 #include <stdlib.h>
 
- uint8_t temp[100];
- uint8_t ttemp[10] = "1234567890";
+ uint8_t* temp[100];
 
 int main( void ) {
-    uint8_t* a;
-    uint8_t  i;
     SYS_UnlockReg();
     PinSetup();
     ClkSetup();
     UartSetup();
-
-    printf( "Start!!\n" );
-    a = ( uint8_t* )malloc( sizeof( uint8_t ) * 512 );
-    if ( a == NULL )
-        printf( "ERR A\n" );
-    else {
-        for ( i = 0; i < 100; i++ ) a[ i ] = i;
-        for ( i = 0; i < 100; i++ ) printf( "data : %d\n", a[ i ] );
-    }
-		for ( i = 0; i < 100; i++ ) temp[ i ] = i;
-    for ( i = 0; i < 100; i++ ) printf( "temp_data : %d\n", temp[ i ] );
-		printf("%s\n",ttemp);
-
+	
+		temp[0] = (uint8_t*)vMemAlloc(10);
+		vMemInfoPrint();
+		temp[1] = (uint8_t*)vMemAlloc(20);
+		vMemInfoPrint();
+		temp[2] = (uint8_t*)vMemAlloc(30);
+		vMemInfoPrint();
+		temp[3] = (uint8_t*)vMemAlloc(40);
+		vMemInfoPrint();
+		temp[4] = (uint8_t*)vMemAlloc(50);
+		vMemInfoPrint();
+		vMemFree(temp[1]);
+		vMemInfoPrint();
+		vMemFree(temp[3]);
+		vMemInfoPrint();
+		vMemFree(temp[2]);
+		vMemInfoPrint();
     while ( 1 ) {};
     RtcSetup();
     GpioSetup();

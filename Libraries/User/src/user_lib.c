@@ -15,6 +15,7 @@
 #include "Nano103.h"
 #include "USER_LIB.h"
 
+
 // Stuct Value
 S_RTC_TIME_DATA_T g_stRtcTime = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
 FIFO_T*           g_stUart1_buf;
@@ -184,30 +185,7 @@ void RtcSetup( void ) {
  * @retval None
  */
 void FifoSetup( void ) {
-    uint8_t i;
-    /*
-        g_stUart0_buf = FIFO_New( 100 );
-        for(i=0;i<100;i++){
-            g_stUart0_buf->buf[i] = i;
-        }
-        for(i=0;i<100;i++){
-            printf("data : %d\n", g_stUart0_buf->buf[i]);
-        }
-        printf("size : %d\n", g_stUart0_buf->size);
-        printf("head : %d\n", g_stUart0_buf->head);
-        printf("tail : %d\n", g_stUart0_buf->tail);
-        printf("effSize : %d\n", g_stUart0_buf->effSize);
-    */
-    uint8_t* a = NULL;
-    uint8_t* b = NULL;
-    uint8_t* c = NULL;
-    uint8_t* d = NULL;
-    uint8_t* e = NULL;
-    a                   = ( uint8_t* )malloc( sizeof( uint8_t ) * 300 );
-    if ( a == NULL ) printf( "ERR A\n" );
-    for ( i = 0; i < 100; i++ ) a[ i ] = i;
-		for ( i = 0; i < 100; i++ ) b[ i ] = i;
-    for ( i = 0; i < 100; i++ ) printf( "data : %d\n", a[ i ] );
+
 	}
 /**
  * @brief  相機設定
