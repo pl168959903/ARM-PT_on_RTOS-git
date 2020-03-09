@@ -2,7 +2,7 @@
 Build target 'Project'
 compiling vMemAlloc.c...
 linking...
-Program Size: Code=4080 RO-data=328 RW-data=72 ZI-data=12384  
+Program Size: Code=5456 RO-data=348 RW-data=76 ZI-data=7100  
 FromELF: creating hex file...
 ".\Objects\PT_on_RTOS.axf" - 0 Error(s), 0 Warning(s).
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:00

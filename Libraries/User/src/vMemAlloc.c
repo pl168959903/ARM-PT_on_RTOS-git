@@ -12,6 +12,8 @@
 //預分配空間
 static uint8_t memArr[ VM_MEM_SIZE ];
 
+static size_t FreeSize = 0;
+
 //鏈表結構
 typedef struct stBlock {
     struct stBlock* nextBlock;
@@ -41,7 +43,7 @@ static void vMemInit( void ) {
         uAddr &= ~( ( size_t )( VM_ALIGNMENT_MASK ) );
         xTotalSize -= ( uAddr - ( size_t )memArr );
     }
-
+    FreeSize = xTotalSize;
     // 設定pxStart
     pAlignedAddr      = ( uint8_t* )uAddr;
     pxStart.nextBlock = ( void* )pAlignedAddr;
@@ -61,33 +63,40 @@ static void vMemInit( void ) {
 }
 /**
  * @brief  分配空間
- * @note   
+ * @note
  * @param  allocSize: 分配大小
  * @retval 分配空間指標
  */
-void* vMemAlloc( size_t allocSize ) {
+void* vMemAlloc( size_t WantSize ) {
     stBlock_T* pVisitBlock         = NULL;
     stBlock_T* pPreviousVisitBlock = NULL;
     stBlock_T* pAllocBlock         = NULL;
     stBlock_T* pPreviousAllocBlock = NULL;
     stBlock_T* pNewBlock           = NULL;
     void*      pReturn             = NULL;
-    size_t     xTotleAllocSize     = allocSize + xBlockStructSize;
-
+    size_t     allocSize           = WantSize;
     //檢查是否需要初始化
     if ( pxEnd == NULL ) vMemInit();
 
     //對齊記憶體;總申請記憶體大小
-    if ( ( xTotleAllocSize & VM_ALIGNMENT_MASK ) != 0 ) {
-        xTotleAllocSize += ( size_t )( VM_ALIGNMENT_SIZE - 1 );
-        xTotleAllocSize &= ~( ( size_t )( VM_ALIGNMENT_MASK ) );
+    if ( ( allocSize & VM_ALIGNMENT_MASK ) != 0 ) {
+        allocSize += ( size_t )( VM_ALIGNMENT_SIZE - 1 );
+        allocSize &= ~( ( size_t )( VM_ALIGNMENT_MASK ) );
     }
 
-    // 走訪每一個空鏈表，並檢查能容納申請記憶體的最小鏈表
+    // 走訪每一個空鏈表，並檢查能容納申請記憶體的最小鏈以及前一個連接的鏈
     pPreviousVisitBlock = &pxStart;
     pVisitBlock         = pPreviousVisitBlock->nextBlock;
     while ( pVisitBlock != pxEnd ) {
-        if ( pVisitBlock->size >= xTotleAllocSize ) {
+        //找到剛好放得下的鏈
+        if ( pVisitBlock->size == allocSize ) {
+            FreeSize -= ( allocSize + xBlockStructSize );
+            pReturn                        = ( void* )( ( size_t )pVisitBlock + xBlockStructSize );
+            pPreviousVisitBlock->nextBlock = pVisitBlock->nextBlock;
+            return pReturn;
+        }
+        //找出能容納包含新鏈的空間
+        if ( pVisitBlock->size >= ( allocSize + xBlockStructSize ) ) {
             if ( pAllocBlock == NULL || pVisitBlock->size < pAllocBlock->size ) {
                 pAllocBlock         = pVisitBlock;
                 pPreviousAllocBlock = pPreviousVisitBlock;
@@ -97,13 +106,14 @@ void* vMemAlloc( size_t allocSize ) {
         pVisitBlock         = pVisitBlock->nextBlock;
     }
 
-    //如果找到合適的分配鏈表，則建立新的鏈表，並分配空間
+    //如果找到合適的分配鏈，分配空間
     if ( pAllocBlock != NULL ) {
+        FreeSize -= ( allocSize + xBlockStructSize );
         pReturn                        = ( void* )( ( size_t )pAllocBlock + xBlockStructSize );
-        pNewBlock                      = ( void* )( ( size_t )pAllocBlock + xTotleAllocSize );
+        pNewBlock                      = ( void* )( ( ( size_t )pAllocBlock + xBlockStructSize ) + allocSize );
         pNewBlock->nextBlock           = pAllocBlock->nextBlock;
-        pNewBlock->size                = pAllocBlock->size - xTotleAllocSize;
-        pAllocBlock->size              = xTotleAllocSize - xBlockStructSize;
+        pNewBlock->size                = pAllocBlock->size - ( xBlockStructSize + allocSize );
+        pAllocBlock->size              = allocSize;
         pPreviousAllocBlock->nextBlock = pNewBlock;
     }
     return pReturn;
@@ -111,7 +121,7 @@ void* vMemAlloc( size_t allocSize ) {
 
 /**
  * @brief  釋放空間
- * @note   
+ * @note
  * @param  pv: 空間指標
  * @retval None
  */
@@ -121,76 +131,89 @@ void vMemFree( void* pv ) {
     stBlock_T* pFreeBlock          = ( void* )( ( size_t )pv - xBlockStructSize );
 
     //走訪鏈表
-    pPreviousVisitBlock = &pxStart;
-    pVisitBlock         = pPreviousVisitBlock->nextBlock;
-    while ( pVisitBlock != NULL ) {
-        //尋找大於pv位址的最小位址block
-        if ( ( size_t )pVisitBlock > ( size_t )pFreeBlock ) {
-            //檢查釋放空間尾部是否剛好連接鏈表，如果連接，將他們合成。
-            if ( ( ( size_t )pFreeBlock + xBlockStructSize + pFreeBlock->size ) == ( size_t )pVisitBlock ) {
-                pFreeBlock->nextBlock = pVisitBlock->nextBlock;
-                pFreeBlock->size += ( xBlockStructSize + ( pVisitBlock->size ) );
-            }
-            else {
-                pFreeBlock->nextBlock = pVisitBlock;
-            }
+    if ( pv != NULL ) {
+        pPreviousVisitBlock = &pxStart;
+        pVisitBlock         = pPreviousVisitBlock->nextBlock;
+        while ( pVisitBlock != NULL ) {
+            //尋找大於pv位址的最小位址block
+            if ( ( size_t )pVisitBlock > ( size_t )pFreeBlock ) {
+                FreeSize += ( xBlockStructSize + pFreeBlock->size );
+                //檢查釋放空間尾部是否剛好連接鏈表，如果連接，將他們合成。
+                if ( ( ( size_t )pFreeBlock + xBlockStructSize + pFreeBlock->size ) == ( size_t )pVisitBlock && pVisitBlock != pxEnd ) {
+                    pFreeBlock->nextBlock = pVisitBlock->nextBlock;
+                    pFreeBlock->size += ( xBlockStructSize + ( pVisitBlock->size ) );
+                }
+                else {
+                    pFreeBlock->nextBlock = pVisitBlock;
+                }
 
-            //檢查釋放空間頭部是否剛好連接鏈表，如果連接，將他們合成。
-            if ( ( ( size_t )pPreviousVisitBlock + xBlockStructSize + pPreviousVisitBlock->size ) == ( size_t )pFreeBlock ) {
-                pPreviousVisitBlock->nextBlock = pFreeBlock->nextBlock;
-                pPreviousVisitBlock->size += ( xBlockStructSize + ( pFreeBlock->size ) );
+                //檢查釋放空間頭部是否剛好連接鏈表，如果連接，將他們合成。
+                if ( ( ( size_t )pPreviousVisitBlock + xBlockStructSize + pPreviousVisitBlock->size ) == ( size_t )pFreeBlock ) {
+                    pPreviousVisitBlock->nextBlock = pFreeBlock->nextBlock;
+                    pPreviousVisitBlock->size += ( xBlockStructSize + ( pFreeBlock->size ) );
+                }
+                else {
+                    pPreviousVisitBlock->nextBlock = pFreeBlock;
+                }
+                break;
             }
-            else {
-                pPreviousVisitBlock->nextBlock = pFreeBlock;
-            }
-            break;
+            pPreviousVisitBlock = pVisitBlock;
+            pVisitBlock         = pVisitBlock->nextBlock;
         }
-        pPreviousVisitBlock = pVisitBlock;
-        pVisitBlock         = pVisitBlock->nextBlock;
     }
 }
 
 void vMemInfoPrint( void ) {
     stBlock_T* pVisitBlock = pxStart.nextBlock;
     size_t     uAddr       = ( size_t )memArr;
-    size_t c_memAddr;
+    size_t     blockSize;
+    size_t     c_memAddr;
 
     if ( ( uAddr & VM_ALIGNMENT_MASK ) != 0 ) {
         uAddr += ( size_t )( VM_ALIGNMENT_SIZE - 1 );
         uAddr &= ~( ( size_t )( VM_ALIGNMENT_MASK ) );
     }
-    printf("---------------------------------------------------\n");
-    printf( "Origin Memrary Address : 0x%X ; Size : 0x%X(%d)\n", ( size_t )memArr, VM_MEM_SIZE, VM_MEM_SIZE );
-    printf( "Alignment Memrary Address : 0x%X\n", ( size_t )memArr );
-    printf( "Start Block Address : 0x%X\n", ( size_t )&pxStart );
-    printf( "End Block Address : 0x%X\n", ( size_t )pxEnd );
-    printf( "Total Size : 0x%X(%d)\n", ( size_t )pxEnd - ( size_t )memArr, ( size_t )pxEnd - ( size_t )memArr );
-    printf("---------------------------------------------------\n");
+    blockSize = ( ( size_t )pxEnd - uAddr ) + xBlockStructSize;
+
+    printf( "---------------------------------------------------\n" );
+    printf( "Origin Array Address : 0x%X ; Size : 0x%X(%d)\n", ( size_t )memArr, VM_MEM_SIZE, VM_MEM_SIZE );
+    printf( "Alignment Array Address : 0x%X\n", uAddr );
+    printf( "Block Size : 0x%X(%d)\n", blockSize, blockSize );
+    printf( "---------------------------------------------------\n" );
+    printf( "Free Size : 0x%X(%d).....%0.1f%%\n", FreeSize, FreeSize, ( ( float )FreeSize / blockSize ) * 100 );
+
+    printf( "First Linker Address : 0x%X\n", ( size_t )pxStart.nextBlock );
+    printf( "End Linker Address : 0x%X\n", ( size_t )pxEnd );
+    printf( "---------------------------------------------------\n" );
     pVisitBlock = pxStart.nextBlock;
-    while ( pVisitBlock->nextBlock != NULL ){
-        printf("Block Address : 0x%X\n", (size_t)pVisitBlock);
-        printf("Block Size : 0x%X(%d)\n", pVisitBlock->size, pVisitBlock->size);
-        printf("Block Next Link Address : 0x%X\n", (size_t)pVisitBlock->nextBlock);
-        printf("---------------------------\n");
+    while ( pVisitBlock != NULL ) {
+        size_t size = pVisitBlock->size + xBlockStructSize;
+        printf( "Block Address : 0x%X\n", ( size_t )pVisitBlock );
+        printf( "Block Size : 0x%X(%d).....%0.1f%%\n", size, size, ( ( float )size / blockSize ) * 100 );
+        printf( "Block Next Link Address : 0x%X\n", ( size_t )pVisitBlock->nextBlock );
+        printf( "---------------------------\n" );
         pVisitBlock = pVisitBlock->nextBlock;
     }
-    c_memAddr = uAddr;
+    c_memAddr   = uAddr;
     pVisitBlock = pxStart.nextBlock;
-    while ( pVisitBlock->nextBlock != NULL ) {
+    printf( "allocated : [%c]    ", '#' );
+    printf( "Linker : [%c]   ", '@' );
+    printf( "Free Block : [%c]\n", ':' );
+    while ( pVisitBlock != NULL ) {
         size_t i;
-        while(c_memAddr < (size_t)pVisitBlock){
-            printf("#");
+        while ( c_memAddr < ( size_t )pVisitBlock ) {
+            printf( "#" );
             c_memAddr++;
         }
-        for(i=0;i<xBlockStructSize;i++){
-            printf("@");
+        for ( i = 0; i < xBlockStructSize; i++ ) {
+            printf( "@" );
             c_memAddr++;
         }
-        for(i=0;i<pVisitBlock->size;i++){
-            printf(":");
+        for ( i = 0; i < pVisitBlock->size; i++ ) {
+            printf( ":" );
             c_memAddr++;
         }
         pVisitBlock = pVisitBlock->nextBlock;
     }
-    printf("\n");
+    printf( "\n" );
 }

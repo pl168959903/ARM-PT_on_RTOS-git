@@ -3,30 +3,48 @@
 #include "stdio.h"
 #include "vMemAlloc.h"
 #include <stdlib.h>
-
- uint8_t* temp[100];
+#define SUM 80
+#define ALLOCRAND 80
+uint8_t* ptest[ SUM ];
+size_t   xtest[ SUM ];
+size_t   xtestSize[ SUM ];
+size_t   c_err = 0;
+uint8_t* kk;
 
 int main( void ) {
+    uint32_t i;
     SYS_UnlockReg();
     PinSetup();
     ClkSetup();
     UartSetup();
-	
-		temp[0] = (uint8_t*)vMemAlloc(10);
-		vMemInfoPrint();
-		temp[1] = (uint8_t*)vMemAlloc(20);
-		vMemInfoPrint();
-		temp[2] = (uint8_t*)vMemAlloc(30);
-		vMemInfoPrint();
-		temp[3] = (uint8_t*)vMemAlloc(40);
-		vMemInfoPrint();
-		temp[4] = (uint8_t*)vMemAlloc(50);
-		vMemInfoPrint();
-		vMemFree(temp[1]);
-		vMemInfoPrint();
-		vMemFree(temp[3]);
-		vMemInfoPrint();
-		vMemFree(temp[2]);
+
+    for ( i = 0; i < 10000; i++ ) {
+
+        size_t r         = ( rand() % SUM );
+        size_t  allocSize = (rand() % ALLOCRAND) + 1;
+        printf( "%04d . ", i );
+        if ( xtest[ r ] == 0 ) {
+            ptest[ r ] = ( uint8_t* )vMemAlloc( allocSize );
+            if ( ptest[ r ] != NULL ) {
+                printf( "[%02d]Alloc : %d\n", r, allocSize );
+                xtestSize[ r ] = allocSize;
+                xtest[ r ]     = 1;
+            }
+            else {
+                printf( "[%02d]Alloc : %d ; Error\n", r, allocSize );
+                c_err++;
+            }
+        }
+        else {
+            printf( "[%02d]Free\n", r );
+            vMemFree( ptest[ r ] );
+            xtestSize[ r ] = 0;
+            xtest[ r ]     = 0;
+        }
+         //vMemInfoPrint();
+    }
+    for ( i = 0; i < SUM; i++ ) { printf( "p[%0d] Address : 0x%X ; Size : %d ; IsAlloc : %d\n", i, ( size_t )ptest[ i ], xtestSize[ i ], xtest[ i ] ); }
+    printf( "Error : %d\n", c_err );
 		vMemInfoPrint();
     while ( 1 ) {};
     RtcSetup();

@@ -16,7 +16,8 @@
 			"cj_ov528.h": "c",
 			"string.h": "c",
 			"string": "c",
-			"stdlib.h": "c"
+			"stdlib.h": "c",
+			"new": "c"
 		}
 	}
 }
