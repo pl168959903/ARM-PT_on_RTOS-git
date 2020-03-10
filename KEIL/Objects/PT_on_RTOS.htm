@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PT_on_RTOS.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PT_on_RTOS.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Mar 10 01:01:29 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Mar 10 14:59:24 2020
 <BR><P>
 <H3>Maximum Stack Usage =        368 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -103,16 +103,16 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[3f]"></a>_printf_f</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, _printf_f.o(.ARM.Collect$$_printf_percent$$00000003))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88 + Unknown Stack Size
-<LI>Call Chain = _printf_f &rArr; _printf_d &rArr; _printf_int_dec &rArr; _printf_int_common &rArr; _printf_post_padding
+<BR><BR>[Stack]<UL><LI>Max Depth = 72 + Unknown Stack Size
+<LI>Call Chain = _printf_f &rArr; _printf_d &rArr; _printf_int_dec &rArr; _printf_int_common
 </UL>
 <BR>[Calls]<UL><LI><a href="#[41]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_dec
 <LI><a href="#[40]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_d
 </UL>
 
 <P><STRONG><a name="[40]"></a>_printf_d</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, _printf_d.o(.ARM.Collect$$_printf_percent$$00000009))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88 + Unknown Stack Size
-<LI>Call Chain = _printf_d &rArr; _printf_int_dec &rArr; _printf_int_common &rArr; _printf_post_padding
+<BR><BR>[Stack]<UL><LI>Max Depth = 72 + Unknown Stack Size
+<LI>Call Chain = _printf_d &rArr; _printf_int_dec &rArr; _printf_int_common
 </UL>
 <BR>[Calls]<UL><LI><a href="#[42]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_x
 <LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_int_dec
@@ -121,8 +121,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[42]"></a>_printf_x</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, _printf_x.o(.ARM.Collect$$_printf_percent$$0000000C))
-<BR><BR>[Stack]<UL><LI>Max Depth = 72 + Unknown Stack Size
-<LI>Call Chain = _printf_x &rArr; _printf_int_hex &rArr; _printf_int_common &rArr; _printf_post_padding
+<BR><BR>[Stack]<UL><LI>Max Depth = 56 + Unknown Stack Size
+<LI>Call Chain = _printf_x &rArr; _printf_int_hex &rArr; _printf_int_common
 </UL>
 <BR>[Calls]<UL><LI><a href="#[44]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_c
 <LI><a href="#[45]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_int_hex
@@ -131,8 +131,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[44]"></a>_printf_c</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, _printf_c.o(.ARM.Collect$$_printf_percent$$00000013))
-<BR><BR>[Stack]<UL><LI>Max Depth = 40 + Unknown Stack Size
-<LI>Call Chain = _printf_c &rArr; _printf_char &rArr; _printf_cs_common &rArr; _printf_str &rArr; _printf_post_padding
+<BR><BR>[Stack]<UL><LI>Max Depth = 24 + Unknown Stack Size
+<LI>Call Chain = _printf_c &rArr; _printf_char &rArr; _printf_cs_common &rArr; _printf_str
 </UL>
 <BR>[Calls]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_percent_end
 <LI><a href="#[47]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_char
@@ -247,7 +247,7 @@ Global Symbols
 <P><STRONG><a name="[c7]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[52]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 184 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 176 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; vMemInfoPrint &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -398,40 +398,21 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
-<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stackDump
 <LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Hard_Fault_Handler
 </UL>
 
-<P><STRONG><a name="[5c]"></a>_printf_pre_padding</STRONG> (Thumb, 44 bytes, Stack size 16 bytes, _printf_pad.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = _printf_pre_padding
-</UL>
-<BR>[Called By]<UL><LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_dec_real
-<LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_int_common
-<LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_str
-<LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_infnan
-</UL>
-
-<P><STRONG><a name="[5d]"></a>_printf_post_padding</STRONG> (Thumb, 34 bytes, Stack size 16 bytes, _printf_pad.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = _printf_post_padding
-</UL>
-<BR>[Called By]<UL><LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_dec_real
-<LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_int_common
-<LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_str
-<LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_infnan
-</UL>
-
 <P><STRONG><a name="[5b]"></a>_printf_str</STRONG> (Thumb, 82 bytes, Stack size 16 bytes, _printf_str.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = _printf_str &rArr; _printf_post_padding
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = _printf_str
 </UL>
-<BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding
-<LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
+<BR>[Calls]<UL><LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding (Weak Reference)
+<LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding (Weak Reference)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_cs_common
 </UL>
 
 <P><STRONG><a name="[43]"></a>_printf_int_dec</STRONG> (Thumb, 90 bytes, Stack size 32 bytes, _printf_dec.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = _printf_int_dec &rArr; _printf_int_common &rArr; _printf_post_padding
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = _printf_int_dec &rArr; _printf_int_common
 </UL>
 <BR>[Calls]<UL><LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_udiv10
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_int_common
@@ -442,7 +423,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[45]"></a>_printf_int_hex</STRONG> (Thumb, 84 bytes, Stack size 16 bytes, _printf_hex_int.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = _printf_int_hex &rArr; _printf_int_common &rArr; _printf_post_padding
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = _printf_int_hex &rArr; _printf_int_common
 </UL>
 <BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_int_common
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_truncate_unsigned (Weak Reference)
@@ -544,10 +525,10 @@ Global Symbols
 <P><STRONG><a name="[d1]"></a>_ffltu</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, fflti.o(.text), UNUSED)
 
 <P><STRONG><a name="[61]"></a>_printf_int_common</STRONG> (Thumb, 176 bytes, Stack size 40 bytes, _printf_intcommon.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = _printf_int_common &rArr; _printf_post_padding
+<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = _printf_int_common
 </UL>
-<BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding
-<LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
+<BR>[Calls]<UL><LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding (Weak Reference)
+<LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding (Weak Reference)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[45]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_int_hex
 <LI><a href="#[43]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_int_dec
@@ -561,15 +542,15 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_locale
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_udiv10
 <LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
-<LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding
-<LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
+<LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding (Weak Reference)
+<LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding (Weak Reference)
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ARM_fpclassify
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_infnan
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> printf1.o(x$fpl$printf1)
 </UL>
 <P><STRONG><a name="[73]"></a>_printf_cs_common</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, _printf_char.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = _printf_cs_common &rArr; _printf_str &rArr; _printf_post_padding
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = _printf_cs_common &rArr; _printf_str
 </UL>
 <BR>[Calls]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_mbtowc (Weak Reference)
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_str
@@ -579,7 +560,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[47]"></a>_printf_char</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, _printf_char.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = _printf_char &rArr; _printf_cs_common &rArr; _printf_str &rArr; _printf_post_padding
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = _printf_char &rArr; _printf_cs_common &rArr; _printf_str
 </UL>
 <BR>[Calls]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_cs_common
 </UL>
@@ -634,10 +615,10 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[72]"></a>_printf_fp_infnan</STRONG> (Thumb, 120 bytes, Stack size 24 bytes, _printf_fp_infnan.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = _printf_fp_infnan &rArr; _printf_post_padding
+<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = _printf_fp_infnan
 </UL>
-<BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding
-<LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
+<BR>[Calls]<UL><LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding (Weak Reference)
+<LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding (Weak Reference)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_dec_real
 </UL>
@@ -962,8 +943,8 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> _printf_char_file.o(.text)
 </UL>
-<P><STRONG><a name="[53]"></a>main</STRONG> (Thumb, 206 bytes, Stack size 8 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 184 + Unknown Stack Size
+<P><STRONG><a name="[53]"></a>main</STRONG> (Thumb, 136 bytes, Stack size 0 bytes, main.o(i.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 176 + Unknown Stack Size
 <LI>Call Chain = main &rArr; vMemInfoPrint &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
@@ -974,7 +955,6 @@ Global Symbols
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ClkSetup
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_idivmod
 <LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rand
-<LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
 </UL>
@@ -1002,7 +982,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[a1]"></a>vMemInfoPrint</STRONG> (Thumb, 310 bytes, Stack size 40 bytes, vmemalloc.o(i.vMemInfoPrint))
+<P><STRONG><a name="[a1]"></a>vMemInfoPrint</STRONG> (Thumb, 316 bytes, Stack size 40 bytes, vmemalloc.o(i.vMemInfoPrint))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176 + Unknown Stack Size
 <LI>Call Chain = vMemInfoPrint &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -1093,6 +1073,20 @@ Undefined Global Symbols
 
 <P><STRONG><a name="[74]"></a>_printf_mbtowc</STRONG> (ARM, 0 bytes, Stack size 0 bytes, UNDEFINED)
 <BR><BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_cs_common
+</UL>
+
+<P><STRONG><a name="[5d]"></a>_printf_post_padding</STRONG> (ARM, 0 bytes, Stack size 0 bytes, UNDEFINED)
+<BR><BR>[Called By]<UL><LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_dec_real
+<LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_int_common
+<LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_str
+<LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_infnan
+</UL>
+
+<P><STRONG><a name="[5c]"></a>_printf_pre_padding</STRONG> (ARM, 0 bytes, Stack size 0 bytes, UNDEFINED)
+<BR><BR>[Called By]<UL><LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_dec_real
+<LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_int_common
+<LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_str
+<LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_infnan
 </UL>
 
 <P><STRONG><a name="[5e]"></a>_printf_truncate_signed</STRONG> (ARM, 0 bytes, Stack size 0 bytes, UNDEFINED)

@@ -188,12 +188,14 @@ void vMemInfoPrint( void ) {
     pVisitBlock = pxStart.nextBlock;
     while ( pVisitBlock != NULL ) {
         size_t size = pVisitBlock->size + xBlockStructSize;
+        printf( "=========================================\n" );
         printf( "Block Address : 0x%X\n", ( size_t )pVisitBlock );
         printf( "Block Size : 0x%X(%d).....%0.1f%%\n", size, size, ( ( float )size / blockSize ) * 100 );
         printf( "Block Next Link Address : 0x%X\n", ( size_t )pVisitBlock->nextBlock );
-        printf( "---------------------------\n" );
+        
         pVisitBlock = pVisitBlock->nextBlock;
     }
+    printf( "=========================================\n" );
     c_memAddr   = uAddr;
     pVisitBlock = pxStart.nextBlock;
     printf( "allocated : [%c]    ", '#' );
