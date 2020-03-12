@@ -3,8 +3,9 @@
 #include "stdio.h"
 #include "vMemAlloc.h"
 #include <stdlib.h>
-#define SUM 300
-#define ALLOCRAND 20
+#define SUM 10
+#define ALLOCRAND 300
+#define TEST_TIMES 100000
 uint8_t* ptest[ SUM ];
 size_t   xtest[ SUM ];
 size_t   xtestSize[ SUM ];
@@ -18,7 +19,7 @@ int main( void ) {
     ClkSetup();
     UartSetup();
 
-    for ( i = 0; i < 90000; i++ ) {
+    for ( i = 0; i < 99999; i++ ) {
 
         size_t r         = ( rand() % SUM );
         size_t  allocSize = (rand() % ALLOCRAND) + 1;
@@ -34,6 +35,7 @@ int main( void ) {
                 //printf( "[%02d]Alloc : %d ; Error\n", r, allocSize );
                 c_err++;
             }
+            
         }
         else {
             //printf( "[%02d]Free\n", r );
@@ -44,7 +46,7 @@ int main( void ) {
          //vMemInfoPrint();
     }
     //for ( i = 0; i < SUM; i++ ) { printf( "p[%0d] Address : 0x%X ; Size : %d ; IsAlloc : %d\n", i, ( size_t )ptest[ i ], xtestSize[ i ], xtest[ i ] ); }
-    //printf( "Error : %d\n", c_err );
+    printf( "Test times : %d	Error : %d(%0.1f%%)\n",TEST_TIMES, c_err, ((float)c_err / TEST_TIMES) * 100.0 );
 		vMemInfoPrint();
     while ( 1 ) {};
     RtcSetup();
