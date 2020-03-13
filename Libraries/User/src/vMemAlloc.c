@@ -163,6 +163,17 @@ void vMemFree( void* pv ) {
     }
 }
 
+/**
+ * @brief  取得分配大小
+ * @note   取得最終的分配大小，而非申請大小，數值可能因記憶體對齊而有所差異，差距最大為(VM_ALIGNMENT_SIZE - 1)
+ * @param  pr: 申請的指標
+ * @retval 回傳大小
+ */
+size_t vMemSizeOf(void * pr){
+    stBlock_T *linker = (stBlock_T*)((size_t)pr-xBlockStructSize);
+    return linker->size;
+}
+
 void vMemInfoPrint( void ) {
     stBlock_T* pVisitBlock = pxStart.nextBlock;
     size_t     uAddr       = ( size_t )memArr;

@@ -10,7 +10,7 @@ extern "C"
 #include <stdio.h>
 
 #define VM_MEM_SIZE 3000
-#define VM_ALIGNMENT_SIZE 8
+#define VM_ALIGNMENT_SIZE 32
 
 
 
@@ -31,6 +31,7 @@ extern "C"
 
 void* vMemAlloc( size_t allocSize );
 void vMemFree( void* pv );
+size_t vMemSizeOf(void * pr);
 void vMemInfoPrint(void);
 
 

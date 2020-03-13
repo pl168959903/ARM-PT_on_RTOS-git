@@ -19,7 +19,7 @@ int main( void ) {
     ClkSetup();
     UartSetup();
 
-    for ( i = 0; i < 99999; i++ ) {
+    for ( i = 0; i < 1; i++ ) {
 
         size_t r         = ( rand() % SUM );
         size_t  allocSize = (rand() % ALLOCRAND) + 1;
@@ -48,6 +48,8 @@ int main( void ) {
     //for ( i = 0; i < SUM; i++ ) { printf( "p[%0d] Address : 0x%X ; Size : %d ; IsAlloc : %d\n", i, ( size_t )ptest[ i ], xtestSize[ i ], xtest[ i ] ); }
     printf( "Test times : %d	Error : %d(%0.1f%%)\n",TEST_TIMES, c_err, ((float)c_err / TEST_TIMES) * 100.0 );
 		vMemInfoPrint();
+    kk = vMemAlloc(3);
+    printf("kk size : %d\n", vMemSizeOf(kk));
     while ( 1 ) {};
     RtcSetup();
     GpioSetup();
