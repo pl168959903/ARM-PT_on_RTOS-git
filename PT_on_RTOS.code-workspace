@@ -17,7 +17,9 @@
 			"string.h": "c",
 			"string": "c",
 			"stdlib.h": "c",
-			"new": "c"
+			"new": "c",
+			"stdbool.h": "c",
+			"vmemalloc.h": "c"
 		}
 	}
 }

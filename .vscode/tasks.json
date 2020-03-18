@@ -27,7 +27,7 @@
                 "\"${workspaceRoot}\\.vscode\""
             ],
             "group": {
-                "kind": "build",
+                "kind": "test",
                 "isDefault": true
             }
         },

@@ -10,7 +10,7 @@ extern "C"
 #include <stdio.h>
 
 #define VM_MEM_SIZE 3000
-#define VM_ALIGNMENT_SIZE 32
+#define VM_ALIGNMENT_SIZE 8
 
 
 

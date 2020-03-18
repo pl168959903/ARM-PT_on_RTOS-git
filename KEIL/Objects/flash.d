@@ -40,8 +40,12 @@
 .\objects\flash.o: ..\FreeRTOS\Source\include\timers.h
 .\objects\flash.o: ..\include\rtos_task.h
 .\objects\flash.o: ..\Libraries\User\inc\FIFO.h
+.\objects\flash.o: ..\Libraries\User\inc\vMemAlloc.h
+.\objects\flash.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\flash.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\flash.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\flash.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\flash.o: ..\Libraries\User\inc\Flash.h
 .\objects\flash.o: ..\Libraries\User\inc\NRF24L01.h
 .\objects\flash.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\flash.o: ..\Libraries\User\inc\W25QXX.h
-.\objects\flash.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
