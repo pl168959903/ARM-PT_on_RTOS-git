@@ -33,7 +33,8 @@ void OV528_ErrHook( uint8_t errCode ) {
     default: break;
     }
     // Device header
-    if ( errCode - 1 ) printf( "Camena err!!	ERR CODE : %X\n", errCode );
+    if ( errCode - 1 )
+        printf( "Camena err!!	ERR CODE : %X\n", errCode );
     // while(1) {};
 }
 #endif  // OV528_USE_ERR_HOOK
@@ -47,7 +48,7 @@ void OV528_ErrHook( uint8_t errCode ) {
  * @param  DelayFunction 延時函式的函式指標
  * @retval 物件指標
  */
-OV528_T* OV528_New( uint8_t ID, FIFO_T* FIFO_st, uint32_t ( *WriteFunction )( uint8_t*, uint32_t ), void ( *DelayFunction )( uint32_t ) ) {
+OV528_T* OV528_New( uint8_t ID, FIFO_T* FIFO_st, funcWriteData WriteFunction, funcDelay DelayFunction ) {
     OV528_T* OV528_class   = ( OV528_T* )malloc( sizeof( OV528_T ) );
     OV528_class->ID        = ID;
     OV528_class->buf       = FIFO_st;
@@ -189,13 +190,16 @@ uint8_t OV528_GetPictue( OV528_T* OV528, uint8_t imageType ) {
     // check ack
     OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_GET_PICTURE, 0x00, 0x00, 0x00 );
     cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd, 6, 250 );
-    if ( !cmdCheck ) goto ERR;
+    if ( !cmdCheck )
+        goto ERR;
 
     // check image config
     OV528_SetCmd( OV528, OV528_CMD_ID_DATA, OV528->imageType, 0, 0, 0 );
     cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd, 3, 1000 );
     if ( cmdCheck ) {
-        if ( FIFO_WaitData( OV528->buf, 12, 1 ) ) { goto Exit; }
+        if ( FIFO_WaitData( OV528->buf, 12, 1 ) ) {
+            goto Exit;
+        }
     }
     goto ERR;
 
@@ -212,7 +216,8 @@ Exit:
     OV528->imageType   = imageType;
     OV528->imageSize   = ( uint32_t )( FIFO_ReadData( OV528->buf, 9 ) << 0 ) | ( uint32_t )( FIFO_ReadData( OV528->buf, 10 ) << 8 ) | ( uint32_t )( FIFO_ReadData( OV528->buf, 11 ) << 16 );
     OV528->imagePacket = OV528->imageSize / ( OV528->packetSize - 6 );
-    if ( OV528->imageSize % ( OV528->packetSize - 6 ) ) OV528->imagePacket++;
+    if ( OV528->imageSize % ( OV528->packetSize - 6 ) )
+        OV528->imagePacket++;
 
     FIFO_Rst( OV528->buf );
     OV528->Delay( 1 );

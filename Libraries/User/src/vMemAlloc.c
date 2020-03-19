@@ -23,7 +23,7 @@ typedef struct stBlock {
 //鏈表大小;對齊記憶體
 static const size_t xBlockStructSize = ( sizeof( stBlock_T ) + ( size_t )( VM_ALIGNMENT_SIZE - 1 ) ) & ~( ( size_t )VM_ALIGNMENT_MASK );
 
-//鏈表起點
+//鏈表起點&終點
 stBlock_T pxStart, *pxEnd = NULL;
 
 /**

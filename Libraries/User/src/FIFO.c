@@ -33,11 +33,11 @@ FIFO_T* FIFO_New( size_t bufSize, uint8_t* fifoBuf ) {
         printf( "Error Alloc memery!!\n" );
         return NULL;
     }
-    buf_st->size = 0u;
-    buf_st->head = 0u;
-    buf_st->tail = 0u;
-    buf_st->effSize = 0u;
-    buf_st->buf  = ( fifoBuf == NULL ) ? ( uint8_t* )( ( size_t )buf_st + sizeof( FIFO_T ) ) : fifoBuf;
+    buf_st->size    = 0u;
+    buf_st->head    = 0u;
+    buf_st->tail    = 0u;
+    buf_st->effSize = bufSize;
+    buf_st->buf     = ( fifoBuf == NULL ) ? ( uint8_t* )( ( size_t )buf_st + sizeof( FIFO_T ) ) : fifoBuf;
     return buf_st;
 }
 
@@ -46,7 +46,7 @@ FIFO_T* FIFO_New( size_t bufSize, uint8_t* fifoBuf ) {
  * @note
  * @param  buf_st: FIFO 結構體
  * @param  dataIn: 資料入口
- * @retval None
+ * @retval 成功 : 1 ; 失敗 : 0
  */
 bool FIFO_ByteIn( FIFO_T* buf_st, uint8_t* dataIn ) {
     if ( buf_st->size < buf_st->effSize ) {
@@ -56,7 +56,9 @@ bool FIFO_ByteIn( FIFO_T* buf_st, uint8_t* dataIn ) {
     }
     else {
         // FIFO overflow
+        return false;
     }
+    return true;
 }
 
 /**
@@ -64,9 +66,9 @@ bool FIFO_ByteIn( FIFO_T* buf_st, uint8_t* dataIn ) {
  * @note
  * @param  buf_st: FIFO 結構體
  * @param  dataOut: 資料出口
- * @retval None
+ * @retval 成功 : 1 ; 失敗 : 0
  */
-void FIFO_ByteOut( FIFO_T* buf_st, uint8_t* dataOut ) {
+bool FIFO_ByteOut( FIFO_T* buf_st, uint8_t* dataOut ) {
     if ( buf_st->size > 0 ) {
         *dataOut = buf_st->buf[ buf_st->tail ];
         buf_st->size--;
@@ -74,7 +76,9 @@ void FIFO_ByteOut( FIFO_T* buf_st, uint8_t* dataOut ) {
     }
     else {
         // FIFO empty
+        return false;
     }
+    return true;
 }
 
 /**
@@ -95,11 +99,11 @@ void FIFO_Rst( FIFO_T* buf_st ) {
  * @param  buf_st: FIFO 結構體
  * @retval 為空 : 1 ; 不為空 : 0
  */
-uint8_t FIFO_IsEmpty( FIFO_T* buf_st ) {
+bool FIFO_IsEmpty( FIFO_T* buf_st ) {
     if ( buf_st->size == 0 )
-        return 1;
+        return true;
     else
-        return 0;
+        return false;
 }
 
 /**
@@ -124,15 +128,15 @@ uint8_t FIFO_ReadData( FIFO_T* buf_st, size_t offset ) {
  * @param  TimeOut: 時間限制
  * @retval 成功 : 1 ; 失敗 : 0
  */
-uint8_t FIFO_WaitData( FIFO_T* buf_st, size_t dataSize, size_t timeOut ) {
+bool FIFO_WaitData( FIFO_T* buf_st, size_t dataSize, size_t timeOut ) {
     size_t timeStamp = FIFO_CntTime;
     size_t CntTime;
     while ( 1 ) {
         CntTime = timeStamp > FIFO_CntTime ? ( ( UINT32_MAX - timeStamp ) + FIFO_CntTime ) : FIFO_CntTime - timeStamp;
         if ( CntTime > timeOut )
-            return 0;
+            return false;
         if ( ( buf_st->size ) >= dataSize )
-            return 1;
+            return true;
     }
 }
 
@@ -141,31 +145,34 @@ uint8_t FIFO_WaitData( FIFO_T* buf_st, size_t dataSize, size_t timeOut ) {
  * @note
  * @param  buf_st: FIFO 結構體
  * @param  Command[]: 比對字串
- * @param  checkSzie: 比對字串量
+ * @param  shiftByte:  起始偏移
+ * @param  checkSize: 比對字串量
  * @param  timeOut: 時間限制
  * @retval 成功 : 1 ; 失敗 : 0
  */
-uint8_t FIFO_CmdCheck( FIFO_T* buf_st, uint8_t Command[], size_t checkSzie, size_t timeOut ) {
+bool FIFO_CmdCheck( FIFO_T* buf_st, uint8_t Command[], size_t shiftByte, size_t checkSize, size_t timeOut ) {
     size_t timeStamp = FIFO_CntTime;
     size_t CntTime;
     size_t fifo_c  = 0;
     size_t cmd_c   = 0;
-    size_t cmd_len = (size_t)strlen( ( uint8_t* )Command );
+    size_t cmd_len = ( size_t )strlen( ( const char* )Command );
 
     while ( 1 ) {
         CntTime = timeStamp > FIFO_CntTime ? ( ( UINT32_MAX - timeStamp ) + FIFO_CntTime ) : FIFO_CntTime - timeStamp;
         if ( CntTime > timeOut )
-            return 0;
+            return false;
 
-        fifo_c = 0;
-        while ( ( buf_st->size - fifo_c ) >= cmd_len ) {
-            for ( cmd_c = 0; cmd_c < cmd_len; cmd_c++ ) {
-                if ( ( Command[ cmd_c ] != FIFO_ReadData( buf_st, fifo_c ) ) )
-                    break;
-                if ( ( cmd_c + 1 ) == ( cmd_len < checkSzie ? cmd_len : checkSzie ) )
-                    return 1;
+        fifo_c = shiftByte;
+        if ( buf_st->size > shiftByte ) {
+            while ( ( buf_st->size - fifo_c ) >= cmd_len ) {
+                for ( cmd_c = 0; cmd_c < cmd_len; cmd_c++ ) {
+                    if ( ( Command[ cmd_c ] != FIFO_ReadData( buf_st, fifo_c ) ) )
+                        break;
+                    if ( ( cmd_c + 1 ) == ( cmd_len < checkSize ? cmd_len : checkSize ) )
+                        return true;
+                }
+                fifo_c++;
             }
-            fifo_c++;
         }
     }
 }
