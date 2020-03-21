@@ -221,7 +221,7 @@ void vMemInfoPrint( void ) {
         for ( i = 0; i < xBlockStructSize; i++ ) {
             printf( "@" );
             c_memAddr++;
-        }
+        } 
         for ( i = 0; i < pVisitBlock->size; i++ ) {
             printf( ":" );
             c_memAddr++;

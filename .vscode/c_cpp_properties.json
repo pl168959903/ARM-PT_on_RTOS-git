@@ -3,25 +3,27 @@
         {
             "name": "ARM",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/Config",
-                "${workspaceFolder}/FreeRTOS/Source/include",
-                "${workspaceFolder}/FreeRTOS/Source/portable/RVDS/ARM_CM0",
-                "${workspaceFolder}/Libraries/CMSIS/Include",
-                "${workspaceFolder}/Libraries/Device/Nuvoton/Nano103/Include",
-                "${workspaceFolder}/Libraries/StdDriver/inc",
-                "${workspaceFolder}/Libraries/User/inc",
-                "C:/Keil_v5/ARM/ARMCC/include",
-                ""
+                "${workspaceFolder}\\Libraries\\CMSIS\\Include",
+                "${workspaceFolder}\\Libraries\\Device\\Nuvoton\\Nano103\\Include",
+                "${workspaceFolder}\\Libraries\\StdDriver\\inc",
+                "${workspaceFolder}\\Libraries\\User\\inc",
+                "${workspaceFolder}\\FreeRTOS\\Source\\include",
+                "${workspaceFolder}\\FreeRTOS\\Source\\portable\\RVDS\\ARM_CM0",
+                "${workspaceFolder}\\Config",
+                "${workspaceFolder}\\include",
+                "C:\\Keil_v5\\ARM\\ARMCC\\include"
             ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++17",
             "browse": {
-                "limitSymbolsToIncludedHeaders": true,
-                "path": [
-                    "C:/Keil_v5/ARM/ARMCC/**",
-                    "${workspaceFolder}/**",
-                    ""
-                ]
-            }
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "compilerArgs": []
         }
     ],
     "version": 4

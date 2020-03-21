@@ -6,50 +6,41 @@
 #define SUM 10
 #define ALLOCRAND 300
 #define TEST_TIMES 100000
-uint8_t* ptest[ SUM ];
-size_t   xtest[ SUM ];
-size_t   xtestSize[ SUM ];
-size_t   c_err = 0;
-uint8_t* kk;
+
+uint32_t i;
 
 int main( void ) {
     uint32_t i;
+    FIFO_T*  f1;
+    uint8_t  temp;
+    uint8_t  data[] = "zxcvbnm";
     SYS_UnlockReg();
     PinSetup();
     ClkSetup();
     UartSetup();
-
-    for ( i = 0; i < 1; i++ ) {
-
-        size_t r         = ( rand() % SUM );
-        size_t  allocSize = (rand() % ALLOCRAND) + 1;
-        //printf( "%04d . ", i );
-        if ( xtest[ r ] == 0 ) {
-            ptest[ r ] = ( uint8_t* )vMemAlloc( allocSize );
-            if ( ptest[ r ] != NULL ) {
-                //printf( "[%02d]Alloc : %d\n", r, allocSize );
-                xtestSize[ r ] = allocSize;
-                xtest[ r ]     = 1;
-            }
-            else {
-                //printf( "[%02d]Alloc : %d ; Error\n", r, allocSize );
-                c_err++;
-            }
-            
+    f1 = FIFO_New( 100, NULL );
+    vMemInfoPrint();
+    for ( i = 0; i < 50; i++ ) {
+        if ( FIFO_ByteIn( f1, ( uint8_t* )&i ) ) {
+            printf( "size:%d ;head:%d ;tail:%d ;eff:%d\n", f1->size, f1->head, f1->tail, f1->effSize );
         }
         else {
-            //printf( "[%02d]Free\n", r );
-            vMemFree( ptest[ r ] );
-            xtestSize[ r ] = 0;
-            xtest[ r ]     = 0;
+            printf( "size:%d ;head:%d ;tail:%d ;eff:%d..err\n", f1->size, f1->head, f1->tail, f1->effSize );
         }
-         //vMemInfoPrint();
     }
-    //for ( i = 0; i < SUM; i++ ) { printf( "p[%0d] Address : 0x%X ; Size : %d ; IsAlloc : %d\n", i, ( size_t )ptest[ i ], xtestSize[ i ], xtest[ i ] ); }
-    printf( "Test times : %d	Error : %d(%0.1f%%)\n",TEST_TIMES, c_err, ((float)c_err / TEST_TIMES) * 100.0 );
-		vMemInfoPrint();
-    kk = vMemAlloc(3);
-    printf("kk size : %d\n", vMemSizeOf(kk));
+    // FIFO_ByteOut(f1,&temp);
+    if ( FIFO_WaitData( f1, 50, 100 ) ) {
+        printf( "wait done\n" );
+    }
+    FIFO_Rst( f1 );
+    printf( "size:%d ;head:%d ;tail:%d ;eff:%d\n", f1->size, f1->head, f1->tail, f1->effSize );
+    for ( i = 0; i < 7; i++ ) {
+        FIFO_ByteIn( f1, data + i );
+        printf( "i:%d = %c\n", i, FIFO_ReadData( f1, i ) );
+    }
+    if ( FIFO_CmdCheck( f1, data, 0, 10, 100 ) ) {
+        printf( "check done\n" );
+    }
     while ( 1 ) {};
     RtcSetup();
     GpioSetup();

@@ -9,12 +9,12 @@ extern "C" {
 #define FIFO_USE_VMEMALLOC 1
 
 #if FIFO_USE_VMEMALLOC
-    #include "vMemAlloc.h"
-    #define FIFO_MALLOC( size ) vMemAlloc( size )
-    #define FIFO_FREE( ptr ) vMemFree( ptr )
+#include "vMemAlloc.h"
+#define FIFO_MALLOC( size ) vMemAlloc( size )
+#define FIFO_FREE( ptr ) vMemFree( ptr )
 #else
-    #define FIFO_MALLOC( size ) malloc( size )
-    #define FIFO_FREE( ptr ) free( ptr )
+#define FIFO_MALLOC( size ) malloc( size )
+#define FIFO_FREE( ptr ) free( ptr )
 #endif  // FIFO_USE_VMEMALLOC
 
 #include <stdbool.h>
@@ -32,14 +32,14 @@ typedef struct {
     uint8_t* buf;      // FIFO空間指標
 } FIFO_T;
 
-FIFO_T* FIFO_New( size_t bufSize, uint8_t* fifoBuf );
+FIFO_T* FIFO_New( const size_t bufSize, uint8_t* fifoBuf );
 bool    FIFO_ByteIn( FIFO_T* buf_st, uint8_t* dataIn );
 bool    FIFO_ByteOut( FIFO_T* buf_st, uint8_t* dataOut );
 void    FIFO_Rst( FIFO_T* buf_st );
-bool FIFO_IsEmpty( FIFO_T* buf_st );
+bool    FIFO_IsEmpty( FIFO_T* buf_st );
 uint8_t FIFO_ReadData( FIFO_T* buf_st, size_t offset );
-bool FIFO_WaitData( FIFO_T* buf_st, size_t dataSize, size_t timeOut );
-bool FIFO_CmdCheck( FIFO_T* buf_st, uint8_t Command[], size_t shiftByte, size_t checkSize, size_t timeOut );
+bool    FIFO_WaitData( FIFO_T* buf_st, size_t dataSize, size_t timeOut );
+bool    FIFO_CmdCheck( FIFO_T* buf_st, uint8_t Command[], size_t shiftByte, size_t checkSize, size_t timeOut );
 void    FIFO_CntTImeTrigger( void );
 
 #ifdef __cplusplus

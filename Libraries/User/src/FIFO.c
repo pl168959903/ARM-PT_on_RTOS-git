@@ -20,7 +20,7 @@ volatile size_t FIFO_CntTime = 0;
  * @param  fifoBuf: 指定BUF的指標，若為NULL則自動分配足夠記憶體
  * @retval 物件指標
  */
-FIFO_T* FIFO_New( size_t bufSize, uint8_t* fifoBuf ) {
+FIFO_T* FIFO_New( const size_t bufSize, uint8_t* fifoBuf ) {
 
     FIFO_T* buf_st;
     if ( fifoBuf == NULL ) {
@@ -37,7 +37,8 @@ FIFO_T* FIFO_New( size_t bufSize, uint8_t* fifoBuf ) {
     buf_st->head    = 0u;
     buf_st->tail    = 0u;
     buf_st->effSize = bufSize;
-    buf_st->buf     = ( fifoBuf == NULL ) ? ( uint8_t* )( ( size_t )buf_st + sizeof( FIFO_T ) ) : fifoBuf;
+    printf( "%d", buf_st->effSize );
+    buf_st->buf = ( fifoBuf == NULL ) ? ( uint8_t* )( ( size_t )buf_st + sizeof( FIFO_T ) ) : fifoBuf;
     return buf_st;
 }
 
@@ -145,28 +146,43 @@ bool FIFO_WaitData( FIFO_T* buf_st, size_t dataSize, size_t timeOut ) {
  * @note
  * @param  buf_st: FIFO 結構體
  * @param  Command[]: 比對字串
- * @param  shiftByte:  起始偏移
+ * @param  fifoShift:  比對FIFO的起始偏移
+ * @param  fifoRange:  比對FIFO的起始範圍
  * @param  checkSize: 比對字串量
  * @param  timeOut: 時間限制
  * @retval 成功 : 1 ; 失敗 : 0
  */
-bool FIFO_CmdCheck( FIFO_T* buf_st, uint8_t Command[], size_t shiftByte, size_t checkSize, size_t timeOut ) {
+bool FIFO_CmdCheck( FIFO_T* buf_st, uint8_t Command[], size_t fifoShift, size_t fifoRange, size_t checkSize, size_t timeOut ) {
     size_t timeStamp = FIFO_CntTime;
     size_t CntTime;
     size_t fifo_c  = 0;
     size_t cmd_c   = 0;
     size_t cmd_len = ( size_t )strlen( ( const char* )Command );
 
+    //取最小的檢查大小
+    cmd_len        = ( checkSize < cmd_len ) ? checkSize : cmd_len;
+    //檢查FIFO範圍是否大於command的檢查大小，如果沒有，函式將永遠無法成立，直接return false
+    if(fifoRange < cmd_len) return false;
+
+    //檢查迴圈開始
     while ( 1 ) {
+
+        //檢查時間戳記
         CntTime = timeStamp > FIFO_CntTime ? ( ( UINT32_MAX - timeStamp ) + FIFO_CntTime ) : FIFO_CntTime - timeStamp;
         if ( CntTime > timeOut )
             return false;
 
-        fifo_c = shiftByte;
-        if ( buf_st->size > shiftByte ) {
+        //
+        fifo_c = 0;
+        //檢查BUF大小至少要大於偏移
+        if ( buf_st->size <= fifoShift )
+            continue;
+        //檢查BUF
+        if ( buf_st->size > fifoShift ) {
             while ( ( buf_st->size - fifo_c ) >= cmd_len ) {
                 for ( cmd_c = 0; cmd_c < cmd_len; cmd_c++ ) {
-                    if ( ( Command[ cmd_c ] != FIFO_ReadData( buf_st, fifo_c ) ) )
+                    printf( "Command[%d] = 0x%X ; FIFO_ReadData( buf_st, %d ) = 0x%X\n", cmd_c, Command[ cmd_c ], fifo_c, FIFO_ReadData( buf_st, fifo_c ) );
+                    if ( ( Command[ cmd_c ] != FIFO_ReadData( buf_st, fifo_c + cmd_c ) ) )
                         break;
                     if ( ( cmd_c + 1 ) == ( cmd_len < checkSize ? cmd_len : checkSize ) )
                         return true;

@@ -5,21 +5,6 @@
 		}
 	],
 	"settings": {
-		"files.autoSave": "afterDelay",
-		"files.associations": {
-			"nano103.h": "c",
-			"user_lib.h": "c",
-			"stdio.h": "c",
-			"limits.h": "c",
-			"fifo.h": "c",
-			"stdint.h": "c",
-			"cj_ov528.h": "c",
-			"string.h": "c",
-			"string": "c",
-			"stdlib.h": "c",
-			"new": "c",
-			"stdbool.h": "c",
-			"vmemalloc.h": "c"
-		}
+		"files.autoSave": "afterDelay"
 	}
 }

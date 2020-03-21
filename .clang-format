@@ -39,7 +39,7 @@ AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine:	false
 
 # 允許短的循環保持在同一行
-AllowShortLoopsOnASingleLine:	true
+AllowShortLoopsOnASingleLine:	false
 
 # 總是在定義返回類型後換行（deprecated）
 AlwaysBreakAfterDefinitionReturnType:	None
