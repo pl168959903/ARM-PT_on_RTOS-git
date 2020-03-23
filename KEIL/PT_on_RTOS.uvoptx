@@ -147,25 +147,25 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>41</LineNumber>
+          <LineNumber>199</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>8332</Address>
+          <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\main.c</Filename>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>..\Libraries\User\src\FIFO.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\PT_on_RTOS\../main.c\41</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>167</LineNumber>
+          <LineNumber>195</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>6454</Address>
+          <Address>6572</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -174,14 +174,30 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\Libraries\User\src\FIFO.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\PT_on_RTOS\../Libraries/User/src/FIFO.c\167</Expression>
+          <Expression>\\PT_on_RTOS\../Libraries/User/src/FIFO.c\195</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>196</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>6590</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\Libraries\User\src\FIFO.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\PT_on_RTOS\../Libraries/User/src/FIFO.c\196</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>buf_st</ItemText>
+          <ItemText>timeStamp</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
@@ -191,7 +207,37 @@
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>CntTime</ItemText>
+          <ItemText>cmd_c</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>cmd_len</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>cmd_len</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>fifo_len</ItemText>
+        </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>fifoRange</ItemText>
+        </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>fifoShift</ItemText>
+        </Ww>
+        <Ww>
+          <count>8</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>buf_st-&gt;size</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>

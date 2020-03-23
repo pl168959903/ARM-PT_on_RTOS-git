@@ -39,7 +39,7 @@ void    FIFO_Rst( FIFO_T* buf_st );
 bool    FIFO_IsEmpty( FIFO_T* buf_st );
 uint8_t FIFO_ReadData( FIFO_T* buf_st, size_t offset );
 bool    FIFO_WaitData( FIFO_T* buf_st, size_t dataSize, size_t timeOut );
-bool    FIFO_CmdCheck( FIFO_T* buf_st, uint8_t Command[], size_t shiftByte, size_t checkSize, size_t timeOut );
+bool FIFO_CmdCheck( FIFO_T* buf_st, uint8_t* Command, size_t fifoShift, size_t fifoRange, size_t checkSize, size_t timeOut, bool isIgnore );
 void    FIFO_CntTImeTrigger( void );
 
 #ifdef __cplusplus

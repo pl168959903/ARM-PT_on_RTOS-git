@@ -90,7 +90,7 @@ uint8_t OV528_SNYC( OV528_T* OV528 ) {
 
     // check ack
     OV528_SetCmd( OV528, OV528_CMD_ID_ACK, 0x00, 0x00, 0x00, 0x00 );
-    cmdCheck = FIFO_CmdCheck( OV528->buf,  OV528->cmd,0, 6, 0 );
+    //cmdCheck = FIFO_CmdCheck( OV528->buf,  OV528->cmd,0, 6, 0 );
     if ( cmdCheck )
         goto Exit;
     else
@@ -142,7 +142,7 @@ uint8_t OV528_Init( OV528_T* OV528, uint8_t color, uint8_t PR, uint8_t JPEGR ) {
 
     // check ack
     OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_INIT, 0x00, 0x00, 0x00 );
-    cmdCheck = FIFO_CmdCheck( OV528->buf,  OV528->cmd,0, 6, 250 );
+    //cmdCheck = FIFO_CmdCheck( OV528->buf,  OV528->cmd,0, 6, 250 );
     if ( cmdCheck )
         goto Exit;
     else
@@ -189,13 +189,13 @@ uint8_t OV528_GetPictue( OV528_T* OV528, uint8_t imageType ) {
 
     // check ack
     OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_GET_PICTURE, 0x00, 0x00, 0x00 );
-    cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
+    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
     if ( !cmdCheck )
         goto ERR;
 
     // check image config
     OV528_SetCmd( OV528, OV528_CMD_ID_DATA, OV528->imageType, 0, 0, 0 );
-    cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 3, 1000 );
+    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 3, 1000 );
     if ( cmdCheck ) {
         if ( FIFO_WaitData( OV528->buf, 12, 1 ) ) {
             goto Exit;
@@ -246,7 +246,7 @@ uint8_t OV528_Snapshout( OV528_T* OV528, uint8_t Compressed, uint16_t SkipFrame 
 
     // check ack
     OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_SNAPSHOT, 0x00, 0x00, 0x00 );
-    cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
+    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
     if ( cmdCheck )
         goto Exit;
     else
@@ -294,7 +294,7 @@ uint8_t OV528_SetBaudRate( OV528_T* OV528, uint32_t BAUD ) {
 
     // check ack
     OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_SET_BAUD_RATE, 0x00, 0x00, 0x00 );
-    cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
+    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
     if ( cmdCheck )
         goto Exit;
     else
@@ -333,7 +333,7 @@ uint8_t OV528_PowerDown( OV528_T* OV528 ) {
 
     // check ack
     OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_POWER_DOWN, 0x00, 0x00, 0x00 );
-    cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
+    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
     if ( cmdCheck )
         goto Exit;
     else
@@ -371,7 +371,7 @@ uint8_t OV528_SetPacketSize( OV528_T* OV528, uint16_t size ) {
 
     // check ack
     OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_SET_PACKAGE_SIZE, 0x00, 0x00, 0x00 );
-    cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
+    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
     if ( cmdCheck )
         goto Exit;
     else

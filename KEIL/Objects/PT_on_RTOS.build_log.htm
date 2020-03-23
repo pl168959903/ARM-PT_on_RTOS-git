@@ -27,11 +27,14 @@ Project File Date:  03/22/2020
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Project'
-compiling FIFO.c...
+compiling main.c...
+..\main.c(52): warning:  #111-D: statement is unreachable
+      RtcSetup();
+..\main.c: 1 warning, 0 errors
 linking...
-Program Size: Code=9800 RO-data=588 RW-data=80 ZI-data=4632  
+Program Size: Code=9884 RO-data=588 RW-data=80 ZI-data=4632  
 FromELF: creating hex file...
-".\Objects\PT_on_RTOS.axf" - 0 Error(s), 0 Warning(s).
+".\Objects\PT_on_RTOS.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -45,7 +48,7 @@ Package Vendor: Nuvoton
   C:\Users\User\AppData\Local\Arm\Packs\Nuvoton\NuMicro_DFP\1.3.5\Device\NANO103\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

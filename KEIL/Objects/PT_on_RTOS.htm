@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PT_on_RTOS.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PT_on_RTOS.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sun Mar 22 06:25:05 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Mon Mar 23 15:19:49 2020
 <BR><P>
 <H3>Maximum Stack Usage =        368 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -240,7 +240,7 @@ Global Symbols
 <P><STRONG><a name="[c8]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[50]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 208 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 240 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; FIFO_CmdCheck &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -269,6 +269,7 @@ Global Symbols
 <P><STRONG><a name="[82]"></a>__aeabi_memcpy4</STRONG> (Thumb, 56 bytes, Stack size 0 bytes, rt_memcpy.o(.emb_text))
 <BR><BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK1Freq
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK0Freq
+<LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
 <P><STRONG><a name="[cb]"></a>__aeabi_memcpy8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, rt_memcpy.o(.emb_text), UNUSED)
@@ -385,12 +386,12 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_char_file
 </UL>
-<BR>[Called By]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
-<LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_New
+<BR>[Called By]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
+<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_New
 <LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_CmdCheck
 <LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stackDump
+<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stackDump
 <LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Hard_Fault_Handler
 </UL>
 
@@ -435,12 +436,6 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_char_common
 </UL>
 
-<P><STRONG><a name="[8c]"></a>strlen</STRONG> (Thumb, 62 bytes, Stack size 12 bytes, strlen.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = strlen
-</UL>
-<BR>[Called By]<UL><LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_CmdCheck
-</UL>
-
 <P><STRONG><a name="[cd]"></a>__aeabi_uidiv</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, aeabi_sdiv.o(.text), UNUSED)
 
 <P><STRONG><a name="[83]"></a>__aeabi_uidivmod</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, aeabi_sdiv.o(.text))
@@ -448,11 +443,11 @@ Global Symbols
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK1Freq
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK0Freq
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_PLLClockFreq
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_HCLKFreq
-<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ReadData
-<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_UART_GetUartClk
-<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_Open
+<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_PLLClockFreq
+<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_HCLKFreq
+<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ReadData
+<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_UART_GetUartClk
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_Open
 </UL>
 
 <P><STRONG><a name="[ce]"></a>__aeabi_idiv</STRONG> (Thumb, 0 bytes, Stack size 8 bytes, aeabi_sdiv.o(.text), UNUSED)
@@ -470,7 +465,7 @@ Global Symbols
 <P><STRONG><a name="[5]"></a>__rt_heap_expand</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
 
 <P><STRONG><a name="[a6]"></a>__aeabi_f2d</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, f2d.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
+<BR><BR>[Called By]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
 </UL>
 
 <P><STRONG><a name="[d0]"></a>_f2d</STRONG> (Thumb, 80 bytes, Stack size 0 bytes, f2d.o(.text), UNUSED)
@@ -478,7 +473,7 @@ Global Symbols
 <P><STRONG><a name="[a4]"></a>__aeabi_fdiv</STRONG> (Thumb, 0 bytes, Stack size 20 bytes, fdiv.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = __aeabi_fdiv
 </UL>
-<BR>[Called By]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
+<BR>[Called By]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
 </UL>
 
 <P><STRONG><a name="[64]"></a>_fdiv</STRONG> (Thumb, 334 bytes, Stack size 20 bytes, fdiv.o(.text), UNUSED)
@@ -503,7 +498,7 @@ Global Symbols
 <P><STRONG><a name="[67]"></a>__aeabi_ui2f</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, fflti.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2f_normalise
 </UL>
-<BR>[Called By]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
+<BR>[Called By]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
 </UL>
 
 <P><STRONG><a name="[d2]"></a>_ffltu</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, fflti.o(.text), UNUSED)
@@ -685,8 +680,8 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_exit_exit
 </UL>
 
-<P><STRONG><a name="[99]"></a>CLK_EnableModuleClock</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, clk.o(i.CLK_EnableModuleClock))
-<BR><BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<P><STRONG><a name="[98]"></a>CLK_EnableModuleClock</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, clk.o(i.CLK_EnableModuleClock))
+<BR><BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
 </UL>
 
 <P><STRONG><a name="[88]"></a>CLK_EnableXtalRC</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, clk.o(i.CLK_EnableXtalRC))
@@ -698,7 +693,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
 </UL>
-<BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
 </UL>
 
 <P><STRONG><a name="[80]"></a>CLK_GetHCLKFreq</STRONG> (Thumb, 12 bytes, Stack size 8 bytes, clk.o(i.CLK_GetHCLKFreq))
@@ -706,15 +701,15 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
 </UL>
-<BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
 </UL>
 
-<P><STRONG><a name="[9c]"></a>CLK_GetHXTFreq</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, clk.o(i.CLK_GetHXTFreq))
-<BR><BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<P><STRONG><a name="[9b]"></a>CLK_GetHXTFreq</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, clk.o(i.CLK_GetHXTFreq))
+<BR><BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
 </UL>
 
-<P><STRONG><a name="[9d]"></a>CLK_GetLXTFreq</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, clk.o(i.CLK_GetLXTFreq))
-<BR><BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<P><STRONG><a name="[9c]"></a>CLK_GetLXTFreq</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, clk.o(i.CLK_GetLXTFreq))
+<BR><BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
 </UL>
 
 <P><STRONG><a name="[81]"></a>CLK_GetPCLK0Freq</STRONG> (Thumb, 44 bytes, Stack size 40 bytes, clk.o(i.CLK_GetPCLK0Freq))
@@ -724,7 +719,7 @@ Global Symbols
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
 </UL>
 
 <P><STRONG><a name="[84]"></a>CLK_GetPCLK1Freq</STRONG> (Thumb, 44 bytes, Stack size 40 bytes, clk.o(i.CLK_GetPCLK1Freq))
@@ -734,7 +729,7 @@ Global Symbols
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
 </UL>
 
 <P><STRONG><a name="[85]"></a>CLK_GetPLLClockFreq</STRONG> (Thumb, 74 bytes, Stack size 8 bytes, clk.o(i.CLK_GetPLLClockFreq))
@@ -742,7 +737,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
-<BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
 </UL>
 
 <P><STRONG><a name="[86]"></a>CLK_SetHCLK</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, clk.o(i.CLK_SetHCLK))
@@ -776,33 +771,40 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[94]"></a>FIFO_ByteIn</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, fifo.o(i.FIFO_ByteIn))
+<P><STRONG><a name="[93]"></a>FIFO_ByteIn</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, fifo.o(i.FIFO_ByteIn))
 <BR><BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART1_IRQHandler
 </UL>
 
-<P><STRONG><a name="[8b]"></a>FIFO_CmdCheck</STRONG> (Thumb, 144 bytes, Stack size 48 bytes, fifo.o(i.FIFO_CmdCheck))
+<P><STRONG><a name="[a1]"></a>FIFO_ByteOut</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, fifo.o(i.FIFO_ByteOut))
+<BR><BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[8b]"></a>FIFO_CmdCheck</STRONG> (Thumb, 194 bytes, Stack size 48 bytes, fifo.o(i.FIFO_CmdCheck))
 <BR><BR>[Stack]<UL><LI>Max Depth = 184 + Unknown Stack Size
 <LI>Call Chain = FIFO_CmdCheck &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ReadData
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ReadData
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[8e]"></a>FIFO_New</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, fifo.o(i.FIFO_New))
+<P><STRONG><a name="[a2]"></a>FIFO_IsEmpty</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, fifo.o(i.FIFO_IsEmpty))
+<BR><BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[8d]"></a>FIFO_New</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, fifo.o(i.FIFO_New))
 <BR><BR>[Stack]<UL><LI>Max Depth = 152 + Unknown Stack Size
 <LI>Call Chain = FIFO_New &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemAlloc
+<BR>[Calls]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemAlloc
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[8d]"></a>FIFO_ReadData</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, fifo.o(i.FIFO_ReadData))
+<P><STRONG><a name="[8c]"></a>FIFO_ReadData</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, fifo.o(i.FIFO_ReadData))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = FIFO_ReadData
 </UL>
 <BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
@@ -811,11 +813,7 @@ Global Symbols
 <LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[a2]"></a>FIFO_Rst</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, fifo.o(i.FIFO_Rst))
-<BR><BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-</UL>
-
-<P><STRONG><a name="[a1]"></a>FIFO_WaitData</STRONG> (Thumb, 40 bytes, Stack size 12 bytes, fifo.o(i.FIFO_WaitData))
+<P><STRONG><a name="[a0]"></a>FIFO_WaitData</STRONG> (Thumb, 44 bytes, Stack size 12 bytes, fifo.o(i.FIFO_WaitData))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = FIFO_WaitData
 </UL>
 <BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -828,41 +826,41 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 144 + Unknown Stack Size
 <LI>Call Chain = Hard_Fault_Handler &rArr; stackDump &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stackDump
+<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stackDump
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> retarget.o(.emb_text)
 </UL>
-<P><STRONG><a name="[9f]"></a>PinSetup</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, user_lib.o(i.PinSetup))
+<P><STRONG><a name="[9e]"></a>PinSetup</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, user_lib.o(i.PinSetup))
 <BR><BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[9e]"></a>SendChar_ToUART</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, retarget.o(i.SendChar_ToUART))
+<P><STRONG><a name="[9d]"></a>SendChar_ToUART</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, retarget.o(i.SendChar_ToUART))
 <BR><BR>[Called By]<UL><LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fputc
 </UL>
 
-<P><STRONG><a name="[91]"></a>SysGet_HCLKFreq</STRONG> (Thumb, 88 bytes, Stack size 8 bytes, system_nano103.o(i.SysGet_HCLKFreq))
+<P><STRONG><a name="[90]"></a>SysGet_HCLKFreq</STRONG> (Thumb, 88 bytes, Stack size 8 bytes, system_nano103.o(i.SysGet_HCLKFreq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = SysGet_HCLKFreq &rArr; SysGet_PLLClockFreq
 </UL>
-<BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_PLLClockFreq
+<BR>[Calls]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_PLLClockFreq
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
 </UL>
 
-<P><STRONG><a name="[92]"></a>SysGet_PLLClockFreq</STRONG> (Thumb, 74 bytes, Stack size 8 bytes, system_nano103.o(i.SysGet_PLLClockFreq))
+<P><STRONG><a name="[91]"></a>SysGet_PLLClockFreq</STRONG> (Thumb, 74 bytes, Stack size 8 bytes, system_nano103.o(i.SysGet_PLLClockFreq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = SysGet_PLLClockFreq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
-<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_HCLKFreq
-<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_UART_GetUartClk
+<BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_HCLKFreq
+<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_UART_GetUartClk
 </UL>
 
 <P><STRONG><a name="[7f]"></a>SystemCoreClockUpdate</STRONG> (Thumb, 24 bytes, Stack size 8 bytes, system_nano103.o(i.SystemCoreClockUpdate))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = SystemCoreClockUpdate &rArr; SysGet_HCLKFreq &rArr; SysGet_PLLClockFreq
 </UL>
-<BR>[Calls]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_HCLKFreq
+<BR>[Calls]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_HCLKFreq
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
 <BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_SetHCLK
@@ -881,66 +879,66 @@ Global Symbols
 <P><STRONG><a name="[22]"></a>UART1_IRQHandler</STRONG> (Thumb, 80 bytes, Stack size 16 bytes, irq.o(i.UART1_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = UART1_IRQHandler &rArr; UART_Read
 </UL>
-<BR>[Calls]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ByteIn
-<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_Read
-<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_ClearIntFlag
+<BR>[Calls]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ByteIn
+<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_Read
+<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_ClearIntFlag
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_nano103.o(RESET)
 </UL>
-<P><STRONG><a name="[95]"></a>UART_ClearIntFlag</STRONG> (Thumb, 62 bytes, Stack size 0 bytes, uart.o(i.UART_ClearIntFlag))
+<P><STRONG><a name="[94]"></a>UART_ClearIntFlag</STRONG> (Thumb, 62 bytes, Stack size 0 bytes, uart.o(i.UART_ClearIntFlag))
 <BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART1_IRQHandler
 </UL>
 
-<P><STRONG><a name="[9b]"></a>UART_EnableInt</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, uart.o(i.UART_EnableInt))
-<BR><BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<P><STRONG><a name="[9a]"></a>UART_EnableInt</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, uart.o(i.UART_EnableInt))
+<BR><BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
 </UL>
 
-<P><STRONG><a name="[96]"></a>UART_Open</STRONG> (Thumb, 74 bytes, Stack size 16 bytes, uart.o(i.UART_Open))
+<P><STRONG><a name="[95]"></a>UART_Open</STRONG> (Thumb, 74 bytes, Stack size 16 bytes, uart.o(i.UART_Open))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = UART_Open &rArr; _UART_GetUartClk &rArr; SysGet_PLLClockFreq
 </UL>
-<BR>[Calls]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_UART_GetUartClk
+<BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_UART_GetUartClk
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
-<BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
 </UL>
 
-<P><STRONG><a name="[93]"></a>UART_Read</STRONG> (Thumb, 44 bytes, Stack size 16 bytes, uart.o(i.UART_Read))
+<P><STRONG><a name="[92]"></a>UART_Read</STRONG> (Thumb, 44 bytes, Stack size 16 bytes, uart.o(i.UART_Read))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = UART_Read
 </UL>
 <BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART1_IRQHandler
 </UL>
 
-<P><STRONG><a name="[9a]"></a>UART_SetTimeoutCnt</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, uart.o(i.UART_SetTimeoutCnt))
-<BR><BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<P><STRONG><a name="[99]"></a>UART_SetTimeoutCnt</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, uart.o(i.UART_SetTimeoutCnt))
+<BR><BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
 </UL>
 
-<P><STRONG><a name="[98]"></a>UartSetup</STRONG> (Thumb, 164 bytes, Stack size 16 bytes, user_lib.o(i.UartSetup))
+<P><STRONG><a name="[97]"></a>UartSetup</STRONG> (Thumb, 164 bytes, Stack size 16 bytes, user_lib.o(i.UartSetup))
 <BR><BR>[Stack]<UL><LI>Max Depth = 152 + Unknown Stack Size
 <LI>Call Chain = UartSetup &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPLLClockFreq
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK1Freq
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetPCLK0Freq
-<LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetLXTFreq
-<LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetHXTFreq
+<LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetLXTFreq
+<LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetHXTFreq
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetHCLKFreq
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_GetCPUFreq
-<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableModuleClock
-<LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_SetTimeoutCnt
-<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_Open
-<LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_EnableInt
+<LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLK_EnableModuleClock
+<LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_SetTimeoutCnt
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_Open
+<LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_EnableInt
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[97]"></a>_UART_GetUartClk</STRONG> (Thumb, 114 bytes, Stack size 8 bytes, uart.o(i._UART_GetUartClk))
+<P><STRONG><a name="[96]"></a>_UART_GetUartClk</STRONG> (Thumb, 114 bytes, Stack size 8 bytes, uart.o(i._UART_GetUartClk))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = _UART_GetUartClk &rArr; SysGet_PLLClockFreq
 </UL>
-<BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_PLLClockFreq
+<BR>[Calls]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysGet_PLLClockFreq
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
-<BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_Open
+<BR>[Called By]<UL><LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_Open
 </UL>
 
 <P><STRONG><a name="[77]"></a>__ARM_common_ll_muluu</STRONG> (Thumb, 48 bytes, Stack size 24 bytes, timer.o(i.__ARM_common_ll_muluu))
@@ -964,30 +962,32 @@ Global Symbols
 <P><STRONG><a name="[35]"></a>fputc</STRONG> (Thumb, 12 bytes, Stack size 4 bytes, retarget.o(i.fputc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = fputc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendChar_ToUART
+<BR>[Calls]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendChar_ToUART
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> _printf_char_file.o(.text)
 </UL>
-<P><STRONG><a name="[51]"></a>main</STRONG> (Thumb, 212 bytes, Stack size 24 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 208 + Unknown Stack Size
+<P><STRONG><a name="[51]"></a>main</STRONG> (Thumb, 248 bytes, Stack size 56 bytes, main.o(i.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 240 + Unknown Stack Size
 <LI>Call Chain = main &rArr; FIFO_CmdCheck &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
-<LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
-<LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PinSetup
-<LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_WaitData
-<LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_Rst
-<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ReadData
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_New
+<BR>[Calls]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
+<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UartSetup
+<LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PinSetup
+<LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_WaitData
+<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ReadData
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_New
+<LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_IsEmpty
 <LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_CmdCheck
-<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ByteIn
+<LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ByteOut
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ByteIn
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ClkSetup
+<LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
 </UL>
 
-<P><STRONG><a name="[90]"></a>stackDump</STRONG> (Thumb, 70 bytes, Stack size 8 bytes, retarget.o(i.stackDump))
+<P><STRONG><a name="[8f]"></a>stackDump</STRONG> (Thumb, 70 bytes, Stack size 8 bytes, retarget.o(i.stackDump))
 <BR><BR>[Stack]<UL><LI>Max Depth = 144 + Unknown Stack Size
 <LI>Call Chain = stackDump &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -996,15 +996,15 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Hard_Fault_Handler
 </UL>
 
-<P><STRONG><a name="[8f]"></a>vMemAlloc</STRONG> (Thumb, 146 bytes, Stack size 24 bytes, vmemalloc.o(i.vMemAlloc))
+<P><STRONG><a name="[8e]"></a>vMemAlloc</STRONG> (Thumb, 146 bytes, Stack size 24 bytes, vmemalloc.o(i.vMemAlloc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = vMemAlloc &rArr; vMemInit
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_New
+<BR>[Called By]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_New
 </UL>
 
-<P><STRONG><a name="[a0]"></a>vMemInfoPrint</STRONG> (Thumb, 316 bytes, Stack size 40 bytes, vmemalloc.o(i.vMemInfoPrint))
+<P><STRONG><a name="[9f]"></a>vMemInfoPrint</STRONG> (Thumb, 316 bytes, Stack size 40 bytes, vmemalloc.o(i.vMemInfoPrint))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176 + Unknown Stack Size
 <LI>Call Chain = vMemInfoPrint &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -1028,7 +1028,7 @@ Global Symbols
 <P><STRONG><a name="[a5]"></a>__aeabi_fmul</STRONG> (Thumb, 0 bytes, Stack size 16 bytes, fmul.o(x$fpl$fmul))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = __aeabi_fmul
 </UL>
-<BR>[Called By]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
+<BR>[Called By]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemInfoPrint
 </UL>
 
 <P><STRONG><a name="[d9]"></a>_fmul</STRONG> (Thumb, 172 bytes, Stack size 16 bytes, fmul.o(x$fpl$fmul), UNUSED)
@@ -1052,7 +1052,7 @@ Local Symbols
 <P><STRONG><a name="[a3]"></a>vMemInit</STRONG> (Thumb, 62 bytes, Stack size 8 bytes, vmemalloc.o(i.vMemInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = vMemInit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemAlloc
+<BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vMemAlloc
 </UL>
 
 <P><STRONG><a name="[68]"></a>_fp_digits</STRONG> (Thumb, 412 bytes, Stack size 96 bytes, _printf_fp_dec.o(.text))

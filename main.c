@@ -12,15 +12,16 @@ uint32_t i;
 int main( void ) {
     uint32_t i;
     FIFO_T*  f1;
+    uint8_t  dataIn[] = "123456zxcvbnmABCDEFG";
+    uint8_t  dataCheck[] = "zx3vbnm";
     uint8_t  temp;
-    uint8_t  data[] = "zxcvbnm";
     SYS_UnlockReg();
     PinSetup();
     ClkSetup();
     UartSetup();
     f1 = FIFO_New( 100, NULL );
     vMemInfoPrint();
-    for ( i = 0; i < 50; i++ ) {
+    for ( i = 0; i < 97; i++ ) {
         if ( FIFO_ByteIn( f1, ( uint8_t* )&i ) ) {
             printf( "size:%d ;head:%d ;tail:%d ;eff:%d\n", f1->size, f1->head, f1->tail, f1->effSize );
         }
@@ -32,15 +33,21 @@ int main( void ) {
     if ( FIFO_WaitData( f1, 50, 100 ) ) {
         printf( "wait done\n" );
     }
-    FIFO_Rst( f1 );
+    // FIFO_Rst( f1 );
+    while ( !FIFO_IsEmpty( f1 ) )
+        FIFO_ByteOut( f1, &temp ); 
     printf( "size:%d ;head:%d ;tail:%d ;eff:%d\n", f1->size, f1->head, f1->tail, f1->effSize );
-    for ( i = 0; i < 7; i++ ) {
-        FIFO_ByteIn( f1, data + i );
+
+    for ( i = 0; i < 20; i++ ) {
+        FIFO_ByteIn( f1, dataIn + i );
         printf( "i:%d = %c\n", i, FIFO_ReadData( f1, i ) );
     }
-    if ( FIFO_CmdCheck( f1, data, 0, 10, 100 ) ) {
+		dataCheck[2] = 0x00;
+    if ( FIFO_CmdCheck( f1, dataCheck, 2, 20, 7, 0 , false) ) {
         printf( "check done\n" );
     }
+    else
+        printf( "err\n" );
     while ( 1 ) {};
     RtcSetup();
     GpioSetup();
