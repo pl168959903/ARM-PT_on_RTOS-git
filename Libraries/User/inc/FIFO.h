@@ -9,12 +9,12 @@ extern "C" {
 #define FIFO_USE_VMEMALLOC 1
 
 #if FIFO_USE_VMEMALLOC
-#include "vMemAlloc.h"
-#define FIFO_MALLOC( size ) vMemAlloc( size )
-#define FIFO_FREE( ptr ) vMemFree( ptr )
+    #include "vMemAlloc.h"
+    #define FIFO_MALLOC( size ) vMemAlloc( size )
+    #define FIFO_FREE( ptr ) vMemFree( ptr )
 #else
-#define FIFO_MALLOC( size ) malloc( size )
-#define FIFO_FREE( ptr ) free( ptr )
+    #define FIFO_MALLOC( size ) malloc( size )
+    #define FIFO_FREE( ptr ) free( ptr )
 #endif  // FIFO_USE_VMEMALLOC
 
 #include <stdbool.h>

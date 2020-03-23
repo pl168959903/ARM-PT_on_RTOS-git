@@ -38,14 +38,14 @@
 .\objects\w25qxx.o: ..\FreeRTOS\Source\include\task.h
 .\objects\w25qxx.o: ..\FreeRTOS\Source\include\list.h
 .\objects\w25qxx.o: ..\FreeRTOS\Source\include\timers.h
-.\objects\w25qxx.o: ..\include\rtos_task.h
-.\objects\w25qxx.o: ..\Libraries\User\inc\FIFO.h
+.\objects\w25qxx.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\w25qxx.o: ..\Libraries\User\inc\vMemAlloc.h
 .\objects\w25qxx.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\w25qxx.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\w25qxx.o: ..\Libraries\User\inc\FIFO.h
 .\objects\w25qxx.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\w25qxx.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\w25qxx.o: ..\Libraries\User\inc\Flash.h
 .\objects\w25qxx.o: ..\Libraries\User\inc\NRF24L01.h
-.\objects\w25qxx.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\w25qxx.o: ..\Libraries\User\inc\W25QXX.h
+.\objects\w25qxx.o: ..\include\rtos_task.h

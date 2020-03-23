@@ -6,38 +6,8 @@
 /_.___/\__, /     /____/\____/_/ |_|
       /____/
 */
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #include "CJ_OV528.h"
-
-#if OV528_USE_ERR_HOOK
-/**
- * @brief  例外事件鉤子函數
- * @note
- * @param  errCode: 錯誤號
- * @retval None
- */
-
-void OV528_ErrHook( uint8_t errCode ) {
-    switch ( errCode ) {
-    case OV528_ERR_SNYC: break;
-    case OV528_ERR_INIT: break;
-    case OV528_ERR_GETPICTUE: break;
-    case OV528_ERR_SNAPSHOUT: break;
-    case OV528_ERR_SETBAUDRATE: break;
-    case OV528_ERR_POWNDOWN: break;
-    case OV528_ERR_SETPACKETSZIE: break;
-    case OV528_ERR_GETPACKET: break;
-    default: break;
-    }
-    // Device header
-    if ( errCode - 1 )
-        printf( "Camena err!!	ERR CODE : %X\n", errCode );
-    // while(1) {};
-}
-#endif  // OV528_USE_ERR_HOOK
 
 /**
  * @brief  建立新的OV528物件
@@ -48,68 +18,43 @@ void OV528_ErrHook( uint8_t errCode ) {
  * @param  DelayFunction 延時函式的函式指標
  * @retval 物件指標
  */
-OV528_T* OV528_New( uint8_t ID, FIFO_T* FIFO_st, funcWriteData WriteFunction, funcDelay DelayFunction ) {
-    OV528_T* OV528_class   = ( OV528_T* )malloc( sizeof( OV528_T ) );
-    OV528_class->ID        = ID;
-    OV528_class->buf       = FIFO_st;
-    OV528_class->WriteData = WriteFunction;
-    OV528_class->Delay     = DelayFunction;
+OV528_T* OV528_New( uint16_t ID, FIFO_T* FIFO_st, UartFunction funcWrite, UartFunction funcRead, DelayFunction funcDelay ) {
+    OV528_T* OV528_class = ( OV528_T* )OV528_MALLOC( sizeof( OV528_T ) );
+    if ( OV528_class != NULL ) {
+        OV528_class->ID            = ID;
+        OV528_class->fifoBuf       = FIFO_st;
+        OV528_class->UartWriteData = funcWrite;
+        OV528_class->UartReadData  = funcRead;
+        OV528_class->Delay         = funcDelay;
+    }
     return OV528_class;
-}
-
-/**
- * @brief  設定指令
- * ! @note   私有函數
- * @param  OV528: OV528 結構體
- * @param  byte 1-5: 指令
- * @retval None
- */
-void OV528_SetCmd( OV528_T* OV528, uint8_t byte1, uint8_t byte2, uint8_t byte3, uint8_t byte4, uint8_t byte5 ) {
-    OV528->cmd[ 0 ] = 0xAA;
-    OV528->cmd[ 1 ] = byte1;
-    OV528->cmd[ 2 ] = byte2;
-    OV528->cmd[ 3 ] = byte3;
-    OV528->cmd[ 4 ] = byte4;
-    OV528->cmd[ 5 ] = byte5;
 }
 
 /**
  * @brief  同步函數
  * @note
  * @param  OV528: OV528 結構體
- * @retval
+ * @retval 成功 : True ; 失敗 : false
  */
-uint8_t OV528_SNYC( OV528_T* OV528 ) {
-    uint8_t cmdCheck;
+bool OV528_SNYC( OV528_T* OV528 ) {
+    bool    cmdCheck;
+    uint8_t command[ 6 ]    = { 0xAA, OV528_CMD_ID_SNYC, 0x00, 0x00, 0x00, 0x00 };
+    uint8_t commandAck[ 6 ] = { 0xAA, OV528_CMD_ID_ACK, OV528_CMD_ID_SNYC, 0x00, 0x00, 0x00 };
+
+    if ( OV528 == NULL ) {
+        return false;
+    }
 
     // send data
-    OV528_SetCmd( OV528, OV528_CMD_ID_SNYC, 0x00, 0x00, 0x00, 0x00 );
-    FIFO_Rst( OV528->buf );
-    OV528->WriteData( OV528->cmd, 6 );
-    OV528->WriteData( OV528->cmd, 6 );
+    FIFO_Rst( OV528->fifoBuf );
+    OV528->UartWriteData( command, 6 );
+    OV528->UartWriteData( command, 6 );
 
-    // check ack
-    OV528_SetCmd( OV528, OV528_CMD_ID_ACK, 0x00, 0x00, 0x00, 0x00 );
-    //cmdCheck = FIFO_CmdCheck( OV528->buf,  OV528->cmd,0, 6, 0 );
-    if ( cmdCheck )
-        goto Exit;
-    else
-        goto ERR;
+    cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 12, 6, 500, false );
 
-ERR:
-// Error Hook
-#if OV528_USE_ERR_HOOK
-    OV528_ErrHook( OV528_ERR_SNYC );
-#endif  // OV528_USE_ERR_HOOK
-
-    FIFO_Rst( OV528->buf );
+    FIFO_Rst( OV528->fifoBuf );
     OV528->Delay( 1 );
-    return 0;
-
-Exit:
-    FIFO_Rst( OV528->buf );
-    OV528->Delay( 1 );
-    return 1;
+    return cmdCheck;
 }
 
 /**
@@ -132,40 +77,34 @@ Exit:
  * @retval 成功 : 1 ; 失敗 : 0
  */
 
-uint8_t OV528_Init( OV528_T* OV528, uint8_t color, uint8_t PR, uint8_t JPEGR ) {
-    uint8_t cmdCheck;
+bool OV528_Init( OV528_T* OV528, uint8_t color, uint8_t PR, uint8_t JPEGR ) {
+    bool    cmdCheck;
+    uint8_t command[ 6 ]    = { 0xAA, OV528_CMD_ID_INIT, 0x00, 0x00, 0x00, 0x00 };
+    uint8_t commandAck[ 6 ] = { 0xAA, OV528_CMD_ID_ACK, OV528_CMD_ID_INIT, 0x00, 0x00, 0x00 };
+
+    if ( OV528 == NULL ) {
+        return false;
+    }
+
+    command[ 3 ] = color;
+    command[ 4 ] = PR;
+    command[ 5 ] = JPEGR;
 
     // send data
-    OV528_SetCmd( OV528, OV528_CMD_ID_INIT, 0x00, color, PR, JPEGR );
-    FIFO_Rst( OV528->buf );
-    OV528->WriteData( OV528->cmd, 6 );
+    FIFO_Rst( OV528->fifoBuf );
+    OV528->UartWriteData( command, 6 );
 
     // check ack
-    OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_INIT, 0x00, 0x00, 0x00 );
-    //cmdCheck = FIFO_CmdCheck( OV528->buf,  OV528->cmd,0, 6, 250 );
-    if ( cmdCheck )
-        goto Exit;
-    else
-        goto ERR;
+    cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
+    if ( cmdCheck == true ) {
+        OV528->color             = color;
+        OV528->previewResolution = PR;
+        OV528->JPEGResolution    = JPEGR;
+    }
 
-ERR:
-// Error Hook
-#if OV528_USE_ERR_HOOK
-    OV528_ErrHook( OV528_ERR_INIT );
-#endif
-
-    FIFO_Rst( OV528->buf );
+    FIFO_Rst( OV528->fifoBuf );
     OV528->Delay( 1 );
-    return 0;
-
-Exit:
-    OV528->color             = color;
-    OV528->previewResolution = PR;
-    OV528->JPEGResolution    = JPEGR;
-
-    FIFO_Rst( OV528->buf );
-    OV528->Delay( 1 );
-    return 1;
+    return cmdCheck;
 }
 
 /**
@@ -179,49 +118,42 @@ Exit:
  *
  * @retval 成功 : 1 ; 失敗 : 0
  */
-uint8_t OV528_GetPictue( OV528_T* OV528, uint8_t imageType ) {
-    uint8_t cmdCheck;
+bool OV528_GetPictue( OV528_T* OV528, uint8_t imageType ) {
+    bool    cmdCheck;
+    uint8_t command[ 6 ]    = { 0xAA, OV528_CMD_ID_GET_PICTURE, 0x00, 0x00, 0x00, 0x00 };
+    uint8_t commandAck[ 6 ] = { 0xAA, OV528_CMD_ID_ACK, OV528_CMD_ID_GET_PICTURE, 0x00, 0x00, 0x00 };
+
+    if ( OV528 == NULL ) {
+        return false;
+    }
+
+    command[ 2 ] = imageType;
 
     // send data
-    OV528_SetCmd( OV528, OV528_CMD_ID_GET_PICTURE, imageType, 0x00, 0x00, 0x00 );
-    FIFO_Rst( OV528->buf );
-    OV528->WriteData( OV528->cmd, 6 );
+    FIFO_Rst( OV528->fifoBuf );
+    OV528->UartWriteData( command, 6 );
 
     // check ack
-    OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_GET_PICTURE, 0x00, 0x00, 0x00 );
-    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
+    cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
     if ( !cmdCheck )
-        goto ERR;
+        return false;
 
     // check image config
-    OV528_SetCmd( OV528, OV528_CMD_ID_DATA, OV528->imageType, 0, 0, 0 );
-    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 3, 1000 );
-    if ( cmdCheck ) {
-        if ( FIFO_WaitData( OV528->buf, 12, 1 ) ) {
-            goto Exit;
-        }
+    commandAck[ 1 ] = OV528_CMD_ID_DATA;
+    commandAck[ 2 ] = OV528->imageType;
+    cmdCheck        = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 6, 6, 6, 500, true );
+
+    if ( cmdCheck == true ) {
+        OV528->imageType = imageType;
+        OV528->imageSize =
+            ( uint32_t )( FIFO_ReadData( OV528->fifoBuf, 9 ) << 0 ) | ( uint32_t )( FIFO_ReadData( OV528->fifoBuf, 10 ) << 8 ) | ( uint32_t )( FIFO_ReadData( OV528->fifoBuf, 11 ) << 16 );
+        OV528->imagePacket = OV528->imageSize / ( OV528->packetSize - 6 );
+        if ( OV528->imageSize % ( OV528->packetSize - 6 ) )
+            OV528->imagePacket++;
     }
-    goto ERR;
-
-ERR:
-#if OV528_USE_ERR_HOOK
-    OV528_ErrHook( OV528_ERR_GETPICTUE );  // Error Hook
-#endif
-
-    FIFO_Rst( OV528->buf );
+    FIFO_Rst( OV528->fifoBuf );
     OV528->Delay( 1 );
-    return 0;
-
-Exit:
-    OV528->imageType   = imageType;
-    OV528->imageSize   = ( uint32_t )( FIFO_ReadData( OV528->buf, 9 ) << 0 ) | ( uint32_t )( FIFO_ReadData( OV528->buf, 10 ) << 8 ) | ( uint32_t )( FIFO_ReadData( OV528->buf, 11 ) << 16 );
-    OV528->imagePacket = OV528->imageSize / ( OV528->packetSize - 6 );
-    if ( OV528->imageSize % ( OV528->packetSize - 6 ) )
-        OV528->imagePacket++;
-
-    FIFO_Rst( OV528->buf );
-    OV528->Delay( 1 );
-    return 1;
+    return cmdCheck;
 }
 
 /**
@@ -236,39 +168,34 @@ Exit:
  * @param  SkipFrame: 跳過幀
  * @retval 成功 : 1 ; 失敗 : 0
  */
-uint8_t OV528_Snapshout( OV528_T* OV528, uint8_t Compressed, uint16_t SkipFrame ) {
+bool OV528_Snapshout( OV528_T* OV528, uint8_t Compressed, uint16_t SkipFrame ) {
     uint8_t cmdCheck;
+    uint8_t command[ 6 ]    = { 0xAA, OV528_CMD_ID_SNAPSHOT, 0x00, 0x00, 0x00, 0x00 };
+    uint8_t commandAck[ 6 ] = { 0xAA, OV528_CMD_ID_ACK, OV528_CMD_ID_SNAPSHOT, 0x00, 0x00, 0x00 };
+
+    if ( OV528 == NULL ) {
+        return false;
+    }
+
+    command[ 2 ] = Compressed;
+    command[ 3 ] = ( uint8_t )( ( SkipFrame & 0x00FF ) >> 0 );
+    command[ 4 ] = ( uint8_t )( ( SkipFrame & 0xFF00 ) >> 8 );
 
     // send data
-    OV528_SetCmd( OV528, OV528_CMD_ID_SNAPSHOT, Compressed, ( uint8_t )( ( SkipFrame & 0x00FF ) >> 0 ), ( uint8_t )( ( SkipFrame & 0xFF00 ) >> 8 ), 0x00 );
-    FIFO_Rst( OV528->buf );
-    OV528->WriteData( OV528->cmd, 6 );
+    FIFO_Rst( OV528->fifoBuf );
+    OV528->UartWriteData( command, 6 );
 
     // check ack
-    OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_SNAPSHOT, 0x00, 0x00, 0x00 );
-    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
-    if ( cmdCheck )
-        goto Exit;
-    else
-        goto ERR;
+    cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
 
-ERR:
-// Error Hook
-#if OV528_USE_ERR_HOOK
-    OV528_ErrHook( OV528_ERR_SNAPSHOUT );
-#endif
+    if ( cmdCheck == true ) {
+        OV528->IsCompressed = Compressed;
+        OV528->skipFrame    = SkipFrame;
+    }
 
-    FIFO_Rst( OV528->buf );
+    FIFO_Rst( OV528->fifoBuf );
     OV528->Delay( 1 );
-    return 0;
-
-Exit:
-    OV528->IsCompressed = Compressed;
-    OV528->skipFrame    = SkipFrame;
-
-    FIFO_Rst( OV528->buf );
-    OV528->Delay( 1 );
-    return 1;
+    return cmdCheck;
 }
 
 /**
@@ -278,43 +205,39 @@ Exit:
  * @param  BAUD: 鮑率
  * @retval 成功 : 1 ; 失敗 : 0
  */
-uint8_t OV528_SetBaudRate( OV528_T* OV528, uint32_t BAUD ) {
+bool OV528_SetBaudRate( OV528_T* OV528, uint32_t BAUD ) {
     uint8_t  cmdCheck;
-    uint32_t div1 = ( 14745600 / 4 / BAUD ) / 2;
-    uint32_t div2 = 2;
+    uint8_t  command[ 6 ]    = { 0xAA, OV528_CMD_ID_SET_BAUD_RATE, 0x00, 0x00, 0x00, 0x00 };
+    uint8_t  commandAck[ 6 ] = { 0xAA, OV528_CMD_ID_ACK, OV528_CMD_ID_SET_BAUD_RATE, 0x00, 0x00, 0x00 };
+    uint32_t div1, div2;
+
+    if ( OV528 == NULL ) {
+        return false;
+    }
+
+    div1 = ( 14745600 / 4 / BAUD ) / 2;
+    div2 = 2;
     while ( div1 > 256 ) {
         div1 /= 2;
         div2 *= 2;
     }
 
+    command[ 2 ] = ( uint8_t )( div1 - 1 );
+    command[ 3 ] = ( uint8_t )( div2 - 1 );
+
     // send data
-    OV528_SetCmd( OV528, OV528_CMD_ID_SET_BAUD_RATE, ( uint8_t )( div1 - 1 ), ( uint8_t )( div2 - 1 ), 0x00, 0x00 );
-    FIFO_Rst( OV528->buf );
-    OV528->WriteData( OV528->cmd, 6 );
+    FIFO_Rst( OV528->fifoBuf );
+    OV528->UartWriteData( command, 6 );
 
     // check ack
-    OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_SET_BAUD_RATE, 0x00, 0x00, 0x00 );
-    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
-    if ( cmdCheck )
-        goto Exit;
-    else
-        goto ERR;
+    cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
+    if ( cmdCheck == true ) {
+        OV528->baudRate = 3686400 / div1 / div2;
+    }
 
-ERR:
-#if OV528_USE_ERR_HOOK
-    OV528_ErrHook( OV528_ERR_SETBAUDRATE );  // Error Hook
-#endif
-
-    FIFO_Rst( OV528->buf );
+    FIFO_Rst( OV528->fifoBuf );
     OV528->Delay( 1 );
-    return 0;
-
-Exit:
-    OV528->baudRate = 3686400 / div1 / div2;
-
-    FIFO_Rst( OV528->buf );
-    OV528->Delay( 1 );
-    return 1;
+    return cmdCheck;
 }
 
 /**
@@ -323,35 +246,25 @@ Exit:
  * @param  OV528: OV528 結構體
  * @retval 成功 : 1 ; 失敗 : 0
  */
-uint8_t OV528_PowerDown( OV528_T* OV528 ) {
+bool OV528_PowerDown( OV528_T* OV528 ) {
     uint8_t cmdCheck;
+    uint8_t command[ 6 ]    = { 0xAA, OV528_CMD_ID_POWER_DOWN, 0x00, 0x00, 0x00, 0x00 };
+    uint8_t commandAck[ 6 ] = { 0xAA, OV528_CMD_ID_ACK, OV528_CMD_ID_POWER_DOWN, 0x00, 0x00, 0x00 };
+
+    if ( OV528 == NULL ) {
+        return false;
+    }
 
     // send data
-    OV528_SetCmd( OV528, OV528_CMD_ID_POWER_DOWN, 0x00, 0x00, 0x00, 0x00 );
-    FIFO_Rst( OV528->buf );
-    OV528->WriteData( OV528->cmd, 6 );
+    FIFO_Rst( OV528->fifoBuf );
+    OV528->UartWriteData( command, 6 );
 
     // check ack
-    OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_POWER_DOWN, 0x00, 0x00, 0x00 );
-    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
-    if ( cmdCheck )
-        goto Exit;
-    else
-        goto ERR;
+    cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
 
-ERR:
-#if OV528_USE_ERR_HOOK
-    OV528_ErrHook( OV528_ERR_POWNDOWN );
-#endif
-
-    FIFO_Rst( OV528->buf );
+    FIFO_Rst( OV528->fifoBuf );
     OV528->Delay( 1 );
-    return 0;
-
-Exit:
-    FIFO_Rst( OV528->buf );
-    OV528->Delay( 1 );
-    return 1;
+    return cmdCheck;
 }
 
 /**
@@ -361,37 +274,30 @@ Exit:
  * @param  size: 封包大小
  * @retval 成功 : 1 ; 失敗 : 0
  */
-uint8_t OV528_SetPacketSize( OV528_T* OV528, uint16_t size ) {
+bool OV528_SetPacketSize( OV528_T* OV528, uint16_t size ) {
     uint8_t cmdCheck;
+    uint8_t command[ 6 ]    = { 0xAA, OV528_CMD_ID_SET_PACKAGE_SIZE, 0x08, 0x00, 0x00, 0x00 };
+    uint8_t commandAck[ 6 ] = { 0xAA, OV528_CMD_ID_ACK, OV528_CMD_ID_SET_PACKAGE_SIZE, 0x00, 0x00, 0x00 };
+
+    if ( OV528 == NULL ) {
+        return false;
+    }
+
+    command[ 3 ] = ( uint8_t )( size & 0x00FF );
+    command[ 4 ] = ( uint8_t )( size >> 8 );
 
     // send data
-    OV528_SetCmd( OV528, OV528_CMD_ID_SET_PACKAGE_SIZE, 0x08, ( uint8_t )( size & 0x00FF ), ( uint8_t )( size >> 8 ), 0x00 );
-    FIFO_Rst( OV528->buf );
-    OV528->WriteData( OV528->cmd, 6 );
+    FIFO_Rst( OV528->fifoBuf );
+    OV528->UartWriteData( command, 6 );
 
     // check ack
-    OV528_SetCmd( OV528, OV528_CMD_ID_ACK, OV528_CMD_ID_SET_PACKAGE_SIZE, 0x00, 0x00, 0x00 );
-    //cmdCheck = FIFO_CmdCheck( OV528->buf, OV528->cmd,0, 6, 250 );
-    if ( cmdCheck )
-        goto Exit;
-    else
-        goto ERR;
-
-ERR:
-#if OV528_USE_ERR_HOOK
-    OV528_ErrHook( OV528_ERR_SETPACKETSZIE );
-#endif
-
-    FIFO_Rst( OV528->buf );
+    cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
+    if ( cmdCheck == true ) {
+        OV528->packetSize = size;
+    }
+    FIFO_Rst( OV528->fifoBuf );
     OV528->Delay( 1 );
-    return 0;
-
-Exit:
-    OV528->packetSize = size;
-
-    FIFO_Rst( OV528->buf );
-    OV528->Delay( 1 );
-    return 1;
+    return cmdCheck;
 }
 
 /**
@@ -399,46 +305,47 @@ Exit:
  * @note
  * @param  OV528: OV528 結構體
  * @param  package_ID: 封包ID
- * @param  package[]: 儲存陣列
+ * @param  outPutArray 儲存陣列
  * @retval 成功 : 封包大小 ; 失敗 : 0
  */
-uint16_t OV528_GetPacket( OV528_T* OV528, uint16_t package_ID, uint8_t package[] ) {
-    uint8_t  ID[ 2 ];
+uint16_t OV528_GetPacket( OV528_T* OV528, uint16_t package_ID, uint8_t* outPutArray ) {
     uint16_t i;
     uint16_t size;
-    uint16_t checkSum = 0;
-    ID[ 0 ]           = ( uint8_t )( package_ID & 0x00FF );
-    ID[ 1 ]           = ( uint8_t )( package_ID >> 8 );
+
+    uint16_t checkSum     = 0;
+    uint8_t  command[ 6 ] = { 0xAA, OV528_CMD_ID_ACK, 0x00, 0x00, 0x00, 0x00 };
+
+    if ( OV528 == NULL ) {
+        return false;
+    }
+
+    command[ 4 ] = ( uint8_t )( package_ID & 0x00FF );
+    command[ 5 ] = ( uint8_t )( package_ID >> 8 );
 
     // send data
-    OV528_SetCmd( OV528, OV528_CMD_ID_ACK, 0x00, 0x00, ID[ 0 ], ID[ 1 ] );
-    FIFO_Rst( OV528->buf );
-    OV528->WriteData( OV528->cmd, 6 );
+    FIFO_Rst( OV528->fifoBuf );
+    OV528->UartWriteData( command, 6 );
 
-    if ( FIFO_WaitData( OV528->buf, 4, 250 ) )                                                                   // wait for packet head data
-        if ( ( FIFO_ReadData( OV528->buf, 0 ) == ID[ 0 ] ) && ( FIFO_ReadData( OV528->buf, 1 ) == ID[ 1 ] ) ) {  // check ID
-            size = ( uint16_t )OV528->buf->buf[ 2 ] | ( uint16_t )( OV528->buf->buf[ 3 ] << 8 );                 // get data size
-            if ( FIFO_WaitData( OV528->buf, size + 6, 3000 ) ) {
-                for ( i = 0; i < size + 4; i++ ) checkSum += OV528->buf->buf[ i ];
+    if ( FIFO_WaitData( OV528->fifoBuf, 4, 250 ) ) {
+        // wait for packet head data
+        if ( ( FIFO_ReadData( OV528->fifoBuf, 0 ) == command[ 4 ] ) && ( FIFO_ReadData( OV528->fifoBuf, 1 ) == command[ 5 ] ) ) {  // check ID
+            size = ( uint16_t )FIFO_ReadData( OV528->fifoBuf, 2 ) | ( ( uint16_t )( FIFO_ReadData( OV528->fifoBuf, 3 ) ) << 8 );
+            if ( FIFO_WaitData( OV528->fifoBuf, size + 6, 3000 ) ) {
+                for ( i = 0; i < size + 4; i++ )
+                    checkSum += OV528->fifoBuf->buf[ i ];
                 // check sum
-                if ( ( ( uint8_t )( checkSum & 0x00ff ) == OV528->buf->buf[ size + 4 ] ) && ( ( uint8_t )( checkSum >> 8 ) == OV528->buf->buf[ size + 5 ] ) ) {
-                    for ( i = 0; i < size; i++ ) package[ i ] = OV528->buf->buf[ i + 4 ];
-                    goto Exit;
+                if ( ( ( uint8_t )( checkSum & 0x00ff ) == FIFO_ReadData( OV528->fifoBuf, size + 4 ) ) && ( ( uint8_t )( checkSum >> 8 ) == FIFO_ReadData( OV528->fifoBuf, size + 5 ) ) ) {
+                    for ( i = 0; i < size; i++ )
+                        outPutArray[ i ] = FIFO_ReadData( OV528->fifoBuf, i + 4 );
+
+                    FIFO_Rst( OV528->fifoBuf );
+                    OV528->Delay( 1 );
+                    return size;
                 }
             }
         }
-    goto ERR;
-
-ERR:
-#if OV528_USE_ERR_HOOK
-    OV528_ErrHook( OV528_ERR_GETPACKET );
-#endif
-    FIFO_Rst( OV528->buf );
+    }
+    FIFO_Rst( OV528->fifoBuf );
     OV528->Delay( 1 );
     return 0;
-
-Exit:
-    FIFO_Rst( OV528->buf );
-    OV528->Delay( 1 );
-    return size;
 }

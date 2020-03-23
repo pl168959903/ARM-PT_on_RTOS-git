@@ -38,14 +38,14 @@
 .\objects\portable.o: ..\FreeRTOS\Source\include\task.h
 .\objects\portable.o: ..\FreeRTOS\Source\include\list.h
 .\objects\portable.o: ..\FreeRTOS\Source\include\timers.h
-.\objects\portable.o: ..\include\rtos_task.h
-.\objects\portable.o: ..\Libraries\User\inc\FIFO.h
+.\objects\portable.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\portable.o: ..\Libraries\User\inc\vMemAlloc.h
 .\objects\portable.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\portable.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\portable.o: ..\Libraries\User\inc\FIFO.h
 .\objects\portable.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\portable.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\portable.o: ..\Libraries\User\inc\Flash.h
 .\objects\portable.o: ..\Libraries\User\inc\NRF24L01.h
-.\objects\portable.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\portable.o: ..\Libraries\User\inc\W25QXX.h
+.\objects\portable.o: ..\include\rtos_task.h

@@ -42,12 +42,12 @@
 .\objects\user_lib.o: ..\FreeRTOS\Source\include\task.h
 .\objects\user_lib.o: ..\FreeRTOS\Source\include\list.h
 .\objects\user_lib.o: ..\FreeRTOS\Source\include\timers.h
-.\objects\user_lib.o: ..\include\rtos_task.h
-.\objects\user_lib.o: ..\Libraries\User\inc\FIFO.h
+.\objects\user_lib.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\user_lib.o: ..\Libraries\User\inc\vMemAlloc.h
+.\objects\user_lib.o: ..\Libraries\User\inc\FIFO.h
 .\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\user_lib.o: ..\Libraries\User\inc\Flash.h
 .\objects\user_lib.o: ..\Libraries\User\inc\NRF24L01.h
-.\objects\user_lib.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\user_lib.o: ..\Libraries\User\inc\W25QXX.h
+.\objects\user_lib.o: ..\include\rtos_task.h

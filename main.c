@@ -7,50 +7,54 @@
 #define ALLOCRAND 300
 #define TEST_TIMES 100000
 
-uint32_t i;
+uint32_t i, j;
+uint8_t  dataTemp[ 1000 ];
+uint16_t size;
 
 int main( void ) {
     uint32_t i;
-    FIFO_T*  f1;
-    uint8_t  dataIn[] = "123456zxcvbnmABCDEFG";
-    uint8_t  dataCheck[] = "zx3vbnm";
-    uint8_t  temp;
     SYS_UnlockReg();
     PinSetup();
     ClkSetup();
     UartSetup();
-    f1 = FIFO_New( 100, NULL );
-    vMemInfoPrint();
-    for ( i = 0; i < 97; i++ ) {
-        if ( FIFO_ByteIn( f1, ( uint8_t* )&i ) ) {
-            printf( "size:%d ;head:%d ;tail:%d ;eff:%d\n", f1->size, f1->head, f1->tail, f1->effSize );
-        }
-        else {
-            printf( "size:%d ;head:%d ;tail:%d ;eff:%d..err\n", f1->size, f1->head, f1->tail, f1->effSize );
-        }
-    }
-    // FIFO_ByteOut(f1,&temp);
-    if ( FIFO_WaitData( f1, 50, 100 ) ) {
-        printf( "wait done\n" );
-    }
-    // FIFO_Rst( f1 );
-    while ( !FIFO_IsEmpty( f1 ) )
-        FIFO_ByteOut( f1, &temp ); 
-    printf( "size:%d ;head:%d ;tail:%d ;eff:%d\n", f1->size, f1->head, f1->tail, f1->effSize );
+    GpioSetup();
 
-    for ( i = 0; i < 20; i++ ) {
-        FIFO_ByteIn( f1, dataIn + i );
-        printf( "i:%d = %c\n", i, FIFO_ReadData( f1, i ) );
+    g_stUart1_buf = FIFO_New( 1024, NULL );
+    //vMemInfoPrint();
+    g_stOv528_s0 = OV528_New( 0x0001, g_stUart1_buf, CameraUartWrite, CameraUartRead, CameraDelay );
+    //vMemInfoPrint();
+
+    USER_DISABLE_CMAERA_POWER();
+    DelayUs( 1000000 );
+    USER_ENABLE_CMAERA_POWER();
+    DelayUs( 1000000 );
+    NVIC_Init();
+
+    if ( OV528_SNYC( g_stOv528_s0 ) ) {
+        //printf( "down\n" );
     }
-		dataCheck[2] = 0x00;
-    if ( FIFO_CmdCheck( f1, dataCheck, 2, 20, 7, 0 , false) ) {
-        printf( "check done\n" );
+    if ( OV528_Init( g_stOv528_s0, OV528_INIT_JPEG, OV528_INIT_PR_160_120, OV528_INIT_JPEG_640_480 ) ) {
+        //printf( "down\n" );
     }
-    else
-        printf( "err\n" );
+    DelayUs( 1000000 );
+    if ( OV528_Snapshout( g_stOv528_s0, OV528_SNAPSHOT_COMPRESSED, 0x0000 ) ) {
+       //printf( "down\n" );
+    }
+    if ( OV528_SetPacketSize( g_stOv528_s0, 1000 ) ) {
+        //printf( "down\n" );
+    }
+    if ( OV528_GetPictue( g_stOv528_s0, OV528_GET_PICTURE_SNAPSHOT ) ) {
+        //printf( "down\n" );
+    }
+
+    //DelayUs( 1000000 );
+    for ( i = 0; i < g_stOv528_s0->imagePacket; i++ ) {
+        size = OV528_GetPacket( g_stOv528_s0, i, dataTemp );
+        UART_Write( UART0, dataTemp, size );
+    }
     while ( 1 ) {};
     RtcSetup();
-    GpioSetup();
+
     SpiSetup();
     TimerSetup();
     FifoSetup();

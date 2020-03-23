@@ -5,6 +5,17 @@
 extern "C" {
 #endif
 
+#define OV528_USE_VMEMALLOC 1
+
+#if OV528_USE_VMEMALLOC
+    #include "vMemAlloc.h"
+    #define OV528_MALLOC( size ) vMemAlloc( size )
+    #define OV528_FREE( ptr ) vMemFree( ptr )
+#else
+    #define OV528_MALLOC( size ) malloc( size )
+    #define OV528_FREE( ptr ) free( ptr )
+#endif  // OV528_USE_VMEMALLOC
+
 //------------------------------------
 // Command ID
 #define OV528_CMD_ID_INIT 0x01
@@ -56,15 +67,23 @@ extern "C" {
 
 //------------------------------------
 // include
-#include <FIFO.h>
+#include "FIFO.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
 //------------------------------------
-// Struct
-typedef struct {
-    // Device Config
-    uint8_t ID;
 
-    // Image Config
+typedef uint32_t ( *UartFunction )( uint8_t*, uint32_t );
+typedef void ( *DelayFunction )( uint32_t );
+
+// Struct 
+typedef struct { // 42 bytes
+    // Device Config --2 bytes
+    uint16_t ID;
+
+    // Image Config --8 bytes
     uint8_t  color;
     uint8_t  previewResolution;
     uint8_t  JPEGResolution;
@@ -72,38 +91,37 @@ typedef struct {
     uint16_t skipFrame;
     uint16_t packetSize;
 
-    // UART Config
+    // UART Config --4 bytes
     uint32_t baudRate;
 
-    // BUFFER
-    FIFO_T* buf;
+    // BUFFER --11 bytes
+    FIFO_T* fifoBuf;
     uint8_t cmd[ 6 ];
     uint8_t err;
 
-    // Image
+    // Image --9 bytes
     uint8_t  imageType;
     uint32_t imageSize;
     uint32_t imagePacket;
 
-    // WriteData function
+    // WriteData function --8 bytes
     // arr : Array ; size : writeSize
-    uint32_t ( *WriteData )( uint8_t* arr, uint32_t size );
-    void ( *Delay )( uint32_t time );
+    UartFunction UartWriteData;
+    UartFunction UartReadData;
+    DelayFunction Delay;
 
 } OV528_T;
 
-typedef size_t ( *funcWriteData )( uint8_t*, uint32_t );
-typedef void ( *funcDelay )( uint32_t );
 //------------------------------------
 // Function
-OV528_T* OV528_New( uint8_t ID, FIFO_T* FIFO_st, uint32_t ( *WriteFunction )( uint8_t*, uint32_t ), void ( *DelayFunction )( uint32_t ) );
-uint8_t  OV528_SNYC( OV528_T* OV528 );
-uint8_t  OV528_Init( OV528_T* OV528, uint8_t color, uint8_t PR, uint8_t JPEGR );
-uint8_t  OV528_GetPictue( OV528_T* OV528, uint8_t imageType );
-uint8_t  OV528_Snapshout( OV528_T* OV528, uint8_t Compressed, uint16_t SkipFrame );
-uint8_t  OV528_SetBaudRate( OV528_T* OV528, uint32_t BAUD );
-uint8_t  OV528_PowerDown( OV528_T* OV528 );
-uint8_t  OV528_SetPacketSize( OV528_T* OV528, uint16_t size );
+OV528_T* OV528_New( uint16_t ID, FIFO_T* FIFO_st, UartFunction funcWrite, UartFunction funcRead, DelayFunction funcDelay );
+bool OV528_SNYC( OV528_T* OV528 );
+bool OV528_Init( OV528_T* OV528, uint8_t color, uint8_t PR, uint8_t JPEGR );
+bool OV528_GetPictue( OV528_T* OV528, uint8_t imageType );
+bool OV528_Snapshout( OV528_T* OV528, uint8_t Compressed, uint16_t SkipFrame );
+bool OV528_SetBaudRate( OV528_T* OV528, uint32_t BAUD );
+bool OV528_PowerDown( OV528_T* OV528 );
+bool  OV528_SetPacketSize( OV528_T* OV528, uint16_t size );
 uint16_t OV528_GetPacket( OV528_T*, uint16_t, uint8_t[] );
 
 #ifdef __cplusplus

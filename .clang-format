@@ -30,7 +30,7 @@ AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortBlocksOnASingleLine:	true
 
 # 允許短的 case 標簽放在同一行
-AllowShortCaseLabelsOnASingleLine:	true
+AllowShortCaseLabelsOnASingleLine:	false
 
 # 允許短的函數放在同一行: None, InlineOnly, Empty, Inline, All
 AllowShortFunctionsOnASingleLine: Empty

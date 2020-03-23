@@ -7,14 +7,7 @@
       /____/
 */
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-#include "Nano103.h"
 #include "USER_LIB.h"
-
 
 // Stuct Value
 S_RTC_TIME_DATA_T g_stRtcTime = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
@@ -186,7 +179,7 @@ void RtcSetup( void ) {
  */
 void FifoSetup( void ) {
 
-	}
+}
 /**
  * @brief  相機設定
  * @note
@@ -194,16 +187,6 @@ void FifoSetup( void ) {
  */
 void CameraSetup( void ) {
     // portable
-    g_stOv528_s0 = OV528_New( 1, g_stUart1_buf, CameraUartWrite, CameraDelay );
-
-    USER_ENABLE_CMAERA_POWER();
-    printf( "Wait for Camera" );
-    while ( !OV528_SNYC( g_stOv528_s0 ) ) printf( "." );
-    CameraDelay( 1000 );
-    OV528_Init( g_stOv528_s0, OV528_INIT_JPEG, OV528_INIT_PR_160_120, OV528_INIT_JPEG_640_480 );
-    OV528_SetBaudRate( g_stOv528_s0, 115200 );
-    OV528_SetPacketSize( g_stOv528_s0, 32 + 6 );  // data : 32 byte  ; head+checkSum : 6 byte
-    printf( "down\n" );
 }
 
 /**

@@ -37,8 +37,7 @@ FIFO_T* FIFO_New( const size_t bufSize, uint8_t* fifoBuf ) {
     buf_st->head    = 0u;
     buf_st->tail    = 0u;
     buf_st->effSize = bufSize;
-    printf( "%d", buf_st->effSize );
-    buf_st->buf = ( fifoBuf == NULL ) ? ( uint8_t* )( ( size_t )buf_st + sizeof( FIFO_T ) ) : fifoBuf;
+    buf_st->buf     = ( fifoBuf == NULL ) ? ( uint8_t* )( ( size_t )buf_st + sizeof( FIFO_T ) ) : fifoBuf;
     return buf_st;
 }
 
@@ -133,11 +132,11 @@ bool FIFO_WaitData( FIFO_T* buf_st, size_t dataSize, size_t timeOut ) {
     size_t timeStamp = FIFO_CntTime;
     size_t CntTime;
     do {
-        if ( ( buf_st->size ) >= dataSize )
-            return true;
         CntTime = timeStamp > FIFO_CntTime ? ( ( UINT32_MAX - timeStamp ) + FIFO_CntTime ) : FIFO_CntTime - timeStamp;
         if ( CntTime > timeOut )
             return false;
+        if ( ( buf_st->size ) >= dataSize )
+            return true;
     } while ( timeOut > 0 );
     return false;
 }
@@ -188,8 +187,6 @@ bool FIFO_CmdCheck( FIFO_T* buf_st, uint8_t* Command, size_t fifoShift, size_t f
                 // cmd循環
                 for ( cmd_c = 0; cmd_c < cmd_len; cmd_c++ ) {
                     //檢查字元，NULL為 don't care
-                    printf( "FIFO %d : 0x%X	", ( fifoShift + fifo_c + cmd_c ), ( uint8_t )( FIFO_ReadData( buf_st, ( fifoShift + fifo_c + cmd_c ) ) ) );
-                    printf( "cmd %d : 0x%X\n", cmd_c, Command[ cmd_c ] );
                     if ( ( FIFO_ReadData( buf_st, ( fifoShift + fifo_c + cmd_c ) ) != Command[ cmd_c ] ) )
                         if ( !isIgnore || ( Command[ cmd_c ] != NULL ) )
                             break;

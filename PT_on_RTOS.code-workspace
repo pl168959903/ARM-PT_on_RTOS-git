@@ -5,6 +5,10 @@
 		}
 	],
 	"settings": {
-		"files.autoSave": "afterDelay"
+		"files.autoSave": "afterDelay",
+		"files.associations": {
+			"string": "c",
+			"cj_ov528.h": "c"
+		}
 	}
 }
