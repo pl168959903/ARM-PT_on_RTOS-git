@@ -79,11 +79,11 @@ typedef uint32_t ( *UartFunction )( uint8_t*, uint32_t );
 typedef void ( *DelayFunction )( uint32_t );
 
 // Struct 
-typedef struct { // 42 bytes
-    // Device Config --2 bytes
+typedef struct { 
+    // Device Config 
     uint16_t ID;
 
-    // Image Config --8 bytes
+    // Image Config 
     uint8_t  color;
     uint8_t  previewResolution;
     uint8_t  JPEGResolution;
@@ -91,20 +91,18 @@ typedef struct { // 42 bytes
     uint16_t skipFrame;
     uint16_t packetSize;
 
-    // UART Config --4 bytes
+    // UART Config 
     uint32_t baudRate;
 
-    // BUFFER --11 bytes
+    // BUFFER 
     FIFO_T* fifoBuf;
-    uint8_t cmd[ 6 ];
-    uint8_t err;
 
-    // Image --9 bytes
+    // Image 
     uint8_t  imageType;
     uint32_t imageSize;
     uint32_t imagePacket;
 
-    // WriteData function --8 bytes
+    // WriteData function 
     // arr : Array ; size : writeSize
     UartFunction UartWriteData;
     UartFunction UartReadData;

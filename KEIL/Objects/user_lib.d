@@ -1,8 +1,5 @@
 .\objects\user_lib.o: ..\Libraries\User\src\user_lib.c
-.\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
-.\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
+.\objects\user_lib.o: ..\Libraries\User\inc\USER_LIB.h
 .\objects\user_lib.o: ..\Libraries\Device\Nuvoton\Nano103\Include\Nano103.h
 .\objects\user_lib.o: ..\Libraries\CMSIS\Include\core_cm0.h
 .\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
@@ -28,7 +25,6 @@
 .\objects\user_lib.o: ..\Libraries\StdDriver\inc\uart.h
 .\objects\user_lib.o: ..\Libraries\StdDriver\inc\wdt.h
 .\objects\user_lib.o: ..\Libraries\StdDriver\inc\wwdt.h
-.\objects\user_lib.o: ..\Libraries\User\inc\USER_LIB.h
 .\objects\user_lib.o: ..\FreeRTOS\Source\include\FreeRTOS.h
 .\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\user_lib.o: ..\Config\FreeRTOSConfig.h
@@ -42,6 +38,10 @@
 .\objects\user_lib.o: ..\FreeRTOS\Source\include\task.h
 .\objects\user_lib.o: ..\FreeRTOS\Source\include\list.h
 .\objects\user_lib.o: ..\FreeRTOS\Source\include\timers.h
+.\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\user_lib.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\user_lib.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\user_lib.o: ..\Libraries\User\inc\vMemAlloc.h
 .\objects\user_lib.o: ..\Libraries\User\inc\FIFO.h

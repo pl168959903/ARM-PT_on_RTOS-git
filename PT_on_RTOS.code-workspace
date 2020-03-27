@@ -8,7 +8,8 @@
 		"files.autoSave": "afterDelay",
 		"files.associations": {
 			"string": "c",
-			"cj_ov528.h": "c"
+			"cj_ov528.h": "c",
+			"w25qxx.h": "c"
 		}
 	}
 }

@@ -38,10 +38,12 @@
 .\objects\nrf24l01.o: ..\FreeRTOS\Source\include\task.h
 .\objects\nrf24l01.o: ..\FreeRTOS\Source\include\list.h
 .\objects\nrf24l01.o: ..\FreeRTOS\Source\include\timers.h
+.\objects\nrf24l01.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\nrf24l01.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\nrf24l01.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\nrf24l01.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\nrf24l01.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\nrf24l01.o: ..\Libraries\User\inc\vMemAlloc.h
-.\objects\nrf24l01.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\nrf24l01.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\nrf24l01.o: ..\Libraries\User\inc\FIFO.h
 .\objects\nrf24l01.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\nrf24l01.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

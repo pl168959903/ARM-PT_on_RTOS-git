@@ -38,10 +38,12 @@
 .\objects\main.o: ..\FreeRTOS\Source\include\task.h
 .\objects\main.o: ..\FreeRTOS\Source\include\list.h
 .\objects\main.o: ..\FreeRTOS\Source\include\timers.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\main.o: ..\Libraries\User\inc\CJ_OV528.h
 .\objects\main.o: ..\Libraries\User\inc\vMemAlloc.h
-.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\main.o: ..\Libraries\User\inc\FIFO.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
