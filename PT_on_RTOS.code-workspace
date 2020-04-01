@@ -9,7 +9,14 @@
 		"files.associations": {
 			"string": "c",
 			"cj_ov528.h": "c",
-			"w25qxx.h": "c"
+			"w25qxx.h": "c",
+			"portable.h": "c",
+			"nrf24l01.h": "c",
+			"bridging.h": "c",
+			"initializer_list": "c",
+			"type_traits": "c",
+			"xstring": "c",
+			"xutility": "c"
 		}
 	}
 }

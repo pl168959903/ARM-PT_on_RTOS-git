@@ -270,6 +270,8 @@ Section Cross References
     w25qxx.o(i.W25QXX_EraseSecurityRegisters) refers to w25qxx.o(i.W25QXX_WriteEnable) for W25QXX_WriteEnable
     w25qxx.o(i.W25QXX_FastReadByte) refers to w25qxx.o(i.W25QXX_WaitBusy) for W25QXX_WaitBusy
     w25qxx.o(i.W25QXX_New) refers to vmemalloc.o(i.vMemAlloc) for vMemAlloc
+    w25qxx.o(i.W25QXX_ProgramPage) refers to w25qxx.o(i.W25QXX_WaitBusy) for W25QXX_WaitBusy
+    w25qxx.o(i.W25QXX_ProgramPage) refers to w25qxx.o(i.W25QXX_WriteEnable) for W25QXX_WriteEnable
     w25qxx.o(i.W25QXX_ReadByte) refers to w25qxx.o(i.W25QXX_WaitBusy) for W25QXX_WaitBusy
     w25qxx.o(i.W25QXX_ReadSecurityRegisters) refers to w25qxx.o(i.W25QXX_WaitBusy) for W25QXX_WaitBusy
     w25qxx.o(i.W25QXX_ReadSfdp) refers to w25qxx.o(i.W25QXX_WaitBusy) for W25QXX_WaitBusy
@@ -282,8 +284,6 @@ Section Cross References
     w25qxx.o(i.W25QXX_WpsGlobalBlockUnLock) refers to w25qxx.o(i.W25QXX_WriteEnable) for W25QXX_WriteEnable
     w25qxx.o(i.W25QXX_WpsIndividualLock) refers to w25qxx.o(i.W25QXX_WriteEnable) for W25QXX_WriteEnable
     w25qxx.o(i.W25QXX_WpsIndividualUnLock) refers to w25qxx.o(i.W25QXX_WriteEnable) for W25QXX_WriteEnable
-    w25qxx.o(i.W25QXX_WriteDataInPage) refers to w25qxx.o(i.W25QXX_WaitBusy) for W25QXX_WaitBusy
-    w25qxx.o(i.W25QXX_WriteDataInPage) refers to w25qxx.o(i.W25QXX_WriteEnable) for W25QXX_WriteEnable
     w25qxx.o(i.W25QXX_WriteSecurityRegisters) refers to w25qxx.o(i.W25QXX_WaitBusy) for W25QXX_WaitBusy
     w25qxx.o(i.W25QXX_WriteSecurityRegisters) refers to w25qxx.o(i.W25QXX_WriteEnable) for W25QXX_WriteEnable
     w25qxx.o(i.W25QXX_WriteStatusRegister1) refers to w25qxx.o(i.W25QXX_WaitBusy) for W25QXX_WaitBusy
@@ -838,6 +838,7 @@ Removing Unused input sections from the image.
     Removing w25qxx.o(i.W25QXX_FastReadByte), (76 bytes).
     Removing w25qxx.o(i.W25QXX_New), (34 bytes).
     Removing w25qxx.o(i.W25QXX_PowerDown), (20 bytes).
+    Removing w25qxx.o(i.W25QXX_ProgramPage), (78 bytes).
     Removing w25qxx.o(i.W25QXX_ReadByte), (72 bytes).
     Removing w25qxx.o(i.W25QXX_ReadJedecId), (38 bytes).
     Removing w25qxx.o(i.W25QXX_ReadSecurityRegisters), (76 bytes).
@@ -859,7 +860,6 @@ Removing Unused input sections from the image.
     Removing w25qxx.o(i.W25QXX_WpsIndividualUnLock), (48 bytes).
     Removing w25qxx.o(i.W25QXX_WpsReadLock), (56 bytes).
     Removing w25qxx.o(i.W25QXX_WriteAlignmentSectors), (2 bytes).
-    Removing w25qxx.o(i.W25QXX_WriteDataInPage), (78 bytes).
     Removing w25qxx.o(i.W25QXX_WriteDisable), (20 bytes).
     Removing w25qxx.o(i.W25QXX_WriteEnable), (20 bytes).
     Removing w25qxx.o(i.W25QXX_WriteSecurityRegisters), (78 bytes).

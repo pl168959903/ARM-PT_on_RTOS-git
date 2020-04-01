@@ -15,6 +15,7 @@ typedef void( FUNC_PTR )( void );
 #define USER_CFG_DEBUG_MODE 1
 #define USER_CFG_COMERA_EN 1
 #define USER_CFG_NRF24L01_EN 1
+#define USER_CFG_NRF24L01_0_SPI SPI0
 #define USER_CFG_W25XX_EN 1
 #define USER_CFG_W25XX_0_SPI SPI3
 
