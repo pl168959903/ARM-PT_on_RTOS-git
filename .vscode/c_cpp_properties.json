@@ -3,15 +3,12 @@
         {
             "name": "ARM",
             "includePath": [
-                "${workspaceFolder}\\Libraries\\CMSIS\\Include",
-                "${workspaceFolder}\\Libraries\\Device\\Nuvoton\\Nano103\\Include",
-                "${workspaceFolder}\\Libraries\\StdDriver\\inc",
-                "${workspaceFolder}\\Libraries\\User\\inc",
-                "${workspaceFolder}\\FreeRTOS\\Source\\include",
-                "${workspaceFolder}\\FreeRTOS\\Source\\portable\\RVDS\\ARM_CM0",
-                "${workspaceFolder}\\Config",
+                "C:\\Keil_v5\\ARM\\ARMCC\\include",
                 "${workspaceFolder}\\include",
-                "C:\\Keil_v5\\ARM\\ARMCC\\include"
+                "${workspaceFolder}\\libraries\\Official\\CMSIS\\Include",
+                "${workspaceFolder}\\libraries\\Official\\Device\\Nuvoton\\Nano103\\Include",
+                "${workspaceFolder}\\libraries\\Official\\StdDriver\\inc",
+                "${workspaceFolder}\\libraries\\User\\inc"
             ],
             "defines": [
                 "_DEBUG",

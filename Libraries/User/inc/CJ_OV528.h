@@ -68,6 +68,7 @@ extern "C" {
 //------------------------------------
 // include
 #include "FIFO.h"
+#include "bridging.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,8 +76,7 @@ extern "C" {
 
 //------------------------------------
 
-typedef uint32_t ( *UartFunction )( uint8_t*, uint32_t );
-typedef void ( *DelayFunction )( uint32_t );
+
 
 // Struct 
 typedef struct { 
@@ -103,16 +103,15 @@ typedef struct {
     uint32_t imagePacket;
 
     // WriteData function 
-    // arr : Array ; size : writeSize
-    UartFunction UartWriteData;
-    UartFunction UartReadData;
-    DelayFunction Delay;
+    // arr : Array ; size : writeSizes
+    UART_Func_T *Uart;
+    DelayFunction *Delay;
 
 } OV528_T;
 
 //------------------------------------
 // Function
-OV528_T* OV528_New( uint16_t ID, FIFO_T* FIFO_st, UartFunction funcWrite, UartFunction funcRead, DelayFunction funcDelay );
+OV528_T* OV528_New( uint16_t ID, size_t bufSize, UART_Func_T* UartFuncion, DelayFunction Delay );
 bool OV528_SNYC( OV528_T* OV528 );
 bool OV528_Init( OV528_T* OV528, uint8_t color, uint8_t PR, uint8_t JPEGR );
 bool OV528_GetPictue( OV528_T* OV528, uint8_t imageType );

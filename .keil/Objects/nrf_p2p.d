@@ -1,0 +1,11 @@
+.\objects\nrf_p2p.o: ..\libraries\User\src\NRF_P2P.c
+.\objects\nrf_p2p.o: ..\libraries\User\inc\NRF_P2P.h
+.\objects\nrf_p2p.o: ..\libraries\User\inc\NRF24L01.h
+.\objects\nrf_p2p.o: ..\libraries\User\inc\bridging.h
+.\objects\nrf_p2p.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\nrf_p2p.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\nrf_p2p.o: ..\libraries\User\inc\FIFO.h
+.\objects\nrf_p2p.o: ..\libraries\User\inc\vMemAlloc.h
+.\objects\nrf_p2p.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\nrf_p2p.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\nrf_p2p.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

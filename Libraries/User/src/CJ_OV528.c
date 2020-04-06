@@ -18,14 +18,14 @@
  * @param  DelayFunction 延時函式的函式指標
  * @retval 物件指標
  */
-OV528_T* OV528_New( uint16_t ID, FIFO_T* FIFO_st, UartFunction funcWrite, UartFunction funcRead, DelayFunction funcDelay ) {
+// OV528_T* OV528_New( uint16_t ID, FIFO_T* FIFO_st, UartFunction funcWrite, UartFunction funcRead, DelayFunction funcDelay ) {
+OV528_T* OV528_New( uint16_t ID, size_t bufSize, UART_Func_T* UartFuncion, DelayFunction Delay ) {
     OV528_T* OV528_class = ( OV528_T* )OV528_MALLOC( sizeof( OV528_T ) );
     if ( OV528_class != NULL ) {
-        OV528_class->ID            = ID;
-        OV528_class->fifoBuf       = FIFO_st;
-        OV528_class->UartWriteData = funcWrite;
-        OV528_class->UartReadData  = funcRead;
-        OV528_class->Delay         = funcDelay;
+        OV528_class->ID      = ID;
+        OV528_class->fifoBuf = FIFO_New( bufSize, NULL );
+        OV528_class->Uart    = UartFuncion;
+        OV528_class->Delay   = Delay;
     }
     return OV528_class;
 }
@@ -47,8 +47,8 @@ bool OV528_SNYC( OV528_T* OV528 ) {
 
     // send data
     FIFO_Rst( OV528->fifoBuf );
-    OV528->UartWriteData( command, 6 );
-    OV528->UartWriteData( command, 6 );
+    OV528->Uart->Write( command, 6 );
+    OV528->Uart->Write( command, 6 );
 
     cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 12, 6, 500, false );
 
@@ -92,7 +92,7 @@ bool OV528_Init( OV528_T* OV528, uint8_t color, uint8_t PR, uint8_t JPEGR ) {
 
     // send data
     FIFO_Rst( OV528->fifoBuf );
-    OV528->UartWriteData( command, 6 );
+    OV528->Uart->Write( command, 6 );
 
     // check ack
     cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
@@ -131,7 +131,7 @@ bool OV528_GetPictue( OV528_T* OV528, uint8_t imageType ) {
 
     // send data
     FIFO_Rst( OV528->fifoBuf );
-    OV528->UartWriteData( command, 6 );
+    OV528->Uart->Write( command, 6 );
 
     // check ack
     cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
@@ -183,7 +183,7 @@ bool OV528_Snapshout( OV528_T* OV528, uint8_t Compressed, uint16_t SkipFrame ) {
 
     // send data
     FIFO_Rst( OV528->fifoBuf );
-    OV528->UartWriteData( command, 6 );
+    OV528->Uart->Write( command, 6 );
 
     // check ack
     cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
@@ -227,7 +227,7 @@ bool OV528_SetBaudRate( OV528_T* OV528, uint32_t BAUD ) {
 
     // send data
     FIFO_Rst( OV528->fifoBuf );
-    OV528->UartWriteData( command, 6 );
+    OV528->Uart->Write( command, 6 );
 
     // check ack
     cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
@@ -257,7 +257,7 @@ bool OV528_PowerDown( OV528_T* OV528 ) {
 
     // send data
     FIFO_Rst( OV528->fifoBuf );
-    OV528->UartWriteData( command, 6 );
+    OV528->Uart->Write( command, 6 );
 
     // check ack
     cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
@@ -288,7 +288,7 @@ bool OV528_SetPacketSize( OV528_T* OV528, uint16_t size ) {
 
     // send data
     FIFO_Rst( OV528->fifoBuf );
-    OV528->UartWriteData( command, 6 );
+    OV528->Uart->Write( command, 6 );
 
     // check ack
     cmdCheck = FIFO_CmdCheck( OV528->fifoBuf, commandAck, 0, 6, 6, 500, false );
@@ -324,7 +324,7 @@ uint16_t OV528_GetPacket( OV528_T* OV528, uint16_t package_ID, uint8_t* outPutAr
 
     // send data
     FIFO_Rst( OV528->fifoBuf );
-    OV528->UartWriteData( command, 6 );
+    OV528->Uart->Write( command, 6 );
 
     if ( FIFO_WaitData( OV528->fifoBuf, 4, 250 ) ) {
         // wait for packet head data
