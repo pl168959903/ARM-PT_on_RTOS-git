@@ -1,11 +1,11 @@
 #include "NRF_P2P.h"
-
-uint8_t searchAddr[ 5 ] = { 0xAA, 0xBB, 0xCC, 0xDD, 0xEE };
+#include "project.h"
 
 void nrfP2p_InitNrf( NRF_T* nrf, uint8_t rfCh ) {
     uint8_t statusReg;
     statusReg = NRF_Nop( nrf );
     if ( statusReg != 0xFF ) {
+        nrf->ResetCE();
         NRF_WriteRegByte( nrf, NRF_REG_CFG, ( NRF_REG_CFG_EN_CRC_MSK | NRF_REG_CFG_PWR_UP_MSK | NRF_REG_CFG_PRIM_RX_MSK ) );
         NRF_WriteRegByte( nrf, NRF_REG_EN_AA, ( 0 ) );
         NRF_WriteRegByte( nrf, NRF_REG_EN_RXADDR, ( 0 ) );
@@ -17,39 +17,89 @@ void nrfP2p_InitNrf( NRF_T* nrf, uint8_t rfCh ) {
     }
 }
 
-void nrfP2p_NewChannel( NRF_T* nrf, uint8_t ch, uint8_t* addr, size_t bufSize, uint8_t rxpw, bool autoAck ) {
-    uint8_t reg;
-    reg = NRF_ReadRegByte( nrf, NRF_REG_EN_AA );
+NRFP2P_CHANNEL_T* nrfP2p_NewChannel( NRF_T* nrf, uint8_t ch, uint8_t* address, uint8_t* destAddr, uint8_t rxpw, uint8_t txpw, bool autoAck ) {
+    uint8_t           reg;
+    NRFP2P_CHANNEL_T* ptr;
+    ptr           = ( NRFP2P_CHANNEL_T* )NRFP2P_MALLOC( sizeof( NRFP2P_CHANNEL_T ) );
+    ptr->nrf      = nrf;
+    ptr->ch       = ch;
+    ptr->address  = address;
+    ptr->destAddr = destAddr;
+    ptr->rxpw     = rxpw;
+    ptr->txpw     = txpw;
+    ptr->autoAck  = autoAck;
+
+    nrf->ResetCE();
+    // EN_AA
     if ( autoAck == true ) {
-        NRF_WriteRegByte( nrf, NRF_REG_EN_AA, reg | ( 0x1 << ch ) );
+        reg = NRF_ReadRegByte( nrf, NRF_REG_EN_AA );
+        NRF_WriteRegByte( nrf, NRF_REG_EN_AA, reg | ( 0x1 << ch ) | NRF_REG_EN_AA_P0_MSK );
+        reg = NRF_ReadRegByte( nrf, NRF_REG_EN_RXADDR );
+        NRF_WriteRegByte( nrf, NRF_REG_EN_RXADDR, ( reg | ( 0x1 << ch ) | NRF_REG_EN_RXADDR_ERX_P0_MSK ) );
+        NRF_WriteRegByte( nrf, ( NRF_REG_RX_PW_P0 + ch ), ( rxpw & NRF_REG_RX_PW_P0_MSK ) );
+        NRF_WriteRegByte( nrf, NRF_REG_RX_PW_P0, ( txpw & NRF_REG_RX_PW_P0_MSK ) );
     }
     else {
+        reg = NRF_ReadRegByte( nrf, NRF_REG_EN_AA );
         NRF_WriteRegByte( nrf, NRF_REG_EN_AA, reg & ~( 0x1 << ch ) );
+        reg = NRF_ReadRegByte( nrf, NRF_REG_EN_RXADDR );
+        NRF_WriteRegByte( nrf, NRF_REG_EN_RXADDR, ( reg | ( 0x1 << ch ) | NRF_REG_EN_RXADDR_ERX_P0_MSK ) );
+        NRF_WriteRegByte( nrf, ( NRF_REG_RX_PW_P0 + ch ), ( rxpw & NRF_REG_RX_PW_P0_MSK ) );
     }
-    reg = NRF_ReadRegByte( nrf, NRF_REG_EN_RXADDR );
-    NRF_WriteRegByte( nrf, NRF_REG_EN_RXADDR, ( reg | ( 0x1 << ch ) ) );
+
     if ( ch > 1 ) {
-        NRF_WriteRegArray( nrf, ( NRF_REG_RX_ADDR_P0 + ch ), addr, 5 );
+				uint8_t temp[ 5 ];
+        memcpy( temp, address, 5 );
+        NRF_WriteRegByte( nrf, ( NRF_REG_RX_ADDR_P0 + ch ), ( uint8_t )*address );
+        temp[ 0 ] = NRF_ReadRegByte( nrf, NRF_REG_RX_ADDR_P1 );
+        NRF_WriteRegArray( nrf, NRF_REG_RX_ADDR_P1, temp, 5 );
+       
     }
     else {
-        NRF_WriteRegByte( nrf, ( NRF_REG_RX_ADDR_P0 + ch ), *( addr + 4 ) );
+        NRF_WriteRegArray( nrf, ( NRF_REG_RX_ADDR_P0 + ch ), address, 5 );
     }
-    NRF_WriteRegByte( nrf, ( NRF_REG_RX_PW_P0 + ch ), rxpw );
-    nrf->buf[ ch ] = FIFO_New( bufSize, NULL );
+    return ptr;
 }
 
-bool nrfP2p_SendPacket( NRF_T* nrf, uint8_t* addr, uint8_t* array, uint8_t size, uint8_t txpw ) {
-    NRF_WriteRegArray( nrf, NRF_REG_TX_ADDR, addr, 5 );
-    NRF_Tx( nrf, array, txpw );
+bool nrfP2p_SendPacket( NRFP2P_CHANNEL_T* ptr, uint8_t* array ) {
+	
+    // Set p0 ack channel;
+    if ( ptr->autoAck == true ) {
+        NRF_WriteRegArray( ptr->nrf, NRF_REG_RX_ADDR_P0, ptr->destAddr, 5 );
+    }
+    // Send Data
+    NRF_WriteRegArray( ptr->nrf, NRF_REG_TX_ADDR, ptr->destAddr, 5 );
+    ptr->nrf->ResetCE();
+    NRF_Tx( ptr->nrf, array, ptr->txpw );
+		ptr->nrf->SetCE();
+		DelayUs(50);
+    ptr->nrf->ResetCE();
+    // Interrupt
     while ( 1 ) {
-        //NRF_Nop( nrf ); //如有中斷程式更新StatusReg，這行可以註解。
-        if ( nrf->statusReg & NRF_REG_STATUS_TX_DS_MSK ){
-            NRF_WriteRegByte(nrf,NRF_REG_STATUS, nrf->statusReg);
+        // NRF_Nop( ptr->nrf );  //如有中斷程式更新StatusReg，這行可以註解。
+        if ( ptr->nrf->statusReg & NRF_REG_STATUS_TX_DS_MSK ) {
+            NRF_WriteRegByte( ptr->nrf, NRF_REG_STATUS, ptr->nrf->statusReg );
             return true;
         }
-        if ( nrf->statusReg & NRF_REG_STATUS_MAX_RT_MSK ){
-            NRF_WriteRegByte(nrf,NRF_REG_STATUS, nrf->statusReg);
+        if ( ptr->nrf->statusReg & NRF_REG_STATUS_MAX_RT_MSK ) {
+            NRF_FlushTx( ptr->nrf );
+            NRF_WriteRegByte( ptr->nrf, NRF_REG_STATUS, ptr->nrf->statusReg );
             return false;
-        }   
+        }
     }
+}
+
+bool nrfP2p_ReceivePacket( NRFP2P_CHANNEL_T* ptr, uint8_t* array ) {
+    uint8_t i;
+    // NRF_Nop(ptr->nrf); //如有中斷程式更新StatusReg，這行可以註解。
+    if ( ptr->nrf->statusReg & NRF_REG_STATUS_RX_DR_MSK ) {
+        if ( ( ( ptr->nrf->statusReg & NRF_REG_STATUS_RX_P_NO_MSK ) >> NRF_REG_STATUS_RX_P_NO_POS ) == ptr->ch ) {
+            for ( i = 0; i < ptr->rxpw; i++ ) {
+                NRF_Rx( ptr->nrf, array, ptr->rxpw );
+            }
+            NRF_WriteRegByte( ptr->nrf, NRF_REG_STATUS, ptr->nrf->statusReg );
+            return true;
+        }
+    }
+    return false;
 }

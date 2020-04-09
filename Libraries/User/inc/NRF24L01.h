@@ -180,11 +180,12 @@ extern volatile uint8_t NRF_Int_Flag;
 
 typedef struct {
     SPI_Func_T *spi;
+    FUNC_PTR *SetCE;
+    FUNC_PTR *ResetCE;
     uint8_t    statusReg;
-    FIFO_T * buf[6];
 } NRF_T;
 
-NRF_T* NRF_New( SPI_Func_T* SpiFuncion);
+NRF_T* NRF_New( SPI_Func_T* SpiFuncion, FUNC_PTR * SetCE, FUNC_PTR* ResetCE);
 uint8_t NRF_ReadRegByte( NRF_T* nrf, uint8_t reg );
 void NRF_WriteRegByte( NRF_T* nrf, uint8_t reg, uint8_t data );
 void NRF_ReadRegArray( NRF_T* nrf, uint8_t reg, uint8_t* array, size_t size );

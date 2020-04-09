@@ -1,25 +1,27 @@
 #include "Project.h"
 
-void NVIC_Init( void ) {
-    NVIC_EnableIRQ( GPABC_IRQn );
-    NVIC_EnableIRQ( TMR0_IRQn );
-    NVIC_EnableIRQ( UART1_IRQn );
-}
-
 void GPABC_IRQHandler( void ) {
     // Buttion
     if ( GPIO_GET_INT_FLAG( PA, BIT2 ) ) {
-        g_u8ButtonInterruptFlag = 1;
         GPIO_CLR_INT_FLAG( PA, BIT2 );
     }
     // ext int
     if ( GPIO_GET_INT_FLAG( PA, BIT14 ) ) {
-        g_u8ExtInterruptFlag = 1;
         GPIO_CLR_INT_FLAG( PA, BIT14 );
     }
     // nRF IRQ
     if ( GPIO_GET_INT_FLAG( PB, BIT3 ) ) {
-        g_u8NrfInterruptFlag = 1;
+        NRF_Nop(g_stNrf0);
+        if ( g_stNrf0->statusReg & NRF_REG_STATUS_RX_DR_MSK ) {
+            printf("RX_DR\n");
+        }
+        if ( g_stNrf0->statusReg & NRF_REG_STATUS_TX_DS_MSK ) {
+						printf("TX_DS\n");
+        }
+        if ( g_stNrf0->statusReg & NRF_REG_STATUS_MAX_RT_MSK ) {
+						printf("MAX_RT\n");
+        }
+				NRF_WriteRegByte( g_stNrf0, NRF_REG_STATUS, g_stNrf0->statusReg );
         GPIO_CLR_INT_FLAG( PB, BIT3 );
     }
 }

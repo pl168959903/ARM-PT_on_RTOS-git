@@ -9,8 +9,12 @@ extern "C"
 #include <stdint.h>
 #include <stdio.h>
 
-#define VM_MEM_SIZE 3000
+
+	
+#define VM_MEM_SIZE 5000
 #define VM_ALIGNMENT_SIZE 8
+
+#define __PRINTF printf
 
 
 
@@ -28,6 +32,7 @@ extern "C"
     #define VM_ALIGNMENT_MASK   (0x0000)
 #endif
 
+int vcomPrintf( const char* fmt, ... );
 
 void* vMemAlloc( size_t allocSize );
 void vMemFree( void* pv );

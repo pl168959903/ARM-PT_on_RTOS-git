@@ -11,21 +11,20 @@
 
 // Stuct Value
 S_RTC_TIME_DATA_T g_stRtcTime = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
-FIFO_T*           g_stUart0_buf;
-OV528_T*          g_stOv528_s0;
-NRF_T*            g_stNrf0;
 
-uint8_t g_u8ButtonInterruptFlag = 0;
-uint8_t g_u8ExtInterruptFlag    = 0;
-uint8_t g_u8NrfInterruptFlag    = 0;
+// Camera
+OV528_T* g_stOv528_s0;  // 相機實體
+
+// NRF
+NRF_T*            g_stNrf0;    // NRF實體
+NRFP2P_CHANNEL_T* g_stNrfCh1;  // NRF 通道實體
+FIFO_T*           g_stNrfRx;
+const uint8_t     g_u8P1Address[ 5 ]   = { 0x01, 0x79, 0x02, 0x08, 0x11 };
+const uint8_t     g_u8DestAddress[ 5 ] = { 0x00, 0x79, 0x02, 0x08, 0x11 };
+uint8_t           temp[ 32 ]           = { 0x03, 0xBB, 0xCC, 0xDD };
 
 /*---------------------------------------------------------------------------------------------------------*/
 
-/**
- * @brief  功能腳設定
- * @note
- * @retval None
- */
 void PinSetup( void ) {
     // XTAL
     SYS->GPF_MFPL |= ( SYS_GPF_MFPL_PF7MFP_X32_IN | SYS_GPF_MFPL_PF6MFP_X32_OUT | SYS_GPF_MFPL_PF3MFP_XT1_IN | SYS_GPF_MFPL_PF2MFP_XT1_OUT );
@@ -43,12 +42,6 @@ void PinSetup( void ) {
     SYS->GPA_MFPH |= ( SYS_GPA_MFPH_PA14MFP_GPIO | SYS_GPA_MFPH_PA15MFP_GPIO );  // PA14 : DI ; PA15 : nRF_CE
     SYS->GPB_MFPL |= ( SYS_GPB_MFPL_PB2MFP_GPIO | SYS_GPB_MFPL_PB3MFP_GPIO );    // PB2 : Camera_Power ; PB3 : nRF_IRQ
 }
-
-/**
- * @brief  時脈設定
- * @note
- * @retval None
- */
 void ClkSetup( void ) {
     // SYSTEM CLOCK
     CLK_EnableXtalRC( CLK_PWRCTL_LXTEN_Msk );
@@ -70,12 +63,6 @@ void ClkSetup( void ) {
     // TMR
     CLK_SetModuleClock( TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_LXT, CLK_TMR0_CLK_DIVIDER( 16 ) );
 }
-
-/**
- * @brief  GPIO設定
- * @note
- * @retval None
- */
 void GpioSetup( void ) {
     // MODE.
     GPIO_SetMode( PA, BIT0, GPIO_PMD_OUTPUT );
@@ -104,12 +91,6 @@ void GpioSetup( void ) {
     PA15 = 0;
     PB2  = 1;
 }
-
-/**
- * @brief  UART設定
- * @note
- * @retval None
- */
 void UartSetup( void ) {
     CLK_EnableModuleClock( UART0_MODULE );
     CLK_EnableModuleClock( UART1_MODULE );
@@ -125,23 +106,7 @@ void UartSetup( void ) {
 
     // Interrupt
     UART_EnableInt( UART1, UART_INTEN_RXTOIEN_Msk | UART_INTEN_RDAIEN_Msk );
-
-#ifdef USER_CFG_DEBUG_MODE
-    printf( "CPU Freq   : %dHz\n", CLK_GetCPUFreq() );
-    printf( "HCLK Freq  : %dHz\n", CLK_GetHCLKFreq() );
-    printf( "HXT Freq   : %dHz\n", CLK_GetHXTFreq() );
-    printf( "LXT Freq   : %dHz\n", CLK_GetLXTFreq() );
-    printf( "PCLK0 Freq : %dHz\n", CLK_GetPCLK0Freq() );
-    printf( "PCLK1 Freq : %dHz\n", CLK_GetPCLK1Freq() );
-    printf( "PLL Freq   : %dHz\n", CLK_GetPLLClockFreq() );
-#endif  // USER_CFG_DEBUG_MODE
 }
-
-/**
- * @brief  SPI 設定
- * @note
- * @retval None
- */
 void SpiSetup( void ) {
     CLK_EnableModuleClock( SPI0_MODULE );
     CLK_EnableModuleClock( SPI3_MODULE );
@@ -149,40 +114,21 @@ void SpiSetup( void ) {
     SPI_Open( SPI0, SPI_MASTER, SPI_MODE_0, 8, 1000000 );
     SPI_Open( SPI3, SPI_MASTER, SPI_MODE_0, 8, 1000000 );
 }
-
-/**
- * @brief  計時器設定
- * @note
- * @retval None
- */
 void TimerSetup( void ) {
     CLK_EnableModuleClock( TMR0_MODULE );
     TIMER_Open( TIMER0, TIMER_PERIODIC_MODE, 8 );
     TIMER_EnableInt( TIMER0 );
 }
-
-/**
- * @brief  RTC設定
- * @note
- * @retval None
- */
 void RtcSetup( void ) {
     CLK_EnableModuleClock( RTC_MODULE );
     RTC_Open( &g_stRtcTime );
     RTC_SetTickPeriod( RTC_TICK_1_SEC );
 }
-
-/**
- * @brief  FIFO設定
- * @note
- * @retval None
- */
-void FifoSetup( void ) {}
-/**
- * @brief  相機設定
- * @note
- * @retval None
- */
+void NVIC_Init( void ) {
+    NVIC_EnableIRQ( GPABC_IRQn );
+    // NVIC_EnableIRQ( TMR0_IRQn );
+    NVIC_EnableIRQ( UART1_IRQn );
+}
 void CameraSetup( void ) {
     size_t  i, size;
     uint8_t dataTemp[ 100 ];
@@ -201,13 +147,27 @@ void CameraSetup( void ) {
         UART_Write( UART0, dataTemp, size );
     }
 }
+void NrfSetup( void ) {
+    bool a;
+    g_stNrf0 = NRF_New( &g_stSpi0, &SetCE, &ResetCE );
+    printReg();
+    nrfP2p_InitNrf( g_stNrf0, 0x50 );
+    g_stNrfCh1 = nrfP2p_NewChannel( g_stNrf0, 1, ( uint8_t* )g_u8P1Address, ( uint8_t* )g_u8DestAddress, 32, 32, true );
+		NRF_FlushRx(g_stNrf0);
+		NRF_FlushTx(g_stNrf0);
+		NRF_TxMode( g_stNrf0 );
+    while ( 1 ) {
+        a = nrfP2p_SendPacket( g_stNrfCh1, temp );
+        //NRF_RxMode( g_stNrf0 );
+        if ( a == true ) {
+            printf( "T\n" );
+        }
+        else {
+            printf( "F\n" );
+        }
+    }
+}
 
-/**
- * @brief 延時函數
- * @note
- * @param  us: 延時時間(微秒)
- * @retval None
- */
 void DelayUs( uint32_t us ) {
     uint32_t delayMaxTime = 16777216 / ( CLK_GetCPUFreq() / 1000000 );
     do {
@@ -220,4 +180,30 @@ void DelayUs( uint32_t us ) {
             us = 0;
         }
     } while ( us > 0 );
+}
+
+void printReg( void ) {
+    uint8_t i;
+    uint8_t reg[ 5 ] = { 0 };
+    printf( "--------------------------------------\n" );
+    for ( i = 0; i <= 0x09; i++ ) {
+        reg[ 0 ] = NRF_ReadRegByte( g_stNrf0, i );
+        printf( "Reg : 0x%02X = 0x%02X\n", i, reg[ 0 ] );
+    }
+    for ( i = 0x0A; i <= 0x0B; i++ ) {
+        NRF_ReadRegArray( g_stNrf0, i, reg, 5 );
+        printf( "Reg : 0x%02X = 0x%02X%02X%02X%02X%02X\n", i, reg[ 4 ], reg[ 3 ], reg[ 2 ], reg[ 1 ], reg[ 0 ] );
+    }
+    for ( i = 0x0C; i <= 0x0F; i++ ) {
+        reg[ 0 ] = NRF_ReadRegByte( g_stNrf0, i );
+        printf( "Reg : 0x%02X = 0x%02X\n", i, reg[ 0 ] );
+    }
+    for ( i = 0x10; i <= 0x10; i++ ) {
+        NRF_ReadRegArray( g_stNrf0, i, reg, 5 );
+        printf( "Reg : 0x%02X = 0x%02X%02X%02X%02X%02X\n", i, reg[ 4 ], reg[ 3 ], reg[ 2 ], reg[ 1 ], reg[ 0 ] );
+    }
+    for ( i = 0x11; i <= 0x17; i++ ) {
+        reg[ 0 ] = NRF_ReadRegByte( g_stNrf0, i );
+        printf( "Reg : 0x%02X = 0x%02X\n", i, reg[ 0 ] );
+    }
 }

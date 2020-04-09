@@ -19,12 +19,23 @@ void SPI0_SS( void ) {
 }
 void SPI0_DSS( void ) {
     SPI_SET_SS0_HIGH( SPI0 );
+    
 }
 void SPI0_Dummy( void ) {
     SPI_TRIGGER( USER_CFG_NRF24L01_0_SPI );
     while ( SPI_IS_BUSY( USER_CFG_NRF24L01_0_SPI ) ){};
 }
 SPI_Func_T g_stSpi0 = { SPI0_WriteByte, SPI0_ReadByte, SPI0_SS, SPI0_DSS, SPI0_Dummy };
+
+void SetCE(void){
+    USER_ENABLE_NRF_CE();
+		DelayUs(15);
+}
+
+void ResetCE(void){
+    USER_DISABLE_NRF_CE();
+}
+
 
 //-----------------------------------------------------------------------------
 // External Flash

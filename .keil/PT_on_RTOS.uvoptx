@@ -103,7 +103,7 @@
         <bEvRecOn>1</bEvRecOn>
         <bSchkAxf>0</bSchkAxf>
         <bTchkAxf>0</bTchkAxf>
-        <nTsel>7</nTsel>
+        <nTsel>19</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -114,7 +114,7 @@
         <tDlgDll></tDlgDll>
         <tDlgPa></tDlgPa>
         <tIfile></tIfile>
-        <pMon>NULink\Nu_Link.dll</pMon>
+        <pMon>Bin\Nu_Link.dll</pMon>
       </DebugOpt>
       <TargetDriverDllRegistry>
         <SetRegEntry>
@@ -147,41 +147,41 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>25</LineNumber>
+          <LineNumber>76</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>4738</Address>
+          <Address>6516</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\Source\main.c</Filename>
+          <Filename>..\libraries\User\src\NRF_P2P.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\PT_on_RTOS\../Source/main.c\25</Expression>
+          <Expression>\\PT_on_RTOS\../libraries/User/src/NRF_P2P.c\76</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>28</LineNumber>
+          <LineNumber>160</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>4748</Address>
+          <Address>3692</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\Source\main.c</Filename>
+          <Filename>..\Source\project.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\PT_on_RTOS\../Source/main.c\28</Expression>
+          <Expression>\\PT_on_RTOS\../Source/project.c\160</Expression>
         </Bp>
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>9</LineNumber>
+          <LineNumber>81</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>4818</Address>
+          <Address>6530</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -190,14 +190,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\libraries\User\src\NRF_P2P.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\PT_on_RTOS\../libraries/User/src/NRF_P2P.c\9</Expression>
+          <Expression>\\PT_on_RTOS\../libraries/User/src/NRF_P2P.c\81</Expression>
         </Bp>
         <Bp>
           <Number>3</Number>
           <Type>0</Type>
-          <LineNumber>10</LineNumber>
+          <LineNumber>82</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>4828</Address>
+          <Address>6538</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -206,7 +206,55 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\libraries\User\src\NRF_P2P.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\PT_on_RTOS\../libraries/User/src/NRF_P2P.c\10</Expression>
+          <Expression>\\PT_on_RTOS\../libraries/User/src/NRF_P2P.c\82</Expression>
+        </Bp>
+        <Bp>
+          <Number>4</Number>
+          <Type>0</Type>
+          <LineNumber>152</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>3626</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\Source\project.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\PT_on_RTOS\../Source/project.c\152</Expression>
+        </Bp>
+        <Bp>
+          <Number>5</Number>
+          <Type>0</Type>
+          <LineNumber>154</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>3644</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\Source\project.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\PT_on_RTOS\../Source/project.c\154</Expression>
+        </Bp>
+        <Bp>
+          <Number>6</Number>
+          <Type>0</Type>
+          <LineNumber>153</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>3638</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\Source\project.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\PT_on_RTOS\../Source/project.c\153</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

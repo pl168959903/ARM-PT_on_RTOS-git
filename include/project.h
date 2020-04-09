@@ -59,13 +59,13 @@ extern "C" {
 extern S_RTC_TIME_DATA_T g_stRtcTime;
 
 extern OV528_T*          g_stOv528_s0;
-extern FIFO_T*           g_stUart1_buf;
+
 extern NRF_T*            g_stNrf0;
+extern NRFP2P_CHANNEL_T* g_stNrfCh1;
+extern FIFO_T*           g_stNrfRx;
 
-extern uint8_t           g_u8ButtonInterruptFlag;
-extern uint8_t           g_u8ExtInterruptFlag;
-extern uint8_t           g_u8NrfInterruptFlag;
 
+//protable.
 extern SPI_Func_T g_stSpi0;
 extern SPI_Func_T g_stSpi3;
 extern UART_Func_T g_stUart1;
@@ -79,10 +79,12 @@ void UartSetup( void );
 void SpiSetup( void );
 void TimerSetup( void );
 void RtcSetup( void );
-void FifoSetup( void );
 void CameraSetup( void );
+void NrfSetup(void);
 void DelayUs( uint32_t );
 
+void SetCE(void);
+void ResetCE(void);
 /*---------------------------------------------------------------------------------------------------------*/
 // IRQ.c
 void NVIC_Init( void );
@@ -90,5 +92,6 @@ void NVIC_Init( void );
 /*---------------------------------------------------------------------------------------------------------*/
 // portable
 void     CameraDelay( uint32_t time );
+void printReg( void );
 
 #endif  //__USER_LIB_H__

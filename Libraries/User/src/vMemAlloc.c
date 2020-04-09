@@ -186,47 +186,47 @@ void vMemInfoPrint( void ) {
     }
     blockSize = ( ( size_t )pxEnd - uAddr ) + xBlockStructSize;
 
-    printf( "---------------------------------------------------\n" );
-    printf( "Origin Array Address : 0x%X ; Size : 0x%X(%d)\n", ( size_t )memArr, VM_MEM_SIZE, VM_MEM_SIZE );
-    printf( "Alignment Array Address : 0x%X\n", uAddr );
-    printf( "Block Size : 0x%X(%d)\n", blockSize, blockSize );
-    printf( "---------------------------------------------------\n" );
-    printf( "Free Size : 0x%X(%d).....%0.1f%%\n", FreeSize, FreeSize, ( ( float )FreeSize / blockSize ) * 100 );
+    __PRINTF( "---------------------------------------------------\n" );
+    __PRINTF( "Origin Array Address : 0x%X ; Size : 0x%X(%d)\n", ( size_t )memArr, VM_MEM_SIZE, VM_MEM_SIZE );
+    __PRINTF( "Alignment Array Address : 0x%X\n", uAddr );
+    __PRINTF( "Block Size : 0x%X(%d)\n", blockSize, blockSize );
+    __PRINTF( "---------------------------------------------------\n" );
+    __PRINTF( "Free Size : 0x%X(%d).....%0.1f%%\n", FreeSize, FreeSize, ( ( float )FreeSize / blockSize ) * 100 );
 
-    printf( "First Linker Address : 0x%X\n", ( size_t )pxStart.nextBlock );
-    printf( "End Linker Address : 0x%X\n", ( size_t )pxEnd );
-    printf( "---------------------------------------------------\n" );
+    __PRINTF( "First Linker Address : 0x%X\n", ( size_t )pxStart.nextBlock );
+    __PRINTF( "End Linker Address : 0x%X\n", ( size_t )pxEnd );
+    __PRINTF( "---------------------------------------------------\n" );
     pVisitBlock = pxStart.nextBlock;
     while ( pVisitBlock != NULL ) {
         size_t size = pVisitBlock->size + xBlockStructSize;
-        printf( "=========================================\n" );
-        printf( "Block Address : 0x%X\n", ( size_t )pVisitBlock );
-        printf( "Block Size : 0x%X(%d).....%0.1f%%\n", size, size, ( ( float )size / blockSize ) * 100 );
-        printf( "Block Next Link Address : 0x%X\n", ( size_t )pVisitBlock->nextBlock );
+        __PRINTF( "=========================================\n" );
+        __PRINTF( "Block Address : 0x%X\n", ( size_t )pVisitBlock );
+        __PRINTF( "Block Size : 0x%X(%d).....%0.1f%%\n", size, size, ( ( float )size / blockSize ) * 100 );
+        __PRINTF( "Block Next Link Address : 0x%X\n", ( size_t )pVisitBlock->nextBlock );
         
         pVisitBlock = pVisitBlock->nextBlock;
     }
-    printf( "=========================================\n" );
+    __PRINTF( "=========================================\n" );
     c_memAddr   = uAddr;
     pVisitBlock = pxStart.nextBlock;
-    printf( "allocated : [%c]    ", '#' );
-    printf( "Linker : [%c]   ", '@' );
-    printf( "Free Block : [%c]\n", ':' );
+    __PRINTF( "allocated : [%c]    ", '#' );
+    __PRINTF( "Linker : [%c]   ", '@' );
+    __PRINTF( "Free Block : [%c]\n", ':' );
     while ( pVisitBlock != NULL ) {
         size_t i;
         while ( c_memAddr < ( size_t )pVisitBlock ) {
-            printf( "#" );
+            __PRINTF( "#" );
             c_memAddr++;
         }
         for ( i = 0; i < xBlockStructSize; i++ ) {
-            printf( "@" );
+            __PRINTF( "@" );
             c_memAddr++;
         } 
         for ( i = 0; i < pVisitBlock->size; i++ ) {
-            printf( ":" );
+            __PRINTF( ":" );
             c_memAddr++;
         }
         pVisitBlock = pVisitBlock->nextBlock;
     }
-    printf( "\n" );
+    __PRINTF( "\n" );
 }

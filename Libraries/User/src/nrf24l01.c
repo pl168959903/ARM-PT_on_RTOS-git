@@ -3,11 +3,13 @@
 
 //---------------------------------------------------------------
 // CMD
-NRF_T* NRF_New( SPI_Func_T* SpiFuncion) {
+NRF_T* NRF_New( SPI_Func_T* SpiFuncion, FUNC_PTR* SetCE, FUNC_PTR* ResetCE ) {
     NRF_T* nrfClass;
     nrfClass = ( NRF_T* )NRF_MALLOC( sizeof( NRF_T ) );
     if ( nrfClass != NULL ) {
-        nrfClass->spi = SpiFuncion;
+        nrfClass->spi     = SpiFuncion;
+        nrfClass->SetCE   = SetCE;
+        nrfClass->ResetCE = ResetCE;
     }
     return nrfClass;
 }
@@ -92,20 +94,24 @@ void NRF_PowerDown( NRF_T* nrf ) {
 void NRF_PowerOn( NRF_T* nrf ) {
     uint8_t reg;
     reg = NRF_ReadRegByte( nrf, NRF_REG_CFG );
-    reg |=  NRF_REG_CFG_PWR_UP_MSK;
+    reg |= NRF_REG_CFG_PWR_UP_MSK;
     NRF_WriteRegByte( nrf, NRF_REG_CFG, reg );
 }
 void NRF_RxMode( NRF_T* nrf ) {
     uint8_t reg;
+    nrf->ResetCE();
     reg = NRF_ReadRegByte( nrf, NRF_REG_CFG );
-    reg |=  NRF_REG_CFG_PRIM_RX_MSK;
+    reg |= NRF_REG_CFG_PRIM_RX_MSK;
     NRF_WriteRegByte( nrf, NRF_REG_CFG, reg );
+		nrf->SetCE();
 }
 void NRF_TxMode( NRF_T* nrf ) {
     uint8_t reg;
+    nrf->ResetCE();
     reg = NRF_ReadRegByte( nrf, NRF_REG_CFG );
-    reg &=  ~(NRF_REG_CFG_PRIM_RX_MSK);
+    reg &= ~( NRF_REG_CFG_PRIM_RX_MSK );
     NRF_WriteRegByte( nrf, NRF_REG_CFG, reg );
+    nrf->SetCE();
 }
 uint8_t NRF_RstIrq( NRF_T* nrf ) {
     uint8_t statusReg;
