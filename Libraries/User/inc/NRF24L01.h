@@ -29,14 +29,17 @@ extern volatile uint8_t NRF_Int_Flag;
 
 //-------------------------------------------------
 // NRF CMD
-#define NRF_CMD_READ_REG 0x00
-#define NRF_CMD_WRITE_REG 0x20
-#define NRF_CMD_RX_PAYLOAD 0x61
-#define NRF_CMD_TX_PATLOAD 0xA0
-#define NRF_CMD_FLUSH_TX 0xE1
-#define NRF_CMD_FLUSH_RX 0xE2
-#define NRF_CMD_REUSE_TX 0xE3
-#define NRF_CMD_NOP 0xFF
+#define NRF_CMD_R_REGISTER          0x00
+#define NRF_CMD_W_REGISTER          0x20
+#define NRF_CMD_R_RX_PAYLOAD        0x61
+#define NRF_CMD_W_TX_PAYLOAD        0xA0
+#define NRF_CMD_FLUSH_TX            0xE1
+#define NRF_CMD_FLUSH_RX            0xE2
+#define NRF_CMD_REUSE_TX_PL         0xE3
+#define NRF_CMD_R_RX_PL_WID         0x60
+#define NRF_CMD_W_ACK_PAYLOAD       0xA8
+#define NRF_CMD_W_TX_PAYLOAD_NOACK  0xB0
+#define NRF_CMD_NOP                 0xFF
 //-------------------------------------------------
 
 //-------------------------------------------------
@@ -176,6 +179,28 @@ extern volatile uint8_t NRF_Int_Flag;
 #define NRF_REG_FIFO_STATUS_RX_EMPTY_POS    (0)
 #define NRF_REG_FIFO_STATUS_RX_EMPTY_MSK    (0x1<<NRF_REG_FIFO_STATUS_RX_EMPTY_POS)
 
+#define NRF_REG_DYNPD                       0x1C
+#define NRF_REG_DYNPD_DPL_P5_POS            (5)               
+#define NRF_REG_DYNPD_DPL_P5_MSK            (0x1<<NRF_REG_DYNPD_DPL_P5_POS)              
+#define NRF_REG_DYNPD_DPL_P4_POS            (4)               
+#define NRF_REG_DYNPD_DPL_P4_MSK            (0x1<<NRF_REG_DYNPD_DPL_P4_POS)              
+#define NRF_REG_DYNPD_DPL_P3_POS            (3)               
+#define NRF_REG_DYNPD_DPL_P3_MSK            (0x1<<NRF_REG_DYNPD_DPL_P3_POS)              
+#define NRF_REG_DYNPD_DPL_P2_POS            (2)               
+#define NRF_REG_DYNPD_DPL_P2_MSK            (0x1<<NRF_REG_DYNPD_DPL_P2_POS)              
+#define NRF_REG_DYNPD_DPL_P1_POS            (1)               
+#define NRF_REG_DYNPD_DPL_P1_MSK            (0x1<<NRF_REG_DYNPD_DPL_P1_POS)              
+#define NRF_REG_DYNPD_DPL_P0_POS            (0)               
+#define NRF_REG_DYNPD_DPL_P0_MSK            (0x1<<NRF_REG_DYNPD_DPL_P0_POS) 
+
+#define NRF_REG_FEATURE                     0x1D
+#define NRF_REG_FEATURE_EN_DPL_POS          (2)
+#define NRF_REG_FEATURE_EN_DPL_MSK          (0x1<<NRF_REG_FEATURE_EN_DPL_POS)
+#define NRF_REG_FEATURE_EN_ACK_POS          (1)
+#define NRF_REG_FEATURE_EN_ACK_MSK          (0x1<<NRF_REG_FEATURE_EN_ACK_POS)
+#define NRF_REG_FEATURE_EN_DYN_ACK_POS      (0)
+#define NRF_REG_FEATURE_EN_DYN_ACK_MSK      (0x1<<NRF_REG_FEATURE_EN_DYN_ACK_POS)
+
 //-------------------------------------------------
 
 typedef struct {
@@ -190,17 +215,21 @@ uint8_t NRF_ReadRegByte( NRF_T* nrf, uint8_t reg );
 void NRF_WriteRegByte( NRF_T* nrf, uint8_t reg, uint8_t data );
 void NRF_ReadRegArray( NRF_T* nrf, uint8_t reg, uint8_t* array, size_t size );
 void NRF_WriteRegArray( NRF_T* nrf, uint8_t reg, uint8_t* array, size_t size );
-void NRF_Tx( NRF_T* nrf, uint8_t* array, uint8_t size );
-void NRF_Rx( NRF_T* nrf, uint8_t* array, uint8_t size );
+void NRF_TxPayload( NRF_T* nrf, uint8_t* array, uint8_t size );
+void NRF_RxPayload( NRF_T* nrf, uint8_t* array, uint8_t size );
 void NRF_FlushTx( NRF_T* nrf );
 void NRF_FlushRx( NRF_T* nrf );
 void NRF_ReuseTx( NRF_T* nrf );
+uint8_t NRF_ReadRxPayloadWide( NRF_T* nrf);
+void NRF_AckPayload( NRF_T* nrf, uint8_t* array, uint8_t size, uint8_t ch );
+void NRF_TxWithoutAutoAck( NRF_T* nrf, uint8_t* array, uint8_t size );
 uint8_t NRF_Nop( NRF_T* nrf );
 void NRF_PowerDown( NRF_T* nrf );
 void NRF_PowerOn( NRF_T* nrf );
 void NRF_RxMode( NRF_T* nrf );
 void NRF_TxMode( NRF_T* nrf );
 uint8_t NRF_RstIrq( NRF_T* nrf );
+void NRF_RegPrintf( NRF_T* nrf );
 
 
 #endif

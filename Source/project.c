@@ -17,7 +17,7 @@ OV528_T* g_stOv528_s0;  // 相機實體
 
 // NRF
 NRF_T*            g_stNrf0;    // NRF實體
-NRFP2P_CHANNEL_T* g_stNrfCh1;  // NRF 通道實體
+nrfP2P_CHANNEL_T* g_stNrfCh1;  // NRF 通道實體
 FIFO_T*           g_stNrfRx;
 const uint8_t     g_u8P1Address[ 5 ]   = { 0x01, 0x79, 0x02, 0x08, 0x11 };
 const uint8_t     g_u8DestAddress[ 5 ] = { 0x00, 0x79, 0x02, 0x08, 0x11 };
@@ -150,15 +150,16 @@ void CameraSetup( void ) {
 void NrfSetup( void ) {
     bool a;
     g_stNrf0 = NRF_New( &g_stSpi0, &SetCE, &ResetCE );
-    printReg();
-    nrfP2p_InitNrf( g_stNrf0, 0x50 );
-    g_stNrfCh1 = nrfP2p_NewChannel( g_stNrf0, 1, ( uint8_t* )g_u8P1Address, ( uint8_t* )g_u8DestAddress, 32, 32, true );
-		NRF_FlushRx(g_stNrf0);
-		NRF_FlushTx(g_stNrf0);
-		NRF_TxMode( g_stNrf0 );
+    nrfP2P_InitNrf( g_stNrf0, 0x50 );
+    g_stNrfCh1 = nrfP2P_NewChannel( g_stNrf0, 1, ( uint8_t* )g_u8P1Address, ( uint8_t* )g_u8DestAddress, 32, 32, true );
+    NRF_RegPrintf(g_stNrf0);
+    while(1){};
+    NRF_FlushRx( g_stNrf0 );
+    NRF_FlushTx( g_stNrf0 );
+    NRF_TxMode( g_stNrf0 );
     while ( 1 ) {
-        a = nrfP2p_SendPacket( g_stNrfCh1, temp );
-        //NRF_RxMode( g_stNrf0 );
+        a = nrfP2P_SendPacket( g_stNrfCh1, temp );
+        // NRF_RxMode( g_stNrf0 );
         if ( a == true ) {
             printf( "T\n" );
         }
@@ -182,28 +183,4 @@ void DelayUs( uint32_t us ) {
     } while ( us > 0 );
 }
 
-void printReg( void ) {
-    uint8_t i;
-    uint8_t reg[ 5 ] = { 0 };
-    printf( "--------------------------------------\n" );
-    for ( i = 0; i <= 0x09; i++ ) {
-        reg[ 0 ] = NRF_ReadRegByte( g_stNrf0, i );
-        printf( "Reg : 0x%02X = 0x%02X\n", i, reg[ 0 ] );
-    }
-    for ( i = 0x0A; i <= 0x0B; i++ ) {
-        NRF_ReadRegArray( g_stNrf0, i, reg, 5 );
-        printf( "Reg : 0x%02X = 0x%02X%02X%02X%02X%02X\n", i, reg[ 4 ], reg[ 3 ], reg[ 2 ], reg[ 1 ], reg[ 0 ] );
-    }
-    for ( i = 0x0C; i <= 0x0F; i++ ) {
-        reg[ 0 ] = NRF_ReadRegByte( g_stNrf0, i );
-        printf( "Reg : 0x%02X = 0x%02X\n", i, reg[ 0 ] );
-    }
-    for ( i = 0x10; i <= 0x10; i++ ) {
-        NRF_ReadRegArray( g_stNrf0, i, reg, 5 );
-        printf( "Reg : 0x%02X = 0x%02X%02X%02X%02X%02X\n", i, reg[ 4 ], reg[ 3 ], reg[ 2 ], reg[ 1 ], reg[ 0 ] );
-    }
-    for ( i = 0x11; i <= 0x17; i++ ) {
-        reg[ 0 ] = NRF_ReadRegByte( g_stNrf0, i );
-        printf( "Reg : 0x%02X = 0x%02X\n", i, reg[ 0 ] );
-    }
-}
+
