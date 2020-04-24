@@ -35,6 +35,6 @@
 .\objects\irq.o: ..\libraries\User\inc\FIFO.h
 .\objects\irq.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\irq.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\irq.o: ..\libraries\User\inc\NRF_P2P.h
 .\objects\irq.o: ..\libraries\User\inc\NRF24L01.h
+.\objects\irq.o: ..\libraries\User\inc\NRF_P2P.h
 .\objects\irq.o: ..\libraries\User\inc\W25QXX.h

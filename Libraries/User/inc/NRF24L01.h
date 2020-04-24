@@ -204,32 +204,32 @@ extern volatile uint8_t NRF_Int_Flag;
 //-------------------------------------------------
 
 typedef struct {
-    SPI_Func_T *spi;
-    FUNC_PTR *SetCE;
-    FUNC_PTR *ResetCE;
-    uint8_t    statusReg;
+    SPI_Func_T*      spi;
+    FUNC_PTR*        SetCE;
+    FUNC_PTR*        ResetCE;
+    DelayFunction*   DelayUs;
+    volatile uint8_t statusReg;
 } NRF_T;
 
-NRF_T* NRF_New( SPI_Func_T* SpiFuncion, FUNC_PTR * SetCE, FUNC_PTR* ResetCE);
+NRF_T*  NRF_New( SPI_Func_T* SpiFuncion, FUNC_PTR* SetCE, FUNC_PTR* ResetCE, DelayFunction* df );
 uint8_t NRF_ReadRegByte( NRF_T* nrf, uint8_t reg );
-void NRF_WriteRegByte( NRF_T* nrf, uint8_t reg, uint8_t data );
-void NRF_ReadRegArray( NRF_T* nrf, uint8_t reg, uint8_t* array, size_t size );
-void NRF_WriteRegArray( NRF_T* nrf, uint8_t reg, uint8_t* array, size_t size );
-void NRF_TxPayload( NRF_T* nrf, uint8_t* array, uint8_t size );
-void NRF_RxPayload( NRF_T* nrf, uint8_t* array, uint8_t size );
-void NRF_FlushTx( NRF_T* nrf );
-void NRF_FlushRx( NRF_T* nrf );
-void NRF_ReuseTx( NRF_T* nrf );
-uint8_t NRF_ReadRxPayloadWide( NRF_T* nrf);
-void NRF_AckPayload( NRF_T* nrf, uint8_t* array, uint8_t size, uint8_t ch );
-void NRF_TxWithoutAutoAck( NRF_T* nrf, uint8_t* array, uint8_t size );
+void    NRF_WriteRegByte( NRF_T* nrf, uint8_t reg, uint8_t data );
+void    NRF_ReadRegArray( NRF_T* nrf, uint8_t reg, uint8_t* array, size_t size );
+void    NRF_WriteRegArray( NRF_T* nrf, uint8_t reg, uint8_t* array, size_t size );
+void    NRF_TxPayload( NRF_T* nrf, uint8_t* array, uint8_t size );
+void    NRF_RxPayload( NRF_T* nrf, uint8_t* array, uint8_t size );
+void    NRF_FlushTx( NRF_T* nrf );
+void    NRF_FlushRx( NRF_T* nrf );
+void    NRF_ReuseTx( NRF_T* nrf );
+uint8_t NRF_ReadRxPayloadWide( NRF_T* nrf );
+void    NRF_AckPayload( NRF_T* nrf, uint8_t* array, uint8_t size, uint8_t ch );
+void    NRF_TxWithoutAutoAck( NRF_T* nrf, uint8_t* array, uint8_t size );
 uint8_t NRF_Nop( NRF_T* nrf );
-void NRF_PowerDown( NRF_T* nrf );
-void NRF_PowerOn( NRF_T* nrf );
-void NRF_RxMode( NRF_T* nrf );
-void NRF_TxMode( NRF_T* nrf );
+void    NRF_PowerDown( NRF_T* nrf );
+void    NRF_PowerOn( NRF_T* nrf );
+void    NRF_RxMode( NRF_T* nrf );
+void    NRF_TxMode( NRF_T* nrf );
 uint8_t NRF_RstIrq( NRF_T* nrf );
-void NRF_RegPrintf( NRF_T* nrf );
-
+void    NRF_RegPrintf( NRF_T* nrf );
 
 #endif

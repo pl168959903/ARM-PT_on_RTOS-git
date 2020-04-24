@@ -1,6 +1,9 @@
 
 #include "project.h"
 
+
+uint32_t t = 5;
+
 int main( void ) {
     SYS_UnlockReg();
     PinSetup();
@@ -16,14 +19,18 @@ int main( void ) {
     printf( "PCLK1 Freq : %dHz\n", CLK_GetPCLK1Freq() );
     printf( "PLL Freq   : %dHz\n", CLK_GetPLLClockFreq() );
 #endif  // USER_CFG_DEBUG_MODE
-	TabNin
     RtcSetup();
     TimerSetup();
     GpioSetup();
     SpiSetup();
     NVIC_Init();
     NrfSetup();
-    //CameraSetup();
+    CameraSetup();
     SYS_LockReg();
-    while ( 1 ) {};
+
+    while ( 1 ) {
+			while(g_u8GetPictureReadyFlag == 1){
+				CameraGetImage();
+			}
+    };
 }

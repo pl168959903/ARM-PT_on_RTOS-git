@@ -35,7 +35,9 @@ void SetCE(void){
 void ResetCE(void){
     USER_DISABLE_NRF_CE();
 }
-
+void NrfDelay( uint32_t time ) {
+    DelayUs( time );
+}
 
 //-----------------------------------------------------------------------------
 // External Flash

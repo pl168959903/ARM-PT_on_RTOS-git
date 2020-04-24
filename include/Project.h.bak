@@ -35,7 +35,7 @@ extern "C" {
 // FreeRTOS include.
 
 /*---------------------------------------------------------------------------------------------------------*/
-// default.
+//default.
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,35 +50,25 @@ extern "C" {
 #include "Bridging.h"
 #include "CJ_OV528.h"
 #include "FIFO.h"
-#include "NRF24L01.h"
 #include "NRF_P2P.h"
-#include "W25QXX.h"
+#include "NRF24L01.h"
 #include "vMemAlloc.h"
+#include "W25QXX.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 extern S_RTC_TIME_DATA_T g_stRtcTime;
-extern volatile uint8_t  g_u8RtcTickFlag;
-
 extern OV528_T*          g_stOv528_s0;
-
 extern NRF_T*            g_stNrf0;
 extern NRFP2P_CHANNEL_T* g_stNrfCh1;
 extern FIFO_T*           g_stNrfRx;
+extern volatile uint8_t  g_ExIntFlag;
+extern volatile uint32_t		g_u32GetPictureTime;
 
-extern const uint8_t     g_u8P1Address[ 5 ];
-extern const uint8_t     g_u8DestAddress[ 5 ];
-
-extern FIFO_T*           g_stGpsRx;
-
-extern volatile uint8_t  g_u8GetPictureReadyFlag;
-extern volatile uint32_t g_u32GetPictureTime;
-extern volatile uint32_t g_u32GetPictureCount;
-extern volatile uint8_t  g_u8GpsDataReadyFlag;
-
-// protable.
-extern SPI_Func_T  g_stSpi0;
-extern SPI_Func_T  g_stSpi3;
+//protable.
+extern SPI_Func_T g_stSpi0;
+extern SPI_Func_T g_stSpi3;
 extern UART_Func_T g_stUart1;
+
 
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -90,16 +80,14 @@ void SpiSetup( void );
 void TimerSetup( void );
 void RtcSetup( void );
 void CameraSetup( void );
-void NrfSetup( void );
-void NrfSendData( uint8_t* data, uint32_t length );
-void GpsSetup( void );
+void NrfSetup(void);
 void DelayUs( uint32_t );
 
-void SetCE( void );
-void ResetCE( void );
+void SetCE(void);
+void ResetCE(void);
 void NrfDelay( uint32_t time );
 
-void CameraGetImage( void );
+void CameraGetImage(void);
 /*---------------------------------------------------------------------------------------------------------*/
 // IRQ.c
 void NVIC_Init( void );

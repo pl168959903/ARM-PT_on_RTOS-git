@@ -9,9 +9,8 @@
 
 #include "Project.h"
 
-// RTC
-S_RTC_TIME_DATA_T g_stRtcTime     = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
-volatile uint8_t  g_u8RtcTickFlag = 0;
+// Stuct Value
+S_RTC_TIME_DATA_T g_stRtcTime = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
 
 // Camera
 OV528_T* g_stOv528_s0;  // 相機實體
@@ -29,7 +28,6 @@ FIFO_T* g_stGpsRx;
 volatile uint8_t  g_u8GetPictureReadyFlag = 0;
 volatile uint32_t g_u32GetPictureTime     = 30;
 volatile uint8_t  g_u8GpsDataReadyFlag    = 0;
-volatile uint32_t g_u32GetPictureCount = 0;
 
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -139,7 +137,6 @@ void NVIC_Init( void ) {
     NVIC_EnableIRQ( RTC_IRQn );
     NVIC_EnableIRQ( UART0_IRQn );
     NVIC_EnableIRQ( UART1_IRQn );
-    NVIC_SetPriority( UART1_IRQn, 0 );
 }
 void CameraSetup( void ) {
     g_stOv528_s0 = OV528_New( 0x0001, 50, &g_stUart1, CameraDelay );
@@ -147,50 +144,40 @@ void CameraSetup( void ) {
     g_stOv528_s0->Delay( 2000 );
 }
 void CameraGetImage( void ) {
-    size_t  i;
-    uint8_t check;
+    size_t  i, size;
     uint8_t dataTemp[ 50 ];
-
-    // NRF TX MODE;
     NRF_TxMode( g_stNrf0 );
-    NRF_FlushTx( g_stNrf0 );
-
-    // Enable Camera Power
     USER_ENABLE_CMAERA_POWER();
     g_stOv528_s0->Delay( 2000 );
-
     FIFO_Rst( g_stOv528_s0->fifoBuf );
     OV528_SNYC( g_stOv528_s0 );
     OV528_Init( g_stOv528_s0, OV528_INIT_JPEG, OV528_INIT_PR_160_120, OV528_INIT_JPEG_640_480 );
     OV528_Snapshout( g_stOv528_s0, OV528_SNAPSHOT_COMPRESSED, 0x0000 );
     OV528_SetPacketSize( g_stOv528_s0, 32 + 6 );
     OV528_GetPictue( g_stOv528_s0, OV528_GET_PICTURE_SNAPSHOT );
-
+    NRF_FlushTx( g_stNrf0 );
     for ( i = 0; i < g_stOv528_s0->imagePacket; i++ ) {
-        size_t size;
+        uint8_t aa;
         size = OV528_GetPacket( g_stOv528_s0, i, dataTemp );
-
         //UART_Write( UART0, dataTemp, size );
-
-        check = nrfP2P_SendPacket( g_stNrf0, ( uint8_t* )g_u8DestAddress, dataTemp, size );
-        if ( check == false )
-            check = nrfP2P_TxReuse( g_stNrf0, 300 );
-        printf( "i = %d  %d	%d\n", i, check, size );
+        aa = nrfP2P_SendPacket( g_stNrf0, ( uint8_t* )g_u8DestAddress, dataTemp, size );
+        printf( "i = %d  %d	%d\n", i, aa, size );
+        if ( aa == false ) {
+            printf( "Start TxReuse : \n" );
+            aa = nrfP2P_TxReuse( g_stNrf0, 300 );
+            printf( "%s\n", ( aa ) ? "true\n" : "false\n" );
+        }
     }
     if ( g_u8GpsDataReadyFlag == 1 ) {
         NrfSendData( g_stGpsRx->buf, g_stGpsRx->size );
         FIFO_Rst( g_stGpsRx );
         g_u8GpsDataReadyFlag = 0;
     }
-
-    // PowerDone
     USER_DISABLE_CMAERA_POWER();
     g_stOv528_s0->Delay( 2000 );
-
-    NRF_RxMode( g_stNrf0 );
     NRF_FlushRx( g_stNrf0 );
-    FIFO_Rst( g_stNrfRx );
-
+    FIFO_Rst( g_stNrfRx);
+    NRF_RxMode( g_stNrf0 );
     g_u8GetPictureReadyFlag = 0;
 }
 void NrfSetup( void ) {

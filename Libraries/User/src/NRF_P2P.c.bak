@@ -12,7 +12,7 @@ void nrfP2P_InitNrf( NRF_T* nrf, uint8_t rfCh ) {
         NRF_WriteRegByte( nrf, NRF_REG_EN_AA, ( 0 ) );
         NRF_WriteRegByte( nrf, NRF_REG_EN_RXADDR, ( 0 ) );
         NRF_WriteRegByte( nrf, NRF_REG_SETUP_AW, 0x3 );
-        NRF_WriteRegByte( nrf, NRF_REG_SETUP_RETR, ( ( 15 << NRF_REG_SETUP_RETR_ARD_POS ) | ( 15 << NRF_REG_SETUP_RETR_ARC_POS ) ) );
+        NRF_WriteRegByte( nrf, NRF_REG_SETUP_RETR, ( ( 0 << NRF_REG_SETUP_RETR_ARD_POS ) | ( 15 << NRF_REG_SETUP_RETR_ARC_POS ) ) );
         NRF_WriteRegByte( nrf, NRF_REG_RF_CH, rfCh );
         NRF_WriteRegByte( nrf, NRF_REG_RF_SETUP, ( NRF_REG_RF_SETUP_RF_DR_MSK | ( 0x3 << NRF_REG_RF_SETUP_RF_PWR_POS ) | NRF_REG_RF_SETUP_LNA_HCURR_MSK ) );
         NRF_WriteRegByte( nrf, NRF_REG_STATUS, ( NRF_REG_STATUS_RX_DR_MSK | NRF_REG_STATUS_TX_DS_MSK | NRF_REG_STATUS_MAX_RT_MSK ) );
@@ -22,7 +22,7 @@ void nrfP2P_InitNrf( NRF_T* nrf, uint8_t rfCh ) {
         //清除FIFO
         NRF_FlushRx( g_stNrf0 );
         NRF_FlushTx( g_stNrf0 );
-
+        
         //清除中斷旗標
         NRF_WriteRegByte( nrf, NRF_REG_STATUS, nrf->statusReg );
     }
@@ -70,7 +70,7 @@ void nrfP2P_SetPayloadWide( NRFP2P_CHANNEL_T* nrfCh, uint8_t wide ) {
     NRF_WriteRegByte( nrfCh->nrf, ( NRF_REG_RX_PW_P0 + nrfCh->ch ), wide );
 }
 
-void nrfP2P_EnableTxAutoAck( NRF_T* nrf, uint8_t* destAddress ) {
+void nrfP2P_EnableTxAutoAck( NRF_T* nrf, uint8_t *destAddress ) {
     uint8_t reg;
 
     NRF_WriteRegArray( nrf, NRF_REG_RX_ADDR_P0, destAddress, 5 );
@@ -91,7 +91,7 @@ void nrfP2P_EnableTxDypw( NRF_T* nrf ) {
     NRF_WriteRegByte( nrf, NRF_REG_DYNPD, ( reg | NRF_REG_DYNPD_DPL_P0_MSK ) );
 }
 
-bool nrfP2P_SendPacket( NRF_T* nrf, uint8_t* destAddress, uint8_t* array, uint8_t pw ) {
+bool nrfP2P_SendPacket( NRF_T* nrf, uint8_t* destAddress, uint8_t* array, uint8_t pw, bool autoAck, bool dypw ) {
     uint8_t reg;
 
     NRF_WriteRegArray( nrf, NRF_REG_TX_ADDR, destAddress, 5 );
@@ -116,29 +116,4 @@ bool nrfP2P_SendPacket( NRF_T* nrf, uint8_t* destAddress, uint8_t* array, uint8_
 
     //例外狀況
     return false;
-}
-
-bool nrfP2P_TxReuse( NRF_T* nrf, uint32_t times ) {
-    uint8_t  reg;
-    uint32_t i = 0;
-    do {
-        NRF_Nop( g_stNrf0 );
-        NRF_ReuseTx( nrf );
-        nrf->SetCE();
-        while ( ( ( nrf->statusReg ) & ( NRF_REG_STATUS_TX_DS_MSK | NRF_REG_STATUS_MAX_RT_MSK ) ) == 0 ) {};
-        nrf->ResetCE();
-
-        reg = NRF_ReadRegByte( nrf, NRF_REG_STATUS );
-        NRF_WriteRegByte( g_stNrf0, NRF_REG_STATUS, reg );
-
-    } while ( ( reg & NRF_REG_STATUS_MAX_RT_MSK ) && ( i++ < times ) );
-
-    NRF_FlushTx( nrf );
-    if ( reg & NRF_REG_STATUS_MAX_RT_MSK ) {
-        
-        return false;
-    }
-    else {
-        return true;
-    }
 }

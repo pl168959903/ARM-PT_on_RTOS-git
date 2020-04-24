@@ -7,7 +7,7 @@ void GPABC_IRQHandler( void ) {
     }
     // ext int
     if ( GPIO_GET_INT_FLAG( PA, BIT14 ) ) {
-        // printf( "INT\n" );
+        //printf( "INT\n" );
         g_u8GetPictureReadyFlag = 1;
         GPIO_CLR_INT_FLAG( PA, BIT14 );
     }
@@ -15,7 +15,6 @@ void GPABC_IRQHandler( void ) {
     if ( GPIO_GET_INT_FLAG( PB, BIT3 ) ) {
         NRF_Nop( g_stNrf0 );
         if ( g_stNrf0->statusReg & NRF_REG_STATUS_RX_DR_MSK ) {
-
             uint8_t  i;
             uint8_t  data[ 32 ];
             uint32_t len = NRF_ReadRxPayloadWide( g_stNrf0 );
@@ -24,7 +23,6 @@ void GPABC_IRQHandler( void ) {
                 FIFO_ByteIn( g_stNrfRx, ( data + i ) );
             }
             // printf( "RX_DR\n" );
-            NRF_WriteRegByte( g_stNrf0, NRF_REG_STATUS, g_stNrf0->statusReg );
         }
         if ( g_stNrf0->statusReg & NRF_REG_STATUS_TX_DS_MSK ) {
             // printf( "TX_DS\n" );
@@ -42,14 +40,12 @@ void TMR0_IRQHandler( void ) {
 }
 
 void RTC_IRQHandler( void ) {
-    if ( g_u32GetPictureTime > 0 ) {
-        if ( g_u32GetPictureCount++ >= g_u32GetPictureTime ) {
-            g_u8GetPictureReadyFlag = 1;
-            g_u32GetPictureCount    = 0;
-        }
+    static uint32_t i = 0;
+    if ( i++ >= g_u32GetPictureTime ) {
+        g_u8GetPictureReadyFlag = 1;
+        i                       = 0;
     }
-    g_u8RtcTickFlag = 1;
-
+    //printf( "RTC i:%d %d\n", i, g_u8GpsDataReadyFlag );
     RTC_CLEAR_TICK_INT_FLAG();
 }
 

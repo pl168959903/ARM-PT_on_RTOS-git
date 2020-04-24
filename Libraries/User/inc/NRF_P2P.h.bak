@@ -31,9 +31,8 @@ NRFP2P_CHANNEL_T* nrfP2P_NewChannel( NRF_T* nrf, uint8_t ch, uint8_t* address, b
 void              nrfP2P_SetPayloadWide( NRFP2P_CHANNEL_T* nrfCh, uint8_t wide );
 void              nrfP2P_EnableTxAutoAck( NRF_T* nrf, uint8_t *destAddress );
 void              nrfP2P_EnableTxDypw( NRF_T* nrf );
-bool              nrfP2P_SendPacket( NRF_T* nrf, uint8_t* destAddress, uint8_t* array, uint8_t pw );
+bool nrfP2P_SendPacket( NRF_T* nrf, uint8_t* destAddress, uint8_t* array, uint8_t pw );
 bool              nrfP2P_ReceivePacket( NRFP2P_CHANNEL_T* ptr, uint8_t* array );
-bool              nrfP2P_TxReuse( NRF_T* nrf, uint32_t times );
 
 #ifdef __cplusplus
 }
