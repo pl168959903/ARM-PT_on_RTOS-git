@@ -29,7 +29,7 @@ FIFO_T* g_stGpsRx;
 volatile uint8_t  g_u8GetPictureReadyFlag = 0;
 volatile uint32_t g_u32GetPictureTime     = 30;
 volatile uint8_t  g_u8GpsDataReadyFlag    = 0;
-volatile uint32_t g_u32GetPictureCount = 0;
+volatile uint32_t g_u32GetPictureCount    = 0;
 
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -84,11 +84,18 @@ void GpioSetup( void ) {
     GPIO_ENABLE_PULL_UP( PA, BIT2 );
     GPIO_ENABLE_PULL_UP( PA, BIT14 );
     GPIO_ENABLE_PULL_UP( PB, BIT3 );
+	
+		GPIO_ENABLE_PULL_UP( PB, BIT0 );
+    GPIO_ENABLE_PULL_UP( PB, BIT1 );
+    GPIO_ENABLE_PULL_UP( PB, BIT4 );
+		GPIO_ENABLE_PULL_UP( PB, BIT5 );
 
     // Interrupt.
     GPIO_EnableInt( PA, 2, GPIO_INT_FALLING );
     GPIO_EnableInt( PA, 14, GPIO_INT_FALLING );
     GPIO_EnableInt( PB, 3, GPIO_INT_FALLING );
+	
+
 
     // DEBOUNCE.
     GPIO_SET_DEBOUNCE_TIME( GPIO_DBCLKSRC_IRC10K, GPIO_DBCLKSEL_8 );
@@ -103,7 +110,7 @@ void UartSetup( void ) {
     CLK_EnableModuleClock( UART0_MODULE );
     CLK_EnableModuleClock( UART1_MODULE );
 
-    UART_Open( UART0, 115200 );
+    UART_Open( UART0, 38400 );
     UART_Open( UART1, 115200 );
 
     UART_SET_RX_FIFO_INTTRGLV( UART0, UART_LINE_RFITL_14BYTES );
@@ -170,7 +177,7 @@ void CameraGetImage( void ) {
         size_t size;
         size = OV528_GetPacket( g_stOv528_s0, i, dataTemp );
 
-        //UART_Write( UART0, dataTemp, size );
+        // UART_Write( UART0, dataTemp, size );
 
         check = nrfP2P_SendPacket( g_stNrf0, ( uint8_t* )g_u8DestAddress, dataTemp, size );
         if ( check == false )

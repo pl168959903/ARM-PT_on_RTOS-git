@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\PT_on_RTOS.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\PT_on_RTOS.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Apr 24 05:39:31 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Apr 29 23:58:04 2020
 <BR><P>
 <H3>Maximum Stack Usage =        216 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -647,14 +647,18 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[4a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[7e]"></a>CmdDecoder</STRONG> (Thumb, 288 bytes, Stack size 32 bytes, main.o(i.CmdDecoder))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = CmdDecoder &rArr; FIFO_CmdCheck &rArr; FIFO_ReadData
+<P><STRONG><a name="[7e]"></a>CmdDecoder</STRONG> (Thumb, 380 bytes, Stack size 32 bytes, main.o(i.CmdDecoder))
+<BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = CmdDecoder &rArr; NrfSendData &rArr; nrfP2P_TxReuse &rArr; NRF_WriteRegByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_IsEmpty
+<BR>[Calls]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NRF_TxMode
+<LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NRF_RxMode
+<LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NRF_FlushTx
+<LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_IsEmpty
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_WaitData
 <LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_Rst
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_ReadData
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FIFO_CmdCheck
+<LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NrfSendData
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DelayUs
 </UL>
 <BR>[Called By]<UL><LI><a href="#[4a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -761,7 +765,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GpioSetup
 </UL>
 
-<P><STRONG><a name="[8b]"></a>GpioSetup</STRONG> (Thumb, 156 bytes, Stack size 24 bytes, project.o(i.GpioSetup))
+<P><STRONG><a name="[8b]"></a>GpioSetup</STRONG> (Thumb, 186 bytes, Stack size 24 bytes, project.o(i.GpioSetup))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = GpioSetup &rArr; GPIO_SetMode
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetMode
@@ -801,6 +805,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrfP2P_TxReuse
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrfP2P_InitNrf
 <LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CameraGetImage
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CmdDecoder
 </UL>
 
 <P><STRONG><a name="[90]"></a>NRF_New</STRONG> (Thumb, 34 bytes, Stack size 24 bytes, nrf24l01.o(i.NRF_New))
@@ -851,6 +856,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NrfSetup
 <LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CameraGetImage
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CmdDecoder
 </UL>
 
 <P><STRONG><a name="[88]"></a>NRF_RxPayload</STRONG> (Thumb, 48 bytes, Stack size 24 bytes, nrf24l01.o(i.NRF_RxPayload))
@@ -866,6 +872,7 @@ Global Symbols
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NRF_ReadRegByte
 </UL>
 <BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CameraGetImage
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CmdDecoder
 </UL>
 
 <P><STRONG><a name="[b4]"></a>NRF_TxPayload</STRONG> (Thumb, 50 bytes, Stack size 24 bytes, nrf24l01.o(i.NRF_TxPayload))
@@ -918,6 +925,7 @@ Global Symbols
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrfP2P_SendPacket
 </UL>
 <BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CameraGetImage
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CmdDecoder
 </UL>
 
 <P><STRONG><a name="[94]"></a>NrfSetup</STRONG> (Thumb, 78 bytes, Stack size 16 bytes, project.o(i.NrfSetup))
