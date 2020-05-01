@@ -6,30 +6,37 @@
 /_.___/\__, /     /____/\____/_/ |_|
       /____/
 */
-
+/*---------------------------------------------------------------------------------------------------------*/
+// Include.
 #include "Project.h"
 
+/*---------------------------------------------------------------------------------------------------------*/
+// 全域變數
+
 // RTC
-S_RTC_TIME_DATA_T g_stRtcTime     = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };
-volatile uint8_t  g_u8RtcTickFlag = 0;
+S_RTC_TIME_DATA_T g_stRtcTime = { 2020, 1, 1, 0, 0, 0, RTC_SUNDAY, RTC_CLOCK_24 };  // RTC
 
 // Camera
 OV528_T* g_stOv528_s0;  // 相機實體
 
 // NRF
-NRF_T*            g_stNrf0;    // NRF實體
-NRFP2P_CHANNEL_T* g_stNrfCh1;  // NRF 通道實體
-FIFO_T*           g_stNrfRx;
-const uint8_t     g_u8P1Address[ 5 ]   = { 0x01, 0x79, 0x02, 0x08, 0x11 };
-const uint8_t     g_u8DestAddress[ 5 ] = { 0x00, 0x79, 0x02, 0x08, 0x11 };
+NRF_T*            g_stNrf0;                                                 // NRF實體
+NRFP2P_CHANNEL_T* g_stNrfCh1;                                               // NRF 通道實體
+FIFO_T*           g_stNrfRx;                                                // NRF RX FIFO實體
+const uint8_t     g_u8P1Address[ 5 ]   = { 0x01, 0x79, 0x02, 0x08, 0x11 };  // Channel 1 地址
+const uint8_t     g_u8DestAddress[ 5 ] = { 0x00, 0x79, 0x02, 0x08, 0x11 };  // 目標地址
 
 // GPS
-FIFO_T* g_stGpsRx;
+FIFO_T* g_stGpsRx;  // GPS 實體
 
-volatile uint8_t  g_u8GetPictureReadyFlag = 0;
-volatile uint32_t g_u32GetPictureTime     = 30;
-volatile uint8_t  g_u8GpsDataReadyFlag    = 0;
-volatile uint32_t g_u32GetPictureCount    = 0;
+//旗標
+volatile uint8_t  g_u8RtcTickFlag         = 0; //RTC Tick 中斷旗標
+volatile uint8_t  g_u8GetPictureReadyFlag = 0; //拍攝圖片準備旗標
+volatile uint8_t  g_u8GpsDataReadyFlag    = 0; //讀取GPS準備旗標
+
+// 參數
+volatile uint32_t g_u32GetPictureTime     = 30; // 時間
+volatile uint32_t g_u32GetPictureCount    = 0; 
 
 /*---------------------------------------------------------------------------------------------------------*/
 
@@ -61,21 +68,22 @@ void ClkSetup( void ) {
     CLK_SetHCLK( CLK_CLKSEL0_HCLKSEL_HXT, CLK_HCLK_CLK_DIVIDER( 1 ) );
 
     // UART
-    CLK_SetModuleClock( UART0_MODULE, CLK_CLKSEL1_UART0SEL_HXT, CLK_UART0_CLK_DIVIDER( 1 ) );
-    CLK_SetModuleClock( UART1_MODULE, CLK_CLKSEL2_UART1SEL_HXT, CLK_UART1_CLK_DIVIDER( 1 ) );
+    CLK_SetModuleClock( UART0_MODULE, CLK_CLKSEL1_UART0SEL_HXT, CLK_UART0_CLK_DIVIDER( 1 ) ); //GPS
+    CLK_SetModuleClock( UART1_MODULE, CLK_CLKSEL2_UART1SEL_HXT, CLK_UART1_CLK_DIVIDER( 1 ) ); //CAMERA
 
     // SPI
-    CLK_SetModuleClock( SPI0_MODULE, CLK_CLKSEL1_SPI0SEL_HXT, 0 );
-    CLK_SetModuleClock( SPI3_MODULE, CLK_CLKSEL2_SPI3SEL_HXT, 0 );
+    CLK_SetModuleClock( SPI0_MODULE, CLK_CLKSEL1_SPI0SEL_HXT, 0 ); //NRF24L01
+    CLK_SetModuleClock( SPI3_MODULE, CLK_CLKSEL2_SPI3SEL_HXT, 0 ); //W25Q128
 
     // TMR
     CLK_SetModuleClock( TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_LXT, CLK_TMR0_CLK_DIVIDER( 16 ) );
 }
 void GpioSetup( void ) {
     // MODE.
-    GPIO_SetMode( PA, BIT0, GPIO_PMD_OUTPUT );
-    GPIO_SetMode( PA, BIT2, GPIO_PMD_INPUT );
-    GPIO_SetMode( PA, BIT14, GPIO_PMD_INPUT );
+    GPIO_SetMode( PA, BIT0, GPIO_PMD_OUTPUT ); //LED
+    GPIO_SetMode( PA, BIT2, GPIO_PMD_INPUT ); //Button
+    GPIO_SetMode( PA, BIT14, GPIO_PMD_INPUT ); 
+    for()
     GPIO_SetMode( PA, BIT15, GPIO_PMD_OUTPUT );
     GPIO_SetMode( PB, BIT2, GPIO_PMD_OUTPUT );
     GPIO_SetMode( PB, BIT3, GPIO_PMD_INPUT );
@@ -84,18 +92,16 @@ void GpioSetup( void ) {
     GPIO_ENABLE_PULL_UP( PA, BIT2 );
     GPIO_ENABLE_PULL_UP( PA, BIT14 );
     GPIO_ENABLE_PULL_UP( PB, BIT3 );
-	
-		GPIO_ENABLE_PULL_UP( PB, BIT0 );
+
+    GPIO_ENABLE_PULL_UP( PB, BIT0 );
     GPIO_ENABLE_PULL_UP( PB, BIT1 );
     GPIO_ENABLE_PULL_UP( PB, BIT4 );
-		GPIO_ENABLE_PULL_UP( PB, BIT5 );
+    GPIO_ENABLE_PULL_UP( PB, BIT5 );
 
     // Interrupt.
     GPIO_EnableInt( PA, 2, GPIO_INT_FALLING );
     GPIO_EnableInt( PA, 14, GPIO_INT_FALLING );
     GPIO_EnableInt( PB, 3, GPIO_INT_FALLING );
-	
-
 
     // DEBOUNCE.
     GPIO_SET_DEBOUNCE_TIME( GPIO_DBCLKSRC_IRC10K, GPIO_DBCLKSEL_8 );
@@ -237,4 +243,59 @@ void DelayUs( uint32_t us ) {
             us = 0;
         }
     } while ( us > 0 );
+}
+void CmdDecoder( void ) {
+    if ( FIFO_IsEmpty( g_stNrfRx ) == false ) {
+        uint32_t c_time = 0;
+        while ( c_time++ < 500 ) {
+            if ( FIFO_CmdCheck( g_stNrfRx, ( uint8_t* )"CMD:", 0, 4, 4, 0, false ) ) {
+                if ( FIFO_CmdCheck( g_stNrfRx, ( uint8_t* )"GET:", 4, 8, 4, 0, false ) ) {
+                    if ( FIFO_CmdCheck( g_stNrfRx, ( uint8_t* )"IMG", 8, 11, 3, 0, false ) ) {
+                        if ( FIFO_WaitData( g_stNrfRx, 11, 0 ) ) {
+                            g_u8GetPictureReadyFlag = 1;
+                            FIFO_Rst( g_stNrfRx );
+                        }
+                    }
+                    if ( FIFO_CmdCheck( g_stNrfRx, ( uint8_t* )"GPS", 8, 11, 3, 0, false ) ) {
+                        if ( g_u8GpsDataReadyFlag == 1 ) {
+                            NRF_TxMode( g_stNrf0 );
+                            NRF_FlushTx( g_stNrf0 );
+                            DelayUs( 10000 );
+                            NrfSendData( g_stGpsRx->buf, g_stGpsRx->size );
+                            NRF_RxMode( g_stNrf0 );
+                            FIFO_Rst( g_stNrfRx );
+                        }
+                    }
+                }
+                if ( FIFO_CmdCheck( g_stNrfRx, ( uint8_t* )"SET:", 4, 8, 4, 0, false ) ) {
+                    if ( FIFO_CmdCheck( g_stNrfRx, ( uint8_t* )"CYC:", 8, 12, 4, 0, false ) ) {
+                        if ( FIFO_WaitData( g_stNrfRx, 16, 0 ) ) {
+                            g_u32GetPictureTime = ( uint32_t )( FIFO_ReadData( g_stNrfRx, 12 ) - 0x30 ) * 1000;
+                            g_u32GetPictureTime += ( uint32_t )( FIFO_ReadData( g_stNrfRx, 13 ) - 0x30 ) * 100;
+                            g_u32GetPictureTime += ( uint32_t )( FIFO_ReadData( g_stNrfRx, 14 ) - 0x30 ) * 10;
+                            g_u32GetPictureTime += ( uint32_t )( FIFO_ReadData( g_stNrfRx, 15 ) - 0x30 ) * 1;
+                            g_u32GetPictureCount = 0;
+                            FIFO_Rst( g_stNrfRx );
+                        }
+                    }
+                }
+            }
+            DelayUs( 1000 );
+        }
+        FIFO_Rst( g_stNrfRx );
+    }
+}
+
+void CmdSend( uint8_t length ) {
+    uint8_t f;
+    FIFO_WaitData( g_stNrfRx, length, 0 );
+    NRF_TxMode( g_stNrf0 );
+    f = nrfP2P_SendPacket( g_stNrf0, ( uint8_t* )g_u8DestAddress, g_stNrfRx->buf, length );
+    NRF_RxMode( g_stNrf0 );
+    FIFO_Rst( g_stNrfRx );
+    printf( "SYS:" );
+    if ( f == true )
+        printf( "OK\n" );
+    else
+        printf( "TOUT\n" );
 }

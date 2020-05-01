@@ -100,6 +100,9 @@ void ResetCE( void );
 void NrfDelay( uint32_t time );
 
 void CameraGetImage( void );
+
+void CmdDecoder( void );
+void CmdSend( uint8_t length );
 /*---------------------------------------------------------------------------------------------------------*/
 // IRQ.c
 void NVIC_Init( void );
