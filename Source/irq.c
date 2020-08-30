@@ -9,6 +9,7 @@ void GPABC_IRQHandler( void ) {
     if ( GPIO_GET_INT_FLAG( PA, BIT14 ) ) {
         // printf( "INT\n" );
         g_u8GetPictureReadyFlag = 1;
+				g_u8ExternalTriggerFlag = 1;
         GPIO_CLR_INT_FLAG( PA, BIT14 );
     }
     // nRF IRQ
@@ -35,12 +36,6 @@ void GPABC_IRQHandler( void ) {
         GPIO_CLR_INT_FLAG( PB, BIT3 );
     }
 }
-
-void TMR0_IRQHandler( void ) {
-
-    TIMER_ClearIntFlag( TIMER0 );
-}
-
 void RTC_IRQHandler( void ) {
     if ( g_u32GetPictureTime > 0 ) {
         if ( g_u32GetPictureCount++ >= g_u32GetPictureTime ) {
@@ -49,10 +44,8 @@ void RTC_IRQHandler( void ) {
         }
     }
     g_u8RtcTickFlag = 1;
-
     RTC_CLEAR_TICK_INT_FLAG();
 }
-
 void UART0_IRQHandler( void ) {
     uint32_t intSt = UART0->INTSTS;
     uint8_t  dataTemp[ 1 ];
@@ -78,7 +71,6 @@ void UART0_IRQHandler( void ) {
         UART_ClearIntFlag( UART0, UART_INTSTS_RDAIF_Msk );
     }
 }
-
 void UART1_IRQHandler( void ) {
     uint32_t intSt = UART1->INTSTS;
     uint8_t  dataTemp[ 1 ];
@@ -93,5 +85,33 @@ void UART1_IRQHandler( void ) {
             g_stOv528_s0->Uart->Read( dataTemp, 1 );
         }
         UART_ClearIntFlag( UART1, UART_INTSTS_RDAIF_Msk );
+    }
+}
+void CKSD_IRQHandler(void){
+    uint32_t clkDieFlag = CLK->CLKDSTS;
+    if(clkDieFlag & (0x1U<<1)){
+        printf("LXT Stop!!\n");
+        CLK->CLKDSTS = (0x1<<1);
+    }
+}
+void HIRC_IRQHandler( void){
+    uint32_t hirc1Flag = SYS_GET_IRC1TRIM_INT_FLAG();
+    
+    if(hirc1Flag & SYS_IRCTISTS_32KERR_INT){
+        printf("LXT Clock error.\n");
+        SYS_CLEAR_IRC1TRIM_INT_FLAG(hirc1Flag);
+    }
+
+    if(hirc1Flag & SYS_IRCTISTS_FAIL_INT){
+        printf("HIRC1 : Trim Failure.\n");
+        SYS_CLEAR_IRC1TRIM_INT_FLAG(hirc1Flag);
+    }
+}
+void WDT_IRQHandler( void){
+    if(WDT_GET_TIMEOUT_INT_FLAG()){
+        SYS_UnlockReg();
+        if(g_u8WdtReloadEnable) WDT_RESET_COUNTER();
+        WDT_CLEAR_TIMEOUT_INT_FLAG();
+        SYS_LockReg();
     }
 }

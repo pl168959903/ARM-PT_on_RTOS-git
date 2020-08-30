@@ -99,7 +99,11 @@ bool nrfP2P_SendPacket( NRF_T* nrf, uint8_t* destAddress, uint8_t* array, uint8_
 
     //傳輸、等待中斷
     nrf->SetCE();
-    while ( ( ( nrf->statusReg ) & ( NRF_REG_STATUS_TX_DS_MSK | NRF_REG_STATUS_MAX_RT_MSK ) ) == 0 ) {};
+    WdtAutoReloadDisable(0x7);
+    {
+        while ( ( ( nrf->statusReg ) & ( NRF_REG_STATUS_TX_DS_MSK | NRF_REG_STATUS_MAX_RT_MSK ) ) == 0 ) {};
+    }
+    WdtAutoReloadEnable();
     nrf->ResetCE();
 
     //清除中斷
@@ -125,7 +129,11 @@ bool nrfP2P_TxReuse( NRF_T* nrf, uint32_t times ) {
         NRF_Nop( g_stNrf0 );
         NRF_ReuseTx( nrf );
         nrf->SetCE();
-        while ( ( ( nrf->statusReg ) & ( NRF_REG_STATUS_TX_DS_MSK | NRF_REG_STATUS_MAX_RT_MSK ) ) == 0 ) {};
+        WdtAutoReloadDisable(0x7);
+        {
+            while ( ( ( nrf->statusReg ) & ( NRF_REG_STATUS_TX_DS_MSK | NRF_REG_STATUS_MAX_RT_MSK ) ) == 0 ) {};
+        }
+        WdtAutoReloadEnable();
         nrf->ResetCE();
 
         reg = NRF_ReadRegByte( nrf, NRF_REG_STATUS );

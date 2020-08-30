@@ -33,16 +33,37 @@ FIFO_T* g_stGpsRx;  // GPS 實體
 volatile uint8_t  g_u8RtcTickFlag         = 0; //RTC Tick 中斷旗標
 volatile uint8_t  g_u8GetPictureReadyFlag = 0; //拍攝圖片準備旗標
 volatile uint8_t  g_u8GpsDataReadyFlag    = 0; //讀取GPS準備旗標
+volatile uint8_t  g_u8ExternalTriggerFlag = 0; //拍攝圖片準備旗標
 
 // 參數
-volatile uint32_t g_u32GetPictureTime     = 30; // 時間
+volatile uint32_t g_u32GetPictureTime     = 0; // 時間
 volatile uint32_t g_u32GetPictureCount    = 0; 
+
+volatile uint8_t g_u8WdtReloadEnable    = 1; 
 
 /*---------------------------------------------------------------------------------------------------------*/
 
+void DebugPortEnable(void){
+    SYS->GPB_MFPL |= ( SYS_GPB_MFPL_PB0MFP_UART0_RXD | SYS_GPB_MFPL_PB1MFP_UART0_TXD ); //UART0
+    CLK_EnableXtalRC(CLK_PWRCTL_HIRC0EN_Msk);
+    while(!CLK_WaitClockReady(CLK_STATUS_HIRC0STB_Msk)){};
+    CLK_EnableModuleClock(UART0_MODULE);
+    CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_UART0_CLK_DIVIDER(1));
+    UART_Open(UART0, 38400);
+    printf("Debug Enable!\n");
+    printf("HIRC : %d Hz\n", CLK_GetHCLKFreq());
+}
+void WdtSetup( void ){
+    CLK_EnableModuleClock(WDT_MODULE);
+    CLK_SetModuleClock(WDT_MODULE, CLK_CLKSEL1_WDTSEL_LXT, NULL);
+    WDT_Open(WDT_TIMEOUT_2POW18, WDT_RESET_DELAY_1026CLK, TRUE, TRUE);
+    WDT_EnableInt();
+    NVIC_EnableIRQ(WDT_IRQn);
+    printf("WDT Setting ok\n");
+}
 void PinSetup( void ) {
     // XTAL
-    SYS->GPF_MFPL |= ( SYS_GPF_MFPL_PF7MFP_X32_IN | SYS_GPF_MFPL_PF6MFP_X32_OUT | SYS_GPF_MFPL_PF3MFP_XT1_IN | SYS_GPF_MFPL_PF2MFP_XT1_OUT );
+    SYS->GPF_MFPL |= ( SYS_GPF_MFPL_PF7MFP_X32_IN | SYS_GPF_MFPL_PF6MFP_X32_OUT );
 
     // UART
     SYS->GPB_MFPL |= ( SYS_GPB_MFPL_PB0MFP_UART0_RXD | SYS_GPB_MFPL_PB1MFP_UART0_TXD );  // UART0 : GPS
@@ -56,34 +77,56 @@ void PinSetup( void ) {
     SYS->GPA_MFPL |= ( SYS_GPA_MFPL_PA0MFP_GPIO | SYS_GPA_MFPL_PA2MFP_GPIO );    // PA0 : LED ; PA2 : BUTTON
     SYS->GPA_MFPH |= ( SYS_GPA_MFPH_PA14MFP_GPIO | SYS_GPA_MFPH_PA15MFP_GPIO );  // PA14 : DI ; PA15 : nRF_CE
     SYS->GPB_MFPL |= ( SYS_GPB_MFPL_PB2MFP_GPIO | SYS_GPB_MFPL_PB3MFP_GPIO );    // PB2 : Camera_Power ; PB3 : nRF_IRQ
+
+    printf("Pin setting ok!\n");
 }
 void ClkSetup( void ) {
+    CLK_SysTickDelay(10000);
     // SYSTEM CLOCK
     CLK_EnableXtalRC( CLK_PWRCTL_LXTEN_Msk );
     while ( !CLK_WaitClockReady( CLK_STATUS_LXTSTB_Msk ) ) {};
-    CLK_EnableXtalRC( CLK_PWRCTL_HXTEN_Msk );
-    while ( !CLK_WaitClockReady( CLK_STATUS_HXTSTB_Msk ) ) {};
-    CLK_EnableXtalRC( CLK_PWRCTL_LIRCEN_Msk );
-    while ( !CLK_WaitClockReady( CLK_STATUS_LIRCSTB_Msk ) ) {};
-    CLK_SetHCLK( CLK_CLKSEL0_HCLKSEL_HXT, CLK_HCLK_CLK_DIVIDER( 1 ) );
+    CLK_EnableXtalRC(CLK_PWRCTL_HIRC1EN_Msk);
+    while(!CLK_WaitClockReady(CLK_STATUS_HIRC1STB_Msk)){};
 
-    // UART
-    CLK_SetModuleClock( UART0_MODULE, CLK_CLKSEL1_UART0SEL_HXT, CLK_UART0_CLK_DIVIDER( 1 ) ); //GPS
-    CLK_SetModuleClock( UART1_MODULE, CLK_CLKSEL2_UART1SEL_HXT, CLK_UART1_CLK_DIVIDER( 1 ) ); //CAMERA
+    SYS->IRC1TCTL |= ( SYS_IRCTCTL_LOOP_32CLK | SYS_IRCTCTL_RETRY_512 );
+    SYS_EnableHIRC1Trim( SYS_IRC1TCTL_TRIM_36M, ( SYS_IRCTIEN_FAIL_EN | SYS_IRCTIEN_32KERR_EN ) );
+    while ( !( SYS_GET_IRC1TRIM_INT_FLAG() & SYS_IRCTISTS_FREQLOCK ) ){};
 
-    // SPI
-    CLK_SetModuleClock( SPI0_MODULE, CLK_CLKSEL1_SPI0SEL_HXT, 0 ); //NRF24L01
-    CLK_SetModuleClock( SPI3_MODULE, CLK_CLKSEL2_SPI3SEL_HXT, 0 ); //W25Q128
+    CLK->CLKSEL0 |= CLK_CLKSEL0_HIRCSEL_Msk;
+    CLK_SetHCLK(CLK_CLKSEL0_HCLKSEL_HIRC1, CLK_HCLK_CLK_DIVIDER(1));
+    CLK_SetPCLK0(CLK_APB0DIV_HCLK);
+    CLK_SetPCLK1(CLK_APB1DIV_HCLK);
 
-    // TMR
-    CLK_SetModuleClock( TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_LXT, CLK_TMR0_CLK_DIVIDER( 16 ) );
+    CLK_DisableXtalRC(CLK_PWRCTL_HIRC0EN_Msk);
+
+    UART_Open(UART0, 38400);
+
+    CLK->CLKDCTL |= 0x2;
+    CLK->CLKDIE |= 0x2;
+
+    NVIC_EnableIRQ( CKSD_IRQn );
+    NVIC_EnableIRQ( HIRC_IRQn );
+
+    printf( "--------------------------------\n" );
+    printf( "Clock config : \n");
+    printf( "HXT : %d Hz\n", CLK_GetHXTFreq() );
+    printf( "LXT : %d Hz\n", CLK_GetLXTFreq() );
+    printf( "HIRC0 : %d Hz\n", CLK_GetHIRC0Freq());
+    printf( "HIRC1 : %d Hz\n", CLK_GetHIRC1Freq());
+    printf( "HIRC : %d Hz\n", CLK_GetHIRCFreq());
+    printf( "MIRC : %d Hz\n", CLK_GetMIRCFreq());
+    printf( "LIRC : %d Hz\n", CLK_GetLIRCFreq());
+    printf( "CPU : %d Hz\n", CLK_GetCPUFreq() );
+    printf( "HCLK : %d Hz\n", CLK_GetHCLKFreq() );
+    printf( "PCLK0 : %d Hz\n", CLK_GetPCLK0Freq() );
+    printf( "PCLK1 : %d Hz\n", CLK_GetPCLK1Freq() );
+    printf( "PLL : %d Hz\n", CLK_GetPLLClockFreq() );
 }
 void GpioSetup( void ) {
     // MODE.
     GPIO_SetMode( PA, BIT0, GPIO_PMD_OUTPUT ); //LED
     GPIO_SetMode( PA, BIT2, GPIO_PMD_INPUT ); //Button
     GPIO_SetMode( PA, BIT14, GPIO_PMD_INPUT ); 
-    for()
     GPIO_SetMode( PA, BIT15, GPIO_PMD_OUTPUT );
     GPIO_SetMode( PB, BIT2, GPIO_PMD_OUTPUT );
     GPIO_SetMode( PB, BIT3, GPIO_PMD_INPUT );
@@ -102,17 +145,24 @@ void GpioSetup( void ) {
     GPIO_EnableInt( PA, 2, GPIO_INT_FALLING );
     GPIO_EnableInt( PA, 14, GPIO_INT_FALLING );
     GPIO_EnableInt( PB, 3, GPIO_INT_FALLING );
+    NVIC_EnableIRQ( GPABC_IRQn );
 
     // DEBOUNCE.
-    GPIO_SET_DEBOUNCE_TIME( GPIO_DBCLKSRC_IRC10K, GPIO_DBCLKSEL_8 );
+    GPIO_SET_DEBOUNCE_TIME( GPIO_DBCLKSRC_HCLK, GPIO_DBCLKSEL_32768 );
     GPIO_ENABLE_DEBOUNCE( PA, BIT2 );
 
     // INIT pin status.
     PA0  = 1;
     PA15 = 0;
     PB2  = 1;
+
+    printf("GPIO Setting ok\n");
 }
 void UartSetup( void ) {
+    // UART
+    CLK_SetModuleClock( UART0_MODULE, CLK_CLKSEL1_UART0SEL_HIRC, CLK_UART0_CLK_DIVIDER( 1 ) ); //GPS
+    CLK_SetModuleClock( UART1_MODULE, CLK_CLKSEL2_UART1SEL_HIRC, CLK_UART1_CLK_DIVIDER( 1 ) ); //CAMERA
+    
     CLK_EnableModuleClock( UART0_MODULE );
     CLK_EnableModuleClock( UART1_MODULE );
 
@@ -128,46 +178,60 @@ void UartSetup( void ) {
     // Interrupt
     UART_EnableInt( UART0, UART_INTEN_RXTOIEN_Msk | UART_INTEN_RDAIEN_Msk );
     UART_EnableInt( UART1, UART_INTEN_RXTOIEN_Msk | UART_INTEN_RDAIEN_Msk );
+    NVIC_EnableIRQ( UART0_IRQn );
+    NVIC_EnableIRQ( UART1_IRQn );
+    //NVIC_SetPriority( UART1_IRQn, 0 );
+
+    printf( "UART Setting ok\n");
 }
 void SpiSetup( void ) {
+    // SPI
+    CLK_SetModuleClock( SPI0_MODULE, CLK_CLKSEL1_SPI0SEL_HIRC, 0 ); //NRF24L01
+    CLK_SetModuleClock( SPI3_MODULE, CLK_CLKSEL2_SPI3SEL_HIRC, 0 ); //W25Q128
+
     CLK_EnableModuleClock( SPI0_MODULE );
     CLK_EnableModuleClock( SPI3_MODULE );
 
     SPI_Open( SPI0, SPI_MASTER, SPI_MODE_0, 8, 1000000 );
     SPI_Open( SPI3, SPI_MASTER, SPI_MODE_0, 8, 1000000 );
-}
-void TimerSetup( void ) {
-    CLK_EnableModuleClock( TMR0_MODULE );
-    TIMER_Open( TIMER0, TIMER_PERIODIC_MODE, 8 );
-    TIMER_EnableInt( TIMER0 );
+    printf("SPI Setting ok\n");
 }
 void RtcSetup( void ) {
     CLK_EnableModuleClock( RTC_MODULE );
     RTC_Open( &g_stRtcTime );
     RTC_SetTickPeriod( RTC_TICK_1_SEC );
     RTC_EnableInt( RTC_INTEN_TICKIEN_Msk );
-}
-void NVIC_Init( void ) {
-    NVIC_EnableIRQ( GPABC_IRQn );
     NVIC_EnableIRQ( RTC_IRQn );
-    NVIC_EnableIRQ( UART0_IRQn );
-    NVIC_EnableIRQ( UART1_IRQn );
-    NVIC_SetPriority( UART1_IRQn, 0 );
+    printf("RTC Setting ok\n");
 }
 void CameraSetup( void ) {
     g_stOv528_s0 = OV528_New( 0x0001, 50, &g_stUart1, CameraDelay );
     USER_DISABLE_CMAERA_POWER();
-    g_stOv528_s0->Delay( 2000 );
+    printf("OV528 Setting ok\n");
+}
+void NrfSetup( void ) {
+    g_stNrfRx = FIFO_New( 1024, NULL );
+    g_stNrf0  = NRF_New( &g_stSpi0, &SetCE, &ResetCE, &NrfDelay );
+    nrfP2P_InitNrf( g_stNrf0, 0x50 );
+    g_stNrfCh1 = nrfP2P_NewChannel( g_stNrf0, 1, ( uint8_t* )g_u8P1Address, true, true );
+    nrfP2P_EnableTxDypw( g_stNrf0 );
+    nrfP2P_EnableTxAutoAck( g_stNrf0, ( uint8_t* )g_u8DestAddress );
+    NRF_RxMode( g_stNrf0 );
+    printf("nRF24L01 Setting ok\n");
+}
+void GpsSetup( void ) {
+    g_stGpsRx = FIFO_New( 200, NULL );
+    printf("GPS Setting ok\n");
 }
 void CameraGetImage( void ) {
     size_t  i;
     uint8_t check;
     uint8_t dataTemp[ 50 ];
-
+		uint8_t imgConfig[8] = {0x5E, 0xDB, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A};
     // NRF TX MODE;
     NRF_TxMode( g_stNrf0 );
     NRF_FlushTx( g_stNrf0 );
-
+    
     // Enable Camera Power
     USER_ENABLE_CMAERA_POWER();
     g_stOv528_s0->Delay( 2000 );
@@ -178,22 +242,38 @@ void CameraGetImage( void ) {
     OV528_Snapshout( g_stOv528_s0, OV528_SNAPSHOT_COMPRESSED, 0x0000 );
     OV528_SetPacketSize( g_stOv528_s0, 32 + 6 );
     OV528_GetPictue( g_stOv528_s0, OV528_GET_PICTURE_SNAPSHOT );
-
-    for ( i = 0; i < g_stOv528_s0->imagePacket; i++ ) {
+		
+		for(i=0;i<4;i++) imgConfig[i+2] = *(((uint8_t*)&g_stOv528_s0->imageSize) + i);
+		imgConfig[6] |= ( (g_u8GpsDataReadyFlag << 0) | (g_u8ExternalTriggerFlag << 1) );
+		check = NrfSendData( imgConfig, 8 );
+		g_u8ExternalTriggerFlag = 0;
+		
+		if(check == true){
+			for ( i = 0; i < g_stOv528_s0->imagePacket; i++ ) {
         size_t size;
         size = OV528_GetPacket( g_stOv528_s0, i, dataTemp );
-
-        // UART_Write( UART0, dataTemp, size );
-
-        check = nrfP2P_SendPacket( g_stNrf0, ( uint8_t* )g_u8DestAddress, dataTemp, size );
-        if ( check == false )
-            check = nrfP2P_TxReuse( g_stNrf0, 300 );
+        
+        check = NrfSendData(dataTemp, size);
+        if(check == false){
+            break;
+        }
         printf( "i = %d  %d	%d\n", i, check, size );
+			}
+		}
+    if(check == true){
+        if ( g_u8GpsDataReadyFlag == 1) {
+            check = NrfSendData( g_stGpsRx->buf, g_stGpsRx->size );
+            FIFO_Rst( g_stGpsRx );
+            g_u8GpsDataReadyFlag = 0;
+        }
     }
-    if ( g_u8GpsDataReadyFlag == 1 ) {
-        NrfSendData( g_stGpsRx->buf, g_stGpsRx->size );
-        FIFO_Rst( g_stGpsRx );
-        g_u8GpsDataReadyFlag = 0;
+		/*
+    if(check == true){
+        check = NrfSendData(temp, 2 );
+    }
+		*/
+    if(check == false){
+        printf("Send data err\n");
     }
 
     // PowerDone
@@ -206,43 +286,29 @@ void CameraGetImage( void ) {
 
     g_u8GetPictureReadyFlag = 0;
 }
-void NrfSetup( void ) {
-    g_stNrfRx = FIFO_New( 1024, NULL );
-    g_stNrf0  = NRF_New( &g_stSpi0, &SetCE, &ResetCE, &NrfDelay );
-    nrfP2P_InitNrf( g_stNrf0, 0x50 );
-    g_stNrfCh1 = nrfP2P_NewChannel( g_stNrf0, 1, ( uint8_t* )g_u8P1Address, true, true );
-    nrfP2P_EnableTxDypw( g_stNrf0 );
-    nrfP2P_EnableTxAutoAck( g_stNrf0, ( uint8_t* )g_u8DestAddress );
-    NRF_RxMode( g_stNrf0 );
-}
-void NrfSendData( uint8_t* data, uint32_t length ) {
+bool NrfSendData( uint8_t* data, uint32_t length ) {
     uint32_t f = 0;
     while ( length > 0 ) {
         uint8_t c;
         uint8_t len = ( length > 32 ) ? 32 : length;
         c           = nrfP2P_SendPacket( g_stNrf0, ( uint8_t* )g_u8DestAddress, data + f, len );
-        if ( c == false )
-            nrfP2P_TxReuse( g_stNrf0, 300 );
+        if ( c == false ){
+            uint8_t tr;
+            tr = nrfP2P_TxReuse( g_stNrf0, 300 );
+            if(tr == false){
+                NRF_RstIrq(g_stNrf0);
+                return false; 
+            }
+        }
         f += len;
         length -= len;
     }
+    return true;
 }
-
-void GpsSetup( void ) {
-    g_stGpsRx = FIFO_New( 200, NULL );
-}
-void DelayUs( uint32_t us ) {
-    uint32_t delayMaxTime = 16777216 / ( CLK_GetCPUFreq() / 1000000 );
-    do {
-        if ( us > delayMaxTime ) {
-            CLK_SysTickDelay( delayMaxTime );
-            us -= delayMaxTime;
-        }
-        else {
-            CLK_SysTickDelay( us );
-            us = 0;
-        }
-    } while ( us > 0 );
+void DelayUs( uint32_t delayTime ) {
+    uint32_t i;
+    for(i=0; i<(delayTime>>16); i++) CLK_SysTickDelay(0x10000);
+    if(!(delayTime & 0xFFFF)) CLK_SysTickDelay(delayTime & 0xFFFF);
 }
 void CmdDecoder( void ) {
     if ( FIFO_IsEmpty( g_stNrfRx ) == false ) {
@@ -285,7 +351,6 @@ void CmdDecoder( void ) {
         FIFO_Rst( g_stNrfRx );
     }
 }
-
 void CmdSend( uint8_t length ) {
     uint8_t f;
     FIFO_WaitData( g_stNrfRx, length, 0 );
@@ -299,3 +364,16 @@ void CmdSend( uint8_t length ) {
     else
         printf( "TOUT\n" );
 }
+
+void WdtAutoReloadDisable( uint32_t wtis){
+    g_u8WdtReloadEnable = 0;
+    SYS_UnlockReg();
+    WDT_RESET_COUNTER();
+    WDT->CTL = (WDT->CTL & ~WDT_CTL_WTIS_Msk) | ((wtis << WDT_CTL_WTIS_Pos) & WDT_CTL_WTIS_Msk);
+    SYS_LockReg();
+}
+
+void WdtAutoReloadEnable( void ){
+    g_u8WdtReloadEnable = 1;
+}
+

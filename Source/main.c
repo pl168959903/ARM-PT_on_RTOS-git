@@ -4,19 +4,25 @@
 int main( void ) {
     //Boot 設定
     SYS_UnlockReg();
+    
+    DebugPortEnable();
     PinSetup();
     ClkSetup();
-    UartSetup();
-    RtcSetup();
-    TimerSetup();
+
+    WdtSetup();
+    //WwdtSetup();
+    
     GpioSetup();
+    RtcSetup();
+    UartSetup();
     SpiSetup();
-    NVIC_Init();
+
     NrfSetup();
     GpsSetup();
     CameraSetup();
-    SYS_LockReg();
 
+    SYS_LockReg();
+    
     while ( 1 ) {
         if ( g_u8GetPictureReadyFlag == 1 ) {
             CameraGetImage();
@@ -27,7 +33,7 @@ int main( void ) {
             g_u8RtcTickFlag = 0;
         }
     };
-    return  0;
+    //return  0;
 }
 
 

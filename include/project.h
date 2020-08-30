@@ -3,7 +3,8 @@
 #define __USER_LIB_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /*------------------------------------------------Config---------------------------------------------------*/
@@ -44,8 +45,8 @@ extern "C" {
 // Official.
 #include "Nano103.h"
 
-/*---------------------------------------------------------------------------------------------------------*/
-// User.
+    /*---------------------------------------------------------------------------------------------------------*/
+    // User.
 
 #include "Bridging.h"
 #include "CJ_OV528.h"
@@ -55,61 +56,66 @@ extern "C" {
 #include "W25QXX.h"
 #include "vMemAlloc.h"
 
-/*---------------------------------------------------------------------------------------------------------*/
-extern S_RTC_TIME_DATA_T g_stRtcTime;
-extern volatile uint8_t  g_u8RtcTickFlag;
+    /*---------------------------------------------------------------------------------------------------------*/
+    extern S_RTC_TIME_DATA_T g_stRtcTime;
+    extern volatile uint8_t g_u8RtcTickFlag;
 
-extern OV528_T*          g_stOv528_s0;
+    extern OV528_T *g_stOv528_s0;
 
-extern NRF_T*            g_stNrf0;
-extern NRFP2P_CHANNEL_T* g_stNrfCh1;
-extern FIFO_T*           g_stNrfRx;
+    extern NRF_T *g_stNrf0;
+    extern NRFP2P_CHANNEL_T *g_stNrfCh1;
+    extern FIFO_T *g_stNrfRx;
 
-extern const uint8_t     g_u8P1Address[ 5 ];
-extern const uint8_t     g_u8DestAddress[ 5 ];
+    extern const uint8_t g_u8P1Address[5];
+    extern const uint8_t g_u8DestAddress[5];
 
-extern FIFO_T*           g_stGpsRx;
+    extern FIFO_T *g_stGpsRx;
 
-extern volatile uint8_t  g_u8GetPictureReadyFlag;
-extern volatile uint32_t g_u32GetPictureTime;
-extern volatile uint32_t g_u32GetPictureCount;
-extern volatile uint8_t  g_u8GpsDataReadyFlag;
+    extern volatile uint8_t g_u8GetPictureReadyFlag;
+    extern volatile uint32_t g_u32GetPictureTime;
+    extern volatile uint32_t g_u32GetPictureCount;
+    extern volatile uint8_t g_u8GpsDataReadyFlag;
+		extern volatile uint8_t g_u8ExternalTriggerFlag;
+    extern volatile uint8_t g_u8WdtReloadEnable;
 
-// protable.
-extern SPI_Func_T  g_stSpi0;
-extern SPI_Func_T  g_stSpi3;
-extern UART_Func_T g_stUart1;
+    // protable.
+    extern SPI_Func_T g_stSpi0;
+    extern SPI_Func_T g_stSpi3;
+    extern UART_Func_T g_stUart1;
 
-/*---------------------------------------------------------------------------------------------------------*/
+    /*---------------------------------------------------------------------------------------------------------*/
+    void DebugPortEnable(void);
 
-void PinSetup( void );
-void ClkSetup( void );
-void GpioSetup( void );
-void UartSetup( void );
-void SpiSetup( void );
-void TimerSetup( void );
-void RtcSetup( void );
-void CameraSetup( void );
-void NrfSetup( void );
-void NrfSendData( uint8_t* data, uint32_t length );
-void GpsSetup( void );
-void DelayUs( uint32_t );
+    void WdtSetup(void);
+    void PinSetup(void);
+    void ClkSetup(void);
+    void GpioSetup(void);
+    void UartSetup(void);
+    void SpiSetup(void);
+    void RtcSetup(void);
 
-void SetCE( void );
-void ResetCE( void );
-void NrfDelay( uint32_t time );
+    void CameraSetup(void);
+    void NrfSetup(void);
+    void GpsSetup(void);
 
-void CameraGetImage( void );
+    bool NrfSendData(uint8_t *data, uint32_t length);
+    void DelayUs(uint32_t);
 
-void CmdDecoder( void );
-void CmdSend( uint8_t length );
-/*---------------------------------------------------------------------------------------------------------*/
-// IRQ.c
-void NVIC_Init( void );
+    void SetCE(void);
+    void ResetCE(void);
+    void NrfDelay(uint32_t time);
 
-/*---------------------------------------------------------------------------------------------------------*/
-// portable
-void CameraDelay( uint32_t time );
-void printReg( void );
+    void CameraGetImage(void);
 
-#endif  //__USER_LIB_H__
+    void CmdDecoder(void);
+    void CmdSend(uint8_t length);
+
+    /*---------------------------------------------------------------------------------------------------------*/
+    // portable
+    void CameraDelay(uint32_t time);
+    void printReg(void);
+
+    void WdtAutoReloadDisable(uint32_t wtis);
+    void WdtAutoReloadEnable(void);
+
+#endif //__USER_LIB_H__

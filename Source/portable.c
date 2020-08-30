@@ -6,12 +6,20 @@
 uint8_t SPI0_WriteByte( uint8_t data ) {
     SPI_WRITE_TX0( USER_CFG_NRF24L01_0_SPI, data );
     SPI_TRIGGER( USER_CFG_NRF24L01_0_SPI );
-    while ( SPI_IS_BUSY( USER_CFG_NRF24L01_0_SPI ) ) {};
+    WdtAutoReloadDisable(0x0);
+    {
+        while ( SPI_IS_BUSY( USER_CFG_NRF24L01_0_SPI ) ) {};
+    }
+    WdtAutoReloadEnable();
     return ( uint8_t )( SPI_READ_RX0( USER_CFG_NRF24L01_0_SPI ) );
 }
 uint8_t SPI0_ReadByte( void ) {
     SPI_TRIGGER( USER_CFG_NRF24L01_0_SPI );
-    while ( SPI_IS_BUSY( USER_CFG_NRF24L01_0_SPI ) ) {};
+    WdtAutoReloadDisable(0x0);
+    {
+        while ( SPI_IS_BUSY( USER_CFG_NRF24L01_0_SPI ) ) {};
+    }
+    WdtAutoReloadEnable();
     return ( uint8_t )( SPI_READ_RX0( USER_CFG_NRF24L01_0_SPI ) );
 }
 void SPI0_SS( void ) {
@@ -23,7 +31,11 @@ void SPI0_DSS( void ) {
 }
 void SPI0_Dummy( void ) {
     SPI_TRIGGER( USER_CFG_NRF24L01_0_SPI );
-    while ( SPI_IS_BUSY( USER_CFG_NRF24L01_0_SPI ) ){};
+    WdtAutoReloadDisable(0x0);
+    {
+        while ( SPI_IS_BUSY( USER_CFG_NRF24L01_0_SPI ) ){};
+    }
+    WdtAutoReloadEnable();
 }
 SPI_Func_T g_stSpi0 = { SPI0_WriteByte, SPI0_ReadByte, SPI0_SS, SPI0_DSS, SPI0_Dummy };
 
@@ -44,19 +56,31 @@ void NrfDelay( uint32_t time ) {
 uint8_t SPI3_WriteByte( uint8_t data ) {
     SPI_WRITE_TX0( USER_CFG_W25XX_0_SPI, data );
     SPI_TRIGGER( USER_CFG_W25XX_0_SPI );
-    while ( SPI_IS_BUSY( USER_CFG_W25XX_0_SPI ) ){};
+    WdtAutoReloadDisable(0x0);
+    {
+        while ( SPI_IS_BUSY( USER_CFG_W25XX_0_SPI ) ){};
+    }
+    WdtAutoReloadEnable();
     return ( ( uint8_t )SPI_READ_RX0( USER_CFG_W25XX_0_SPI ) );
 }
 
 uint8_t SPI3_ReadByte( void ) {
     SPI_TRIGGER( USER_CFG_W25XX_0_SPI );
-    while ( SPI_IS_BUSY( USER_CFG_W25XX_0_SPI ) ){};
+    WdtAutoReloadDisable(0x0);
+    {
+        while ( SPI_IS_BUSY( USER_CFG_W25XX_0_SPI ) ){};
+    }
+    WdtAutoReloadEnable();
     return ( ( uint8_t )SPI_READ_RX0( USER_CFG_W25XX_0_SPI ) );
 }
 
 void SPI3_Dummy( void ) {
     SPI_TRIGGER( USER_CFG_W25XX_0_SPI );
-    while ( SPI_IS_BUSY( USER_CFG_W25XX_0_SPI ) ){};
+    WdtAutoReloadDisable(0x0);
+    {
+        while ( SPI_IS_BUSY( USER_CFG_W25XX_0_SPI ) ){};
+    }
+    WdtAutoReloadEnable();
 }
 
 void SPI3_SS( void ) {

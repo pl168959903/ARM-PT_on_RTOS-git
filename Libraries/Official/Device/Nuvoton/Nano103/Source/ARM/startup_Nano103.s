@@ -14,7 +14,7 @@
 ; </h>
 
     IF :LNOT: :DEF: Stack_Size
-Stack_Size      EQU     0x00000400
+Stack_Size      EQU     0x00000500
     ENDIF
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
@@ -87,7 +87,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     SC0_IRQHandler            ; SC0 interrupt
                 DCD     SC1_IRQHandler            ; SC1 interrupt
                 DCD     Default_Handler           ; Reserved
-                DCD     Default_Handler           ; Reserved
+                DCD     CKSD_IRQHandler           	  ; Reserved
                 DCD     Default_Handler           ; Reserved
                 DCD     PDMA_IRQHandler           ; PDMA interrupt
                 DCD     SPI3_IRQHandler           ; SPI3 interrupt
@@ -181,6 +181,7 @@ Default_Handler PROC
                 EXPORT  I2C1_IRQHandler           [WEAK]
                 EXPORT  SC0_IRQHandler            [WEAK]
                 EXPORT  SC1_IRQHandler            [WEAK]
+				EXPORT	CKSD_IRQHandler			  [WEAK]
                 EXPORT  PDMA_IRQHandler           [WEAK]
                 EXPORT  SPI3_IRQHandler           [WEAK]
                 EXPORT  PDWU_IRQHandler           [WEAK]
@@ -209,6 +210,7 @@ I2C0_IRQHandler
 I2C1_IRQHandler
 SC0_IRQHandler
 SC1_IRQHandler
+CKSD_IRQHandler
 PDMA_IRQHandler
 SPI3_IRQHandler
 PDWU_IRQHandler

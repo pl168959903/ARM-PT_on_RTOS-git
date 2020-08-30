@@ -22,16 +22,17 @@ extern "C" {
   Define SYSCLK
  *----------------------------------------------------------------------------*/
 
-#define __HXT         (24000000UL)      /*!< High Speed External Crystal Clock Frequency 12MHz */
-#define __LXT         (32768UL)         /*!< Low Speed External Crystal Clock Frequency 32.768kHz */
-#define __HIRC12M     (12000000UL)      /*!< High Speed Inernal Crystal 0 Clock Frequency 12MHz */
-#define __HIRC16M     (16000000UL)      /*!< High Speed Inernal Crystal 0 Clock Frequency 16MHz */
-#define __LIRC        (10000UL)         /*!< Low Speed Internal 10kHz RC Oscillator Frequency */
-#define __HIRC36M     (36000000UL)      /*!< High Speed Inernal Crystal 1 Clock Frequency 36MHz */
-#define __MIRC        (4000000UL)       /*!< Medium Speed Inernal Crystal Clock Frequency 4MHz */
-#define __HIRC         __HIRC12M        /* HIRC0 at 12MHz as default HIRC*/
-#define __HSI         (__HIRC12M)       /* Factory Default is internal 12MHz */
-
+#define __HXT          ( 24000000UL ) /*!< High Speed External Crystal Clock Frequency 12MHz */
+#define __LXT          ( 32768UL )    /*!< Low Speed External Crystal Clock Frequency 32.768kHz */
+#define __HIRC12M      ( 12000000UL ) /*!< High Speed Inernal Crystal 0 Clock Frequency 12MHz */
+#define __HIRC16M      ( 16000000UL ) /*!< High Speed Inernal Crystal 0 Clock Frequency 16MHz */
+#define __HIRC11_0592M ( 11059200UL ) /*!< High Speed Inernal Crystal 0 Clock Frequency 11.0592MHz */
+#define __HIRC12_288M ( 12288000UL ) /*!< High Speed Inernal Crystal 0 Clock Frequency 12.288MHz */
+#define __LIRC         ( 10000UL )    /*!< Low Speed Internal 10kHz RC Oscillator Frequency */
+#define __HIRC36M      ( 36000000UL ) /*!< High Speed Inernal Crystal 1 Clock Frequency 36MHz */
+#define __MIRC         ( 4000000UL )  /*!< Medium Speed Inernal Crystal Clock Frequency 4MHz */
+#define __HIRC         __HIRC12M      /* HIRC0 at 12MHz as default HIRC*/
+#define __HSI          ( __HIRC12M )  /* Factory Default is internal 12MHz */
 
 extern uint32_t SystemCoreClock;        /*!< System Clock Frequency (Core Clock) */
 extern uint32_t CyclesPerUs;            /*!< Cycles per micro second */

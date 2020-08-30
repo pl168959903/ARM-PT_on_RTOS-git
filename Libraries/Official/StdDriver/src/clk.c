@@ -218,6 +218,58 @@ uint32_t CLK_GetPLLClockFreq(void)
     return u32Freq;
 }
 
+uint32_t CLK_GetHIRC0Freq(void) {
+    uint32_t u32Freq = 0;
+    if ( CLK->PWRCTL & CLK_PWRCTL_HIRC0_EN ) {
+        if ( SYS->IRC0TCTL & SYS_IRC0TCTL_TRIM_11_0592M )
+            u32Freq = __HIRC11_0592M; /* HIRC 11.0592M Hz*/
+        else if ( SYS->IRC0TCTL & SYS_IRC0TCTL_TRIM_12M )
+            u32Freq = __HIRC12M; /* HIRC 12M Hz*/
+        else if ( SYS->IRC0TCTL & SYS_IRC0TCTL_TRIM_12_288M )
+            u32Freq = __HIRC12_288M; /* HIRC 12.288M Hz*/
+        else if ( SYS->IRC0TCTL & SYS_IRC0TCTL_TRIM_16M )
+            u32Freq = __HIRC16M; /* HIRC 16M Hz*/
+        else if ( CLK->PWRCTL & CLK_PWRCTL_HIRC0FSEL_Msk )
+            u32Freq = __HIRC16M; /* HIRC 16M Hz*/
+        else 
+          u32Freq = __HIRC12M; /* HIRC 12M Hz*/ 
+    }
+    return u32Freq;
+}
+
+uint32_t CLK_GetHIRC1Freq(void) {
+    uint32_t u32Freq = 0;
+    if(CLK->PWRCTL & CLK_PWRCTL_HIRC1_EN){
+        u32Freq = __HIRC36M; /* HIRC 36M Hz*/ 
+    }
+    return u32Freq;
+}
+
+uint32_t CLK_GetHIRCFreq(void) {
+    uint32_t u32Freq = 0;
+    if(CLK->CLKSEL0 & CLK_CLKSEL0_HIRCSEL_Msk)
+      u32Freq = CLK_GetHIRC1Freq();
+    else
+      u32Freq = CLK_GetHIRC0Freq();
+    return u32Freq;
+}
+
+uint32_t CLK_GetMIRCFreq(void) {
+    uint32_t u32Freq = 0;
+    if(CLK->PWRCTL & CLK_PWRCTL_MIRC_EN){
+        u32Freq = __MIRC; /* MIRC 4M Hz*/ 
+    }
+    return u32Freq;
+}
+
+uint32_t CLK_GetLIRCFreq(void) {
+    uint32_t u32Freq = 0;
+    if(CLK->PWRCTL & CLK_PWRCTL_LIRC_EN){
+        u32Freq = __LIRC; /* lIRC 10k Hz*/ 
+    }
+    return u32Freq;
+}
+
 /**
   * @brief  This function set HCLK frequency. The frequency unit is Hz. The range of u32Hclk is 16 ~ 48 MHz
   * @param[in]  u32Hclk is HCLK frequency
