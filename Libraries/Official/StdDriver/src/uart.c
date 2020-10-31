@@ -29,7 +29,7 @@
   */
 uint32_t _UART_GetUartClk(UART_T* uart)
 {
-    uint8_t u8UartClkSrcSel = 0;
+     uint8_t u8UartClkSrcSel = 0;
     uint32_t clk =0, div = 1;
 
     if(uart == UART0)
@@ -59,7 +59,19 @@ uint32_t _UART_GetUartClk(UART_T* uart)
             clk = __HIRC36M; /* HIRC 36M Hz*/
         else
         {
-            if(CLK->PWRCTL & CLK_PWRCTL_HIRC0FSEL_Msk)
+            if(SYS->IRC0TCTL & SYS_IRC0TCTL_TRIM_11_0592M){
+                clk = __HIRC11_0592M; /* HIRC 11.0592M Hz*/
+            }
+            else if(SYS->IRC0TCTL & SYS_IRC0TCTL_TRIM_12M){
+                clk = __HIRC12M; /* HIRC 12M Hz*/
+            }
+            else if(SYS->IRC0TCTL & SYS_IRC0TCTL_TRIM_12_288M){
+                clk = __HIRC12_288M; /* HIRC 12.288M Hz*/
+            }
+            else if(SYS->IRC0TCTL & SYS_IRC0TCTL_TRIM_16M){
+                clk = __HIRC16M; /* HIRC 16M Hz*/
+            }
+            else if(CLK->PWRCTL & CLK_PWRCTL_HIRC0FSEL_Msk)
                 clk = __HIRC16M; /* HIRC 16M Hz*/
             else
                 clk = __HIRC12M; /* HIRC 12M Hz*/

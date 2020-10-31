@@ -501,12 +501,12 @@
             <File>
               <FileName>wdt.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\PT_on_RTOS-git\libraries\Official\StdDriver\src\wdt.c</FilePath>
+              <FilePath>..\libraries\Official\StdDriver\src\wdt.c</FilePath>
             </File>
             <File>
               <FileName>wwdt.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\PT_on_RTOS-git\libraries\Official\StdDriver\src\wwdt.c</FilePath>
+              <FilePath>..\libraries\Official\StdDriver\src\wwdt.c</FilePath>
             </File>
           </Files>
         </Group>

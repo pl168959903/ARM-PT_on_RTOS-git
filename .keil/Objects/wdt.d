@@ -1,4 +1,4 @@
-.\objects\wdt.o: ..\..\PT_on_RTOS-git\libraries\Official\StdDriver\src\wdt.c
+.\objects\wdt.o: ..\libraries\Official\StdDriver\src\wdt.c
 .\objects\wdt.o: ..\libraries\Official\Device\Nuvoton\Nano103\Include\Nano103.h
 .\objects\wdt.o: ..\libraries\Official\CMSIS\Include\core_cm0.h
 .\objects\wdt.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h

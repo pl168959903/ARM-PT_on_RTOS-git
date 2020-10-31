@@ -3,6 +3,7 @@
 
 //---------------------------------------------------------------
 // CMD
+
 NRF_T* NRF_New( SPI_Func_T* SpiFuncion, FUNC_PTR* SetCE, FUNC_PTR* ResetCE, DelayFunction* df) {
     NRF_T* nrfClass;
     nrfClass = ( NRF_T* )NRF_MALLOC( sizeof( NRF_T ) );
