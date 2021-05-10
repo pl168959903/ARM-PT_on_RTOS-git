@@ -1,0 +1,7 @@
+*.exe
+*.bat
+Listings/
+Objects/
+*.uvguix.*
+*.scvd
+*.bak
